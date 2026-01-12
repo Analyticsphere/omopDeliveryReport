@@ -1,0 +1,59 @@
+<div class="section" id="vocab-harmonization">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Vocabulary Harmonization</h2>
+    </div>
+
+    <div class="vocab-versions-container">
+        <div class="metric-card vocab-metric-card">
+            <div class="metric-label">Delivered Vocabulary Version</div>
+            <div class="metric-value vocab-metric-value-lg">{{delivered_vocab_version}}</div>
+        </div>
+
+        <div class="metric-card vocab-metric-card">
+            <div class="metric-label">Standardized to Vocabulary Version</div>
+            <div class="metric-value vocab-metric-value-lg">{{standardized_vocab_version}}</div>
+        </div>
+    </div>
+
+    <div id="vocab-harm-content">
+        <!-- Dynamically populated by JavaScript -->
+    </div>
+
+    <div class="subsection vocab-subsection-spacing">
+        <div class="vocab-tables-grid">
+            <div>
+                <h4 class="vocab-table-heading">Top Source Vocabularies</h4>
+                <div class="table-container vocab-table-bordered">
+                    <table class="vocab-table">
+                        <thead class="vocab-table-header-gradient">
+                            <tr>
+                                <th>Vocabulary</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{source_vocab_rows}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div>
+                <h4 class="vocab-table-heading">Top Target Vocabularies</h4>
+                <div class="table-container vocab-table-bordered">
+                    <table class="vocab-table">
+                        <thead class="vocab-table-header-gradient">
+                            <tr>
+                                <th>Vocabulary</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{target_vocab_rows}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

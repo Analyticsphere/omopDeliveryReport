@@ -1,0 +1,20 @@
+<div class="section" id="delivery-report">
+    <div class="section-header">
+        <span class="section-icon">📋</span>
+        <h2>Delivery Report</h2>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label class="control-label" for="table-group-selector">Select Table Group:</label>
+            <select id="table-group-selector" data-action="switch-table-group">
+                {{dropdown_options}}
+            </select>
+            <button data-action="export-table" class="export-button export-button-spaced">
+                Export Counts to CSV
+            </button>
+        </div>
+    </div>
+
+    {{group_contents}}
+</div>

@@ -1,0 +1,49 @@
+<div class="section" id="overview">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Delivery Overview</h2>
+    </div>
+
+    <div class="overview-metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Tables Delivered</div>
+            <div class="metric-value">{{tables_delivered}}</div>
+            <div class="metric-sublabel">OMOP CDM tables</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Participants</div>
+            <div class="metric-value">{{participants_display}}</div>
+            <div class="metric-sublabel">Total identifiable persons in dataset</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Data Quality Score</div>
+            <div class="text-center mt-20">
+                <div class="dqd-score {{dqd_class}}">{{dqd_score_display}}</div>
+            </div>
+        </div>
+
+        <div class="metric-card{{missing_warning}}">
+            <div class="metric-label">Missing Identifiers</div>
+            <div class="metric-value">{{missing_icon}} {{missing_person_display}}</div>
+            <div class="metric-sublabel">{{person_word}} with missing Connect ID</div>
+        </div>
+
+        <div class="metric-card{{rows_warning}}">
+            <div class="metric-label">Rows Removed</div>
+            <div class="metric-value">{{rows_icon}} {{rows_removed_display}}</div>
+            <div class="metric-sublabel">Due to missing Connect ID</div>
+        </div>
+    </div>
+
+    <div class="overview-section-title">
+        <div class="chart-title overview-section-subtitle">Type Concept Breakdown</div>
+        <div class="overview-disclaimer">Dataset-wide</div>
+        <div class="chart-container overview-metrics-spacer">
+            <div id="dataset-type-concepts" class="type-concept-chart">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>

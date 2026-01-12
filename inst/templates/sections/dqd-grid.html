@@ -1,0 +1,27 @@
+<div class="section" id="dqd-grid">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Data Quality Dashboard Results</h2>
+    </div>
+
+    <div class="table-container">
+        <table class="dqd-grid-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">Category</th>
+                    <th colspan="4">Verification</th>
+                    <th colspan="4">Validation</th>
+                    <th colspan="4">Total</th>
+                </tr>
+                <tr>
+                    <th>Pass</th><th>Fail</th><th>Total</th><th>% Pass</th>
+                    <th>Pass</th><th>Fail</th><th>Total</th><th>% Pass</th>
+                    <th>Pass</th><th>Fail</th><th>Total</th><th>% Pass</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{grid_rows}}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMOP Delivery Report - {{site_name}}</title>
+    <style>
+{{css_styles}}
+    </style>
+</head>
+<body>
+    {{sidebar_html}}
+    <div class="main-content">
+        {{header_html}}
+        {{overview_html}}
+        {{dqd_grid_html}}
+        {{time_series_html}}
+        {{delivery_report_html}}
+        {{vocab_harm_html}}
+        {{drilldown_html}}
+        {{technical_html}}
+    </div>
+
+    <script>
+    // Report data for JavaScript
+    const REPORT_DATA = {{report_data_json}};
+    </script>
+    <script>
+{{javascript}}
+    </script>
+</body>
+</html>

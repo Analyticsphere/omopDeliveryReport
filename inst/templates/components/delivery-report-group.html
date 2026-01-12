@@ -1,0 +1,33 @@
+<div class="table-group-content" id="group-{{group_id}}" style="{{display_style}}">
+    <h3 class="table-group-title">{{group_name}}</h3>
+
+    {{dqd_note}}
+
+    <h4 class="table-group-subtitle">Table Delivery Summary</h4>
+    <div class="table-container">
+        <table id="delivery-table-{{group_id}}">
+            <thead>
+                <tr>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="0" data-sort-type="text">Table Name <span class="sort-indicator"></span></th>
+                    <th>Status</th>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="2" data-sort-type="number">Initial Rows <span class="sort-indicator"></span></th>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="3" data-sort-type="number">Quality Issues <span class="sort-indicator"></span></th>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="4" data-sort-type="number">Harmonization <span class="sort-indicator"></span></th>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="5" data-sort-type="number">Final Rows <span class="sort-indicator"></span></th>
+                    <th class="sortable" data-action="sort-table" data-group="{{group_id}}" data-column="6" data-sort-type="number">Row-Per-Patient <span class="sort-indicator"></span></th>
+                </tr>
+            </thead>
+            <tbody id="delivery-tbody-{{group_id}}">
+                {{table_rows}}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="subsection">
+        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
+        <div class="type-concepts-disclaimer">{{type_concept_subheader}}</div>
+        <div id="group-type-concepts-{{group_id}}" class="chart-container type-concepts-container">
+            <!-- Dynamically populated by JavaScript -->
+        </div>
+    </div>
+</div>

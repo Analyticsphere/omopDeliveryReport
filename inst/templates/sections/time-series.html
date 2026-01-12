@@ -1,0 +1,54 @@
+<div class="section" id="time-series">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Data Timeline</h2>
+    </div>
+
+    <div class="time-series-controls-wrapper">
+        <div class="toggle-buttons">
+            <button id="btn-recent-view" class="toggle-button active" data-action="switch-time-series-view" data-view="recent">
+                Last 15 Years ({{recent_start_year}}–{{recent_end_year}})
+            </button>
+            <button id="btn-custom-view" class="toggle-button" data-action="switch-time-series-view" data-view="custom">
+                Custom
+            </button>
+        </div>
+
+        <div id="custom-year-controls" style="display: none;">
+            <div class="custom-year-range-inputs">
+                <div class="year-input-group">
+                    <label for="custom-start-year" class="year-input-label">From:</label>
+                    <input type="number" id="custom-start-year" value="{{historical_start_year}}" min="1900" max="2100" class="year-number-input">
+                </div>
+                <div class="year-input-group">
+                    <label for="custom-end-year" class="year-input-label">To:</label>
+                    <input type="number" id="custom-end-year" value="{{delivery_year}}" min="1900" max="2100" class="year-number-input">
+                </div>
+                <button id="btn-apply-custom-years" data-action="apply-year-range" class="year-apply-button">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="time-series-chart-container">
+        <!-- Chart will be rendered by JavaScript -->
+    </div>
+
+    <div id="time-series-legend">
+        <!-- Legend will be populated by JavaScript -->
+    </div>
+
+    <script type="application/json" id="time-series-data">
+    {{time_series_json}}
+    </script>
+    <script type="application/json" id="time-series-config">
+    {
+        "recentStartYear": {{recent_start_year}},
+        "recentEndYear": {{recent_end_year}},
+        "historicalStartYear": {{historical_start_year}},
+        "historicalEndYear": {{historical_end_year}},
+        "deliveryYear": {{delivery_year}}
+    }
+    </script>
+</div>
