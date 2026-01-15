@@ -13,7 +13,7 @@ This package operates downstream in the processing pipeline:
 ## Installation
 
 ```r
-remotes::install_github("Analyticsphere/omop-delivery-report")
+remotes::install_github("Analyticsphere/omopDeliveryReport")
 ```
 
 Sample input files and a rendered report are available in `inst/ref/`.
@@ -23,16 +23,14 @@ Sample input files and a rendered report are available in `inst/ref/`.
 ```r
 library(omopDeliveryReport)
 
+# Local file system
 generate_omop_report(
-  delivery_report_path = "delivery_report.csv",
-  dqd_results_path = "dqd_results.csv",
-  output_path = "report.html"
+  delivery_report_path = "inst/ref/delivery_report.csv",  # Sample data in package
+  dqd_results_path = "inst/ref/dqd_results.csv",          # Sample data in package
+  output_path = "~/Desktop/example_omop_report.html"
 )
-```
 
-### GCS Support
-
-```r
+# Files in GCS
 generate_omop_report(
   delivery_report_path = "gs://bucket/delivery_report.csv",
   dqd_results_path = "gs://bucket/dqd_results.csv",
@@ -60,35 +58,32 @@ Standard output from OHDSI DataQualityDashboard. Contains check results, failure
 
 ## Architecture
 
+**Processing Pipeline:**
 ```
-CSV → Parse → Calculate → Aggregate → Format → Render → HTML
+Load CSV → Parse Metrics → Calculate Scores → Build HTML → Write Output
 ```
 
-**Components:**
-- **data_loaders.R** - CSV I/O (local and GCS via `googleCloudStorageR`)
-- **data_parsers.R** - Regex-based metric extraction using `.METRIC_PARSERS` configuration
-- **metrics.R** - Metric calculations, alert thresholds, formatting
-- **data_preparation.R** - Data aggregation and transformation for display
-- **report_builder.R** - HTML assembly and JSON serialization
-- **template_renderer.R** - Variable substitution in HTML templates
-- **constants.R** - Package constants (colors, table groups, thresholds)
+The package combines two CSV files (delivery metrics and DQD results) into a single interactive HTML report. Each R module handles one stage of the processing pipeline. Parsers extract metrics using regex patterns, calculators compute scores, and builders assemble HTML from templates using `{{variable}}` substitution. Works with both local files and Google Cloud Storage.
 
-## Package Structure
-
+**Package Structure:**
 ```
 R/
-├── generate_report.R     - Entry point
-├── data_loaders.R        - File I/O
+├── generate_report.R     - Main entry point
+├── data_loaders.R        - CSV loading & schema validation
 ├── data_parsers.R        - Metric extraction
-├── metrics.R             - Calculations
-├── data_preparation.R    - Aggregation
-├── report_builder.R      - HTML assembly
-├── template_renderer.R   - Template engine
-├── constants.R           - Constants
-└── utils.R               - Utilities
+├── metrics.R             - Score calculations
+├── data_preparation.R    - Data aggregation for display
+├── report_builder.R      - HTML and JSON assembly
+├── template_renderer.R   - Template variable substitution
+├── constants.R           - Package constants
+└── utils.R               - File I/O and helper functions
 
 inst/
-├── ref/                  - Sample data
+├── ref/                  - Sample files
+├── css/                  - Report styling
+├── js/                   - Interactive features
 └── templates/
-    └── main.html         - Report template
+    ├── main.html         - Main report template
+    ├── sections/         - Section templates
+    └── components/       - Reusable HTML components
 ```
