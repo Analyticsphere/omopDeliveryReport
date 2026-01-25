@@ -9,6 +9,36 @@ let currentTable = null;
 let savedScrollPosition = 0;
 
 // ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Sort table names according to canonical display order from R configuration
+ * @param {Array<string>} tables - Array of table names to sort
+ * @returns {Array<string>} - Sorted array of table names
+ */
+function sortTablesByOrder(tables) {
+  const tableOrder = REPORT_DATA.table_order || [];
+
+  // Split into tables that are in the order and tables that aren't
+  const orderedTables = tables.filter(t => tableOrder.indexOf(t) !== -1);
+  const unorderedTables = tables.filter(t => tableOrder.indexOf(t) === -1);
+
+  // Sort ordered tables by their position in table_order
+  orderedTables.sort(function(a, b) {
+    return tableOrder.indexOf(a) - tableOrder.indexOf(b);
+  });
+
+  // Sort unordered tables alphabetically
+  unorderedTables.sort(function(a, b) {
+    return a.localeCompare(b);
+  });
+
+  // Combine
+  return orderedTables.concat(unorderedTables);
+}
+
+// ============================================================================
 // TABLE GROUP SWITCHING
 // ============================================================================
 
@@ -858,8 +888,9 @@ function buildSankeyDiagram(transitions) {
     targetSet.add(t.target_table);
   });
 
-  const sources = Array.from(sourceSet).sort();
-  const targets = Array.from(targetSet).sort();
+  // Sort using canonical table order from R configuration
+  const sources = sortTablesByOrder(Array.from(sourceSet));
+  const targets = sortTablesByOrder(Array.from(targetSet));
 
   // Calculate node values based on total flow
   const sourceFlows = {};
@@ -1618,7 +1649,8 @@ function initializeTimeSeries() {
     customEndYear = timeSeriesConfig.deliveryYear || 2025;
 
     // Store ALL unique tables from the dataset (THIS IS THE MASTER LIST!)
-    allUniqueTables = [...new Set(timeSeriesData.map(d => d.table_name))].sort();
+    // Sort using canonical table order from R configuration
+    allUniqueTables = sortTablesByOrder([...new Set(timeSeriesData.map(d => d.table_name))]);
     console.log("All unique tables:", allUniqueTables);
 
     // Initialize visible tables (all tables visible by default)
@@ -1681,7 +1713,8 @@ function drawTimeSeriesChart() {
     tableData[table].sort(function(a, b) { return a.year - b.year; });
   });
 
-  const tables = Object.keys(tableData).sort();
+  // Sort tables using canonical order from R configuration
+  const tables = sortTablesByOrder(Object.keys(tableData));
   console.log("Tables with data:", tables);
 
   if (tables.length === 0) {

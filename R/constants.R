@@ -24,15 +24,15 @@
     "Other" = "#7AA6DC"
   ),
   tables = list(
-    "condition_occurrence" = "#ef4444",  # Red
-    "device_exposure" = "#ec4899",       # Pink
-    "drug_exposure" = "#3b82f6",         # Blue
-    "measurement" = "#ff8d02",           # Orange
-    "note" = "#6366f1",                  # Indigo
-    "observation" = "#8b5cf6",           # Purple
-    "procedure_occurrence" = "#84cc16",  # Lime Green
-    "specimen" = "#96929f",              # Gray
-    "visit_occurrence" = "#eab308"       # Yellow
+    "condition_occurrence" = "#eab308",
+    "device_exposure" = "#f87dba",
+    "drug_exposure" = "#ff8d02",
+    "measurement" = "#3b82f6",
+    "visit_occurrence" = "#fa2b2b",
+    "observation" = "#804ef5",
+    "procedure_occurrence" = "#84cc16",
+    "specimen" = "#1c1b1d",
+    "note" = "#b5b6f5"
   ),
   dqd_scores = list(
     "good_threshold" = 95,    # >= 95% is "good"
@@ -123,4 +123,21 @@
   "observation",
   "note",
   "specimen"
+)
+
+# Canonical display order for tables (used in Sankey diagrams, etc.)
+# Tables not in this list will appear alphabetically after these
+.TABLE_ORDER <- c(
+  "person",
+  "visit_occurrence",
+  "visit_detail",
+  "condition_occurrence",
+  "drug_exposure",
+  "procedure_occurrence",
+  "device_exposure",
+  "measurement",
+  "observation",
+  "specimen",
+  "note",
+  "death"
 )
