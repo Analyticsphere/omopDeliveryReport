@@ -2,13 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{get_table_groups}
 \alias{get_table_groups}
-\title{Get table groups}
+\title{Get table groups with tables sorted by canonical order}
 \usage{
 get_table_groups()
 }
 \value{
-Named list of table groups
+Named list of table groups, with tables sorted according to .TABLE_ORDER
 }
 \description{
-Get table groups
+Get table groups with tables sorted by canonical order
 }

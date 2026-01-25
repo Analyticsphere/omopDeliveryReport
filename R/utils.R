@@ -162,11 +162,43 @@ get_type_concept_group_order <- function() {
   .TYPE_CONCEPT_ORDER
 }
 
-#' Get table groups
+#' Get canonical display order for tables
 #'
-#' @return Named list of table groups
+#' @return Character vector of table names in display order
+get_table_order <- function() {
+  .TABLE_ORDER
+}
+
+#' Sort table names according to canonical display order
+#'
+#' Tables in .TABLE_ORDER will be sorted according to that order.
+#' Tables not in .TABLE_ORDER will appear alphabetically after.
+#'
+#' @param tables Character vector of table names to sort
+#' @return Character vector of sorted table names
+sort_tables_by_order <- function(tables) {
+  table_order <- get_table_order()
+
+  # Split into tables that are in the order and tables that aren't
+  ordered_tables <- tables[tables %in% table_order]
+  unordered_tables <- tables[!tables %in% table_order]
+
+  # Sort ordered tables by their position in .TABLE_ORDER
+  ordered_tables <- ordered_tables[order(match(ordered_tables, table_order))]
+
+  # Sort unordered tables alphabetically
+  unordered_tables <- sort(unordered_tables)
+
+  # Combine
+  c(ordered_tables, unordered_tables)
+}
+
+#' Get table groups with tables sorted by canonical order
+#'
+#' @return Named list of table groups, with tables sorted according to .TABLE_ORDER
 get_table_groups <- function() {
-  .TABLE_GROUPS
+  # Apply canonical ordering to tables within each group
+  lapply(.TABLE_GROUPS, sort_tables_by_order)
 }
 
 # ==============================================================================
