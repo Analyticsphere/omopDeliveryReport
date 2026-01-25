@@ -201,6 +201,24 @@ get_table_groups <- function() {
   lapply(.TABLE_GROUPS, sort_tables_by_order)
 }
 
+#' Get tables that should not show row count mismatch alerts
+#'
+#' Includes non-clinical table groups: Derived Data, Vocabulary, Metadata, and Other.
+#' These tables are not expected to have row count mismatches in the same way
+#' as clinical data tables.
+#'
+#' @return Character vector of table names
+get_tables_without_mismatch_alert <- function() {
+  # Get tables from non-clinical groups
+  derived_tables <- .TABLE_GROUPS[["Derived Data"]]
+  vocab_tables <- .TABLE_GROUPS[["Vocabulary"]]
+  metadata_tables <- .TABLE_GROUPS[["Metadata"]]
+  other_tables <- .TABLE_GROUPS[["Other"]]
+
+  # Combine all and return unique set
+  unique(c(derived_tables, vocab_tables, metadata_tables, other_tables))
+}
+
 # ==============================================================================
 # Google Cloud Storage Utilities
 # ==============================================================================

@@ -65,10 +65,6 @@
   )
 )
 
-.PIPELINE_DERIVED_TABLES <- c(
-  "condition_era", "drug_era", "dose_era", "observation_period", "cdm_source"
-)
-
 # Logic for grouping type concepts
 .TYPE_CONCEPT_GROUPS <- list(
   ehr = list(

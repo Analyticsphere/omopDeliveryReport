@@ -39,7 +39,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
 
   # Quality metrics
   referential_integrity_violations <- get_table_count(metrics$referential_integrity_violations, table_name)
-  default_date_rows <- get_table_count_sum(metrics$default_date_values, table_name)
+  # Use max instead of sum to represent "rows with at least one default date"
+  default_date_rows <- get_table_count_max(metrics$default_date_values, table_name)
   invalid_concept_rows <- get_table_count_sum(metrics$invalid_concepts, table_name)
 
   # Calculate derived counts
@@ -706,11 +707,14 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
   # Build specific warning icons based on alert types
   warning_icons <- character(0)
 
-  if (table_metrics$counts$has_mismatch_alert) {
+  # Skip row count mismatch alert for pipeline-derived and vocabulary tables
+  tables_without_alert <- get_tables_without_mismatch_alert()
+  if (table_metrics$counts$has_mismatch_alert && !(table_name %in% tables_without_alert)) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Row count mismatch">🧮</span>')
   }
 
-  if (table_metrics$default_dates$percent > 1 && table_metrics$final_rows > 0) {
+  # Use has_alert flag which excludes vocabulary tables
+  if (table_metrics$default_dates$has_alert) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Default/placeholder dates">📅</span>')
   }
 

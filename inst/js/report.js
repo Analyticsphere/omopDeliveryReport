@@ -122,9 +122,25 @@ function sortDeliveryTable(groupId, columnIndex, sortType) {
     var aVal, bVal;
 
     if (sortType === "number") {
-      // Remove commas and parse as number
-      aVal = parseFloat(aText.replace(/,/g, "")) || 0;
-      bVal = parseFloat(bText.replace(/,/g, "")) || 0;
+      // Handle special case: "--" means N/A, should sort to end
+      var aIsNA = aText === "--" || aText === "";
+      var bIsNA = bText === "--" || bText === "";
+
+      // If both are N/A, they're equal
+      if (aIsNA && bIsNA) return 0;
+
+      // N/A values always sort to the end (regardless of direction)
+      if (aIsNA) return 1;  // a goes after b
+      if (bIsNA) return -1; // b goes after a
+
+      // Remove commas, plus signs, and parse as number
+      aVal = parseFloat(aText.replace(/[,+]/g, ""));
+      bVal = parseFloat(bText.replace(/[,+]/g, ""));
+
+      // Handle NaN (shouldn't happen after above checks, but just in case)
+      if (isNaN(aVal) && isNaN(bVal)) return 0;
+      if (isNaN(aVal)) return 1;
+      if (isNaN(bVal)) return -1;
     } else {
       // Text comparison (case insensitive)
       aVal = aText.toLowerCase();
@@ -269,16 +285,18 @@ function buildTableDrilldownContent(tableData) {
   // Build consolidated Data Quality Alerts section
   var qualityWarnings = [];
 
-  // Vocabulary tables (skip default date warnings for these)
-  var vocabularyTables = [
-    "concept", "vocabulary", "domain", "concept_class",
-    "concept_relationship", "relationship", "concept_synonym",
-    "concept_ancestor", "source_to_concept_map", "drug_strength"
-  ];
+  // Get tables that should not show certain alerts from configuration
+  var tablesWithoutMismatchAlert = REPORT_DATA.tables_without_mismatch_alert || [];
+  var shouldShowMismatchAlert = tablesWithoutMismatchAlert.indexOf(tableData.name) === -1;
+
+  // Get vocabulary tables from configuration (used to skip default date warnings)
+  var vocabularyTables = (REPORT_DATA.groups && REPORT_DATA.groups.Vocabulary)
+    ? REPORT_DATA.groups.Vocabulary.map(function(t) { return t.name; })
+    : [];
   var isVocabularyTable = vocabularyTables.indexOf(tableData.name) !== -1;
 
-  // Count validation warning
-  if (tableData.counts_valid === false) {
+  // Count validation warning - skip for derived data, vocabulary, metadata, and other tables
+  if (tableData.counts_valid === false && shouldShowMismatchAlert) {
     qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final_rows) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
   }
 
