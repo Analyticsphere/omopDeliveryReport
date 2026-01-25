@@ -39,7 +39,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
 
   # Quality metrics
   referential_integrity_violations <- get_table_count(metrics$referential_integrity_violations, table_name)
-  default_date_rows <- get_table_count_sum(metrics$default_date_values, table_name)
+  # Use max instead of sum to represent "rows with at least one default date"
+  default_date_rows <- get_table_count_max(metrics$default_date_values, table_name)
   invalid_concept_rows <- get_table_count_sum(metrics$invalid_concepts, table_name)
 
   # Calculate derived counts

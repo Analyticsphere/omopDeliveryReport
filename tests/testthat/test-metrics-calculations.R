@@ -305,6 +305,37 @@ test_that("get_table_count_sum handles missing table", {
   expect_equal(get_table_count_sum(metric_df, "nonexistent_table"), 0)
 })
 
+test_that("get_table_count_max returns maximum across columns", {
+  metric_df <- data.frame(
+    table_name = c("person", "person", "visit_occurrence"),
+    column_name = c("birth_datetime", "death_datetime", "visit_start_datetime"),
+    count = c(10, 20, 5)
+  )
+
+  expect_equal(get_table_count_max(metric_df, "person"), 20)
+  expect_equal(get_table_count_max(metric_df, "visit_occurrence"), 5)
+})
+
+test_that("get_table_count_max handles missing table", {
+  metric_df <- data.frame(
+    table_name = c("person"),
+    column_name = c("birth_datetime"),
+    count = c(100)
+  )
+
+  expect_equal(get_table_count_max(metric_df, "nonexistent_table"), 0)
+})
+
+test_that("get_table_count_max handles empty data frame", {
+  metric_df <- data.frame(
+    table_name = character(),
+    column_name = character(),
+    count = integer()
+  )
+
+  expect_equal(get_table_count_max(metric_df, "person"), 0)
+})
+
 test_that("is_harmonized_table identifies correctly", {
   # Should be true for clinical tables
   expect_true(is_harmonized_table("visit_occurrence"))

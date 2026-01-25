@@ -15,5 +15,7 @@ calculate_default_date_metric(table_name, metrics)
 List with rows, percent, and has_alert
 }
 \description{
-Calculate default date metric for a table
+Uses MAX across date columns, not SUM, to represent "rows affected"
+rather than "total default date values". This prevents percentages > 100%
+when multiple date columns have defaults.
 }

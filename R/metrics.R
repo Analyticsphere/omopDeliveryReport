@@ -50,6 +50,32 @@ get_table_count_sum <- function(metric_df, table_name) {
   ifelse(length(total) > 0, total[1], 0)
 }
 
+#' Get the maximum count for a table across all columns
+#'
+#' Used for metrics where we want "rows affected" not "total values".
+#' For example, if a table has 2 date columns both with default dates,
+#' we want the max (rows affected) not the sum (total default values).
+#'
+#' @param metric_df Data frame with columns: table_name, column_name, count
+#' @param table_name Character table name to filter by
+#' @return Integer maximum count, or 0 if no data
+#' @export
+get_table_count_max <- function(metric_df, table_name) {
+  if (is.null(metric_df) || nrow(metric_df) == 0) return(0)
+
+  filtered <- metric_df |>
+    dplyr::filter(table_name == !!table_name)
+
+  # Return 0 if no rows match (avoids warning from max on empty set)
+  if (nrow(filtered) == 0) return(0)
+
+  maximum <- filtered |>
+    dplyr::summarise(maximum = max(count, na.rm = TRUE)) |>
+    dplyr::pull(maximum)
+
+  ifelse(length(maximum) > 0 && !is.infinite(maximum), maximum[1], 0)
+}
+
 #' Check if a table participates in vocabulary harmonization
 #'
 #' @param table_name Character table name
@@ -317,12 +343,17 @@ format_quality_issues_display <- function(quality_issues) {
 
 #' Calculate default date metric for a table
 #'
+#' Uses MAX across date columns, not SUM, to represent "rows affected"
+#' rather than "total default date values". This prevents percentages > 100%
+#' when multiple date columns have defaults.
+#'
 #' @param table_name Character table name
 #' @param metrics List from parse_delivery_metrics()
 #' @return List with rows, percent, and has_alert
 #' @export
 calculate_default_date_metric <- function(table_name, metrics) {
-  rows <- get_table_count_sum(metrics$default_date_values, table_name)
+  # Use max instead of sum to get "rows with at least one default date"
+  rows <- get_table_count_max(metrics$default_date_values, table_name)
   final_rows <- get_table_count(metrics$final_row_counts, table_name)
   percent <- calculate_percentage(rows, final_rows)
   threshold <- .ALERT_THRESHOLDS$default_dates_pct
