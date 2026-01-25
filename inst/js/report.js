@@ -289,10 +289,8 @@ function buildTableDrilldownContent(tableData) {
   var tablesWithoutMismatchAlert = REPORT_DATA.tables_without_mismatch_alert || [];
   var shouldShowMismatchAlert = tablesWithoutMismatchAlert.indexOf(tableData.name) === -1;
 
-  // Get vocabulary tables from configuration (used to skip default date warnings)
-  var vocabularyTables = (REPORT_DATA.groups && REPORT_DATA.groups.Vocabulary)
-    ? REPORT_DATA.groups.Vocabulary.map(function(t) { return t.name; })
-    : [];
+  // Get vocabulary tables from R configuration (skip default date warnings)
+  var vocabularyTables = REPORT_DATA.vocabulary_tables || [];
   var isVocabularyTable = vocabularyTables.indexOf(tableData.name) !== -1;
 
   // Count validation warning - skip for derived data, vocabulary, metadata, and other tables

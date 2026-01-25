@@ -219,6 +219,13 @@ get_tables_without_mismatch_alert <- function() {
   unique(c(derived_tables, vocab_tables, metadata_tables, other_tables))
 }
 
+#' Get vocabulary tables
+#'
+#' @return Character vector of vocabulary table names
+get_vocabulary_tables <- function() {
+  .TABLE_GROUPS[["Vocabulary"]]
+}
+
 # ==============================================================================
 # Google Cloud Storage Utilities
 # ==============================================================================

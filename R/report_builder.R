@@ -201,6 +201,7 @@ build_report_data_json <- function(report_data) {
   report_data$type_group_order <- get_type_concept_group_order()
   report_data$table_order <- get_table_order()
   report_data$tables_without_mismatch_alert <- get_tables_without_mismatch_alert()
+  report_data$vocabulary_tables <- get_vocabulary_tables()
 
   # Serialize to JSON
   json_string <- jsonlite::toJSON(
