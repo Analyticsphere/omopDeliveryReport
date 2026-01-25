@@ -713,7 +713,8 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Row count mismatch">🧮</span>')
   }
 
-  if (table_metrics$default_dates$percent > 1 && table_metrics$final_rows > 0) {
+  # Use has_alert flag which excludes vocabulary tables
+  if (table_metrics$default_dates$has_alert) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Default/placeholder dates">📅</span>')
   }
 

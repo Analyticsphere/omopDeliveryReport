@@ -19,3 +19,7 @@ Uses MAX across date columns, not SUM, to represent "rows affected"
 rather than "total default date values". This prevents percentages > 100%
 when multiple date columns have defaults.
 }
+\details{
+Vocabulary tables are excluded from alerts as they often have standard
+default dates by design (e.g., valid_start_date = 1900-01-01).
+}

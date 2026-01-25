@@ -347,6 +347,9 @@ format_quality_issues_display <- function(quality_issues) {
 #' rather than "total default date values". This prevents percentages > 100%
 #' when multiple date columns have defaults.
 #'
+#' Vocabulary tables are excluded from alerts as they often have standard
+#' default dates by design (e.g., valid_start_date = 1900-01-01).
+#'
 #' @param table_name Character table name
 #' @param metrics List from parse_delivery_metrics()
 #' @return List with rows, percent, and has_alert
@@ -358,8 +361,12 @@ calculate_default_date_metric <- function(table_name, metrics) {
   percent <- calculate_percentage(rows, final_rows)
   threshold <- .ALERT_THRESHOLDS$default_dates_pct
 
-  # Only alert if above threshold and table has data
-  has_alert <- percent > threshold && final_rows > 0
+  # Check if this is a vocabulary table (they have default dates by design)
+  vocab_tables <- .TABLE_GROUPS[["Vocabulary"]]
+  is_vocab_table <- table_name %in% vocab_tables
+
+  # Only alert if above threshold, table has data, and is not a vocabulary table
+  has_alert <- percent > threshold && final_rows > 0 && !is_vocab_table
 
   list(
     rows = rows,

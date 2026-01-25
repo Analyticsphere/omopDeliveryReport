@@ -273,12 +273,10 @@ function buildTableDrilldownContent(tableData) {
   var tablesWithoutMismatchAlert = REPORT_DATA.tables_without_mismatch_alert || [];
   var shouldShowMismatchAlert = tablesWithoutMismatchAlert.indexOf(tableData.name) === -1;
 
-  // Vocabulary tables (skip default date warnings for these)
-  var vocabularyTables = [
-    "concept", "vocabulary", "domain", "concept_class",
-    "concept_relationship", "relationship", "concept_synonym",
-    "concept_ancestor", "source_to_concept_map", "drug_strength"
-  ];
+  // Get vocabulary tables from configuration (used to skip default date warnings)
+  var vocabularyTables = (REPORT_DATA.groups && REPORT_DATA.groups.Vocabulary)
+    ? REPORT_DATA.groups.Vocabulary.map(function(t) { return t.name; })
+    : [];
   var isVocabularyTable = vocabularyTables.indexOf(tableData.name) !== -1;
 
   // Count validation warning - skip for derived data, vocabulary, metadata, and other tables
