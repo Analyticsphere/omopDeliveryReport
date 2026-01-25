@@ -122,9 +122,25 @@ function sortDeliveryTable(groupId, columnIndex, sortType) {
     var aVal, bVal;
 
     if (sortType === "number") {
-      // Remove commas and parse as number
-      aVal = parseFloat(aText.replace(/,/g, "")) || 0;
-      bVal = parseFloat(bText.replace(/,/g, "")) || 0;
+      // Handle special case: "--" means N/A, should sort to end
+      var aIsNA = aText === "--" || aText === "";
+      var bIsNA = bText === "--" || bText === "";
+
+      // If both are N/A, they're equal
+      if (aIsNA && bIsNA) return 0;
+
+      // N/A values always sort to the end (regardless of direction)
+      if (aIsNA) return 1;  // a goes after b
+      if (bIsNA) return -1; // b goes after a
+
+      // Remove commas, plus signs, and parse as number
+      aVal = parseFloat(aText.replace(/[,+]/g, ""));
+      bVal = parseFloat(bText.replace(/[,+]/g, ""));
+
+      // Handle NaN (shouldn't happen after above checks, but just in case)
+      if (isNaN(aVal) && isNaN(bVal)) return 0;
+      if (isNaN(aVal)) return 1;
+      if (isNaN(bVal)) return -1;
     } else {
       // Text comparison (case insensitive)
       aVal = aText.toLowerCase();
