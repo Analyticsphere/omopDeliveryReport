@@ -706,7 +706,9 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
   # Build specific warning icons based on alert types
   warning_icons <- character(0)
 
-  if (table_metrics$counts$has_mismatch_alert) {
+  # Skip row count mismatch alert for pipeline-derived and vocabulary tables
+  tables_without_alert <- get_tables_without_mismatch_alert()
+  if (table_metrics$counts$has_mismatch_alert && !(table_name %in% tables_without_alert)) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Row count mismatch">🧮</span>')
   }
 

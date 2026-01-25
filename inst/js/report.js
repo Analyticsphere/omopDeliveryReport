@@ -269,6 +269,10 @@ function buildTableDrilldownContent(tableData) {
   // Build consolidated Data Quality Alerts section
   var qualityWarnings = [];
 
+  // Get tables that should not show certain alerts from configuration
+  var tablesWithoutMismatchAlert = REPORT_DATA.tables_without_mismatch_alert || [];
+  var shouldShowMismatchAlert = tablesWithoutMismatchAlert.indexOf(tableData.name) === -1;
+
   // Vocabulary tables (skip default date warnings for these)
   var vocabularyTables = [
     "concept", "vocabulary", "domain", "concept_class",
@@ -277,8 +281,8 @@ function buildTableDrilldownContent(tableData) {
   ];
   var isVocabularyTable = vocabularyTables.indexOf(tableData.name) !== -1;
 
-  // Count validation warning
-  if (tableData.counts_valid === false) {
+  // Count validation warning - skip for derived data, vocabulary, metadata, and other tables
+  if (tableData.counts_valid === false && shouldShowMismatchAlert) {
     qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final_rows) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
   }
 
