@@ -572,14 +572,19 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
   # Calculate counts (uses harmonization value)
   counts <- calculate_count_metrics(table_name, metrics, harmonization$value)
 
+  # Check if this table should show mismatch alert
+  tables_without_alert <- get_tables_without_mismatch_alert()
+  should_show_mismatch <- !(table_name %in% tables_without_alert)
+
   # Aggregate alert status - THIS FIXES THE BUG!
+  # Only include mismatch alert if this table should show it
   has_any_alert <- (
     default_dates$has_alert ||
     invalid_concepts$has_alert ||
     missing_person$has_alert ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
-    counts$has_mismatch_alert
+    (counts$has_mismatch_alert && should_show_mismatch)
   )
 
   # Delivery status
