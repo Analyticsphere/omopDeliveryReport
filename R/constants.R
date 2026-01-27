@@ -13,6 +13,33 @@
   "context"
 )
 
+.PASS_COMPOSITE_OVERALL_FILE <- "pass_composite_overall file"
+.PASS_COMPOSITE_OVERALL_COLUMNS <- c(
+  "composite_score",
+  "standard_error",
+  "ci_95_lower",
+  "ci_95_upper"
+)
+
+.PASS_COMPOSITE_COMPONENTS_FILE <- "pass_composite_components file"
+.PASS_COMPOSITE_COMPONENTS_COLUMNS <- c(
+  "metric",
+  "score",
+  "weight",
+  "weighted_contribution",
+  "percent_contribution"
+)
+
+# PASS metric descriptions (one sentence each)
+.PASS_METRIC_DESCRIPTIONS <- list(
+  accessibility = "Measures whether clinical facts are present and discoverable in the dataset",
+  provenance = "Measures coding quality and traceability to source data",
+  standards = "Assesses the use of OHDSI standard concepts",
+  concept_diversity = "Measures variety of clinical concepts using Shannon entropy",
+  source_diversity = "Counts unique data source types",
+  temporal = "Assesses temporal distribution including coverage, density, and consistency"
+)
+
 # Color scheme (colorblind-friendly)
 .COLORS <- list(
   type_concepts = list(
@@ -40,6 +67,17 @@
     "good_color" = "#10b981",
     "fair_color" = "#f59e0b",
     "poor_color" = "#ef4444"
+  ),
+  pass_scores = list(
+    "excellent_threshold" = 0.90,  # >= 0.90 is "excellent"
+    "good_threshold" = 0.80,       # >= 0.80 is "good"
+    "moderate_threshold" = 0.60,   # >= 0.60 is "moderate"
+    "poor_threshold" = 0.40,       # >= 0.40 is "poor", below is "very poor"
+    "excellent_color" = "#059669",  # emerald-600
+    "good_color" = "#10b981",       # emerald-500
+    "moderate_color" = "#f59e0b",   # amber-500
+    "poor_color" = "#ef4444",       # red-500
+    "verypoor_color" = "#991b1b"    # red-800
   )
 )
 

@@ -629,3 +629,112 @@ create_empty_dqd_scores <- function() {
     grid = create_dqd_grid(NULL)
   )
 }
+
+# ==============================================================================
+# PASS SCORE FUNCTIONS
+# ==============================================================================
+
+#' Calculate overall PASS score
+#'
+#' Extracts composite PASS score with confidence intervals from PASS results.
+#'
+#' @param pass_data List containing PASS results (overall, components, table_scores)
+#' @return List with overall_score, ci_lower, ci_upper, or NA values if unavailable
+#' @export
+calculate_overall_pass_score <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$overall) || nrow(pass_data$overall) == 0) {
+    return(list(
+      overall_score = NA_real_,
+      ci_lower = NA_real_,
+      ci_upper = NA_real_
+    ))
+  }
+
+  overall_row <- pass_data$overall[1, ]
+
+  list(
+    overall_score = overall_row$composite_score,
+    ci_lower = overall_row$ci_95_lower,
+    ci_upper = overall_row$ci_95_upper
+  )
+}
+
+#' Parse PASS component breakdown
+#'
+#' Extracts and formats PASS component metrics with descriptions.
+#' Sorts by weighted_contribution descending.
+#'
+#' @param pass_data List containing PASS results
+#' @return Data frame with metric, description, score, weight, contribution, percent
+#' @export
+parse_pass_components <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$components) || nrow(pass_data$components) == 0) {
+    return(tibble::tibble(
+      metric = character(),
+      description = character(),
+      score = numeric(),
+      weight = numeric(),
+      weighted_contribution = numeric(),
+      percent_contribution = numeric()
+    ))
+  }
+
+  components <- pass_data$components |>
+    dplyr::arrange(desc(weighted_contribution)) |>
+    dplyr::mutate(
+      # Add descriptions from constants
+      description = dplyr::case_when(
+        metric == "accessibility" ~ .PASS_METRIC_DESCRIPTIONS$accessibility,
+        metric == "provenance" ~ .PASS_METRIC_DESCRIPTIONS$provenance,
+        metric == "standards" ~ .PASS_METRIC_DESCRIPTIONS$standards,
+        metric == "concept_diversity" ~ .PASS_METRIC_DESCRIPTIONS$concept_diversity,
+        metric == "source_diversity" ~ .PASS_METRIC_DESCRIPTIONS$source_diversity,
+        metric == "temporal" ~ .PASS_METRIC_DESCRIPTIONS$temporal,
+        TRUE ~ ""
+      )
+    ) |>
+    dplyr::select(metric, description, score, weight, weighted_contribution, percent_contribution)
+
+  components
+}
+
+#' Extract table-level PASS scores
+#'
+#' Creates a named list of PASS scores by table name.
+#'
+#' @param pass_data List containing PASS results
+#' @return Named list where names are table names and values are PASS scores
+#' @export
+extract_pass_table_scores <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$table_scores) || nrow(pass_data$table_scores) == 0) {
+    return(list())
+  }
+
+  # Convert to named list
+  scores <- as.list(pass_data$table_scores$pass_score)
+  names(scores) <- tolower(pass_data$table_scores$table_name)
+
+  scores
+}
+
+#' Create empty PASS scores structure
+#'
+#' Used when PASS data is unavailable.
+#'
+#' @return List with NA overall score and empty components
+#' @export
+create_empty_pass_scores <- function() {
+  list(
+    overall_score = NA_real_,
+    ci_lower = NA_real_,
+    ci_upper = NA_real_,
+    components = tibble::tibble(
+      metric = character(),
+      description = character(),
+      score = numeric(),
+      weight = numeric(),
+      weighted_contribution = numeric(),
+      percent_contribution = numeric()
+    )
+  )
+}

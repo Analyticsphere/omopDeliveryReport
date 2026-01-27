@@ -42,6 +42,10 @@ validate_schema <- function(data, results_file_type) {
     required_columns <- .RAW_DELIVERY_REPORT_FILE_COLUMNS
   } else if (results_file_type == .DQD_FILE) {
     required_columns <- .DQD_FILE_COLUMNS
+  } else if (results_file_type == .PASS_COMPOSITE_OVERALL_FILE) {
+    required_columns <- .PASS_COMPOSITE_OVERALL_COLUMNS
+  } else if (results_file_type == .PASS_COMPOSITE_COMPONENTS_FILE) {
+    required_columns <- .PASS_COMPOSITE_COMPONENTS_COLUMNS
   } else {
     stop(glue::glue("Unknown results file type: {results_file_type}"))
   }
@@ -56,16 +60,85 @@ validate_schema <- function(data, results_file_type) {
   return(TRUE)
 }
 
+#' Load PASS results from directory
+#'
+#' Loads PASS composite overall, components, and optionally table-level files
+#' from a directory containing PASS output CSVs.
+#'
+#' @param pass_dir_path Path to directory containing PASS CSV files (local or gs:// URI)
+#' @return List with overall, components, and table_scores data frames, or NULL if not found
+#' @export
+load_pass_results <- function(pass_dir_path) {
+  if (is.null(pass_dir_path) || pass_dir_path == "") {
+    logger::log_info("No PASS directory path provided")
+    return(NULL)
+  }
+
+  logger::log_info("Loading PASS results from: {pass_dir_path}")
+
+  # Ensure path ends with /
+  if (!grepl("/$", pass_dir_path)) {
+    pass_dir_path <- paste0(pass_dir_path, "/")
+  }
+
+  # Load composite overall file
+  overall_path <- paste0(pass_dir_path, "pass_composite_overall.csv")
+  overall_data <- load_data(overall_path, .PASS_COMPOSITE_OVERALL_FILE)
+
+  if (is.null(overall_data)) {
+    logger::log_warn("PASS composite overall file not found")
+    return(NULL)
+  }
+
+  # Load composite components file
+  components_path <- paste0(pass_dir_path, "pass_composite_components.csv")
+  components_data <- load_data(components_path, .PASS_COMPOSITE_COMPONENTS_FILE)
+
+  if (is.null(components_data)) {
+    logger::log_warn("PASS composite components file not found")
+    return(NULL)
+  }
+
+  # Attempt to load table-level PASS scores from accessibility table-level file
+  # (We use accessibility as the primary source since all tables should have it)
+  table_scores_data <- NULL
+  accessibility_table_path <- paste0(pass_dir_path, "pass_accessibility_table_level.csv")
+  accessibility_table_data <- tryCatch({
+    read_csv(accessibility_table_path)
+  }, error = function(e) {
+    logger::log_info("PASS table-level file not found (optional)")
+    NULL
+  })
+
+  if (!is.null(accessibility_table_data)) {
+    # Extract table_name and table_accessibility_score columns
+    if (all(c("table_name", "table_accessibility_score") %in% colnames(accessibility_table_data))) {
+      table_scores_data <- accessibility_table_data |>
+        dplyr::select(table_name, pass_score = table_accessibility_score)
+      logger::log_info("Loaded PASS table-level scores for {nrow(table_scores_data)} tables")
+    }
+  }
+
+  # Return structured PASS data
+  list(
+    overall = overall_data,
+    components = components_data,
+    table_scores = table_scores_data
+  )
+}
+
 #' Check data availability flags
 #'
 #' Determines which data sources are available.
 #'
 #' @param delivery_data Delivery report data frame or NULL
 #' @param dqd_data DQD results data frame or NULL
-#' @return List with has_delivery_data and has_dqd_data flags
-check_data_availability <- function(delivery_data, dqd_data) {
+#' @param pass_data PASS results list or NULL
+#' @return List with has_delivery_data, has_dqd_data, and has_pass_data flags
+check_data_availability <- function(delivery_data, dqd_data, pass_data = NULL) {
   list(
     has_delivery_data = !is.null(delivery_data),
-    has_dqd_data = !is.null(dqd_data)
+    has_dqd_data = !is.null(dqd_data),
+    has_pass_data = !is.null(pass_data)
   )
 }

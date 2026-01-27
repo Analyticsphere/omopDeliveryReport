@@ -2,9 +2,15 @@
 % Please edit documentation in R/data_preparation.R
 \name{prepare_report_data}
 \alias{prepare_report_data}
-\title{Prepare report with all data (delivery report, DQD, etc.)}
+\title{Prepare report with all data (delivery report, DQD, PASS, etc.)}
 \usage{
-prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores)
+prepare_report_data(
+  metrics,
+  table_groups,
+  group_dqd_scores,
+  table_dqd_scores,
+  table_pass_scores = list()
+)
 }
 \arguments{
 \item{metrics}{List of metric data frames from parse_delivery_metrics()}
@@ -14,6 +20,8 @@ prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores)
 \item{group_dqd_scores}{Named list of DQD scores per group}
 
 \item{table_dqd_scores}{Named list of DQD scores per table}
+
+\item{table_pass_scores}{Named list of PASS scores per table}
 }
 \value{
 List containing all pre-calculated report data

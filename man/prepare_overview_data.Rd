@@ -7,10 +7,12 @@
 prepare_overview_data(
   metrics,
   dqd_scores,
+  pass_scores,
   num_participants,
   total_rows_removed,
   has_delivery_data,
-  has_dqd_data
+  has_dqd_data,
+  has_pass_data
 )
 }
 \arguments{

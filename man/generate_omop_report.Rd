@@ -4,7 +4,12 @@
 \alias{generate_omop_report}
 \title{Generate complete OMOP delivery report}
 \usage{
-generate_omop_report(delivery_report_path, dqd_results_path, output_path)
+generate_omop_report(
+  delivery_report_path,
+  dqd_results_path,
+  output_path,
+  pass_results_path = NULL
+)
 }
 \arguments{
 \item{delivery_report_path}{Path to delivery_report.csv (local or gs:// URI)}
@@ -12,6 +17,8 @@ generate_omop_report(delivery_report_path, dqd_results_path, output_path)
 \item{dqd_results_path}{Path to dqd_results.csv (local or gs:// URI)}
 
 \item{output_path}{Path for output HTML file (local or gs:// URI)}
+
+\item{pass_results_path}{Path to directory containing PASS CSV files (local or gs:// URI), optional}
 }
 \value{
 Invisible NULL (writes file as side effect)
@@ -34,6 +41,7 @@ Workflow:
   generate_omop_report(
     "data/delivery_report.csv",
     "data/dqd_results.csv",
+    pass_results_path = "data/pass_results/",
     "reports/omop_report.html"
   )
 
@@ -41,6 +49,7 @@ Workflow:
   generate_omop_report(
     "gs://my-bucket/delivery_report.csv",
     "gs://my-bucket/dqd_results.csv",
+    pass_results_path = "gs://my-bucket/pass_results/",
     "gs://my-bucket/report.html"
   )
 }

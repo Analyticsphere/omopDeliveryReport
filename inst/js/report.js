@@ -374,6 +374,9 @@ function buildTableDrilldownContent(tableData) {
   var dqdClass = tableData.final_rows === 0 ? "neutral" : getDQDClass(tableData.dqd_score);
   var dqdDisplay = tableData.final_rows === 0 ? "N/A" : (tableData.dqd_score !== null && tableData.dqd_score !== undefined ? tableData.dqd_score + "%" : "N/A");
 
+  var passClass = tableData.final_rows === 0 ? "neutral" : getPASSClass(tableData.pass_score);
+  var passDisplay = tableData.final_rows === 0 ? "N/A" : (tableData.pass_score !== null && tableData.pass_score !== undefined ? tableData.pass_score.toFixed(2) : "N/A");
+
   html += `
     <div class="metrics-grid">
       <div class="metric-card">
@@ -383,6 +386,17 @@ function buildTableDrilldownContent(tableData) {
             ` + dqdDisplay + `
           </div>
         </div>
+        <div class="metric-sublabel">Data Quality</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">PASS Score</div>
+        <div class="text-center mt-20">
+          <div class="pass-score drilldown-pass-score ` + passClass + `">
+            ` + passDisplay + `
+          </div>
+        </div>
+        <div class="metric-sublabel">Analytic Suitability</div>
       </div>
 
       <div class="metric-card">
@@ -1296,6 +1310,57 @@ function getDQDClass(score) {
   return "poor";
 }
 
+function getPASSClass(score) {
+  if (score === null || score === undefined || isNaN(score)) return "neutral";
+  if (score >= 0.90) return "excellent";
+  if (score >= 0.80) return "good";
+  if (score >= 0.60) return "moderate";
+  if (score >= 0.40) return "poor";
+  return "verypoor";
+}
+
+// ============================================================================
+// PASS COMPONENTS
+// ============================================================================
+
+function initializePASSComponents() {
+  const container = document.getElementById("pass-components-container");
+  if (!container) return;
+
+  // Check if PASS data exists
+  if (!REPORT_DATA || !REPORT_DATA.pass_components || REPORT_DATA.pass_components.length === 0) {
+    container.innerHTML = "<p>No PASS component data available</p>";
+    return;
+  }
+
+  let html = "";
+
+  // Build component rows with CSS bars
+  REPORT_DATA.pass_components.forEach(function(component) {
+    const score = component.score;
+    const scoreClass = getPASSClass(score);
+    const scorePercent = Math.round(score * 100);
+    const barWidth = (score * 100).toFixed(1);
+
+    html += '<div class="pass-component-row">';
+    html += '  <div class="pass-component-header">';
+    html += '    <div class="pass-component-metric">' + component.metric + '</div>';
+    html += '    <div class="pass-component-score ' + scoreClass + '">' + score.toFixed(2) + '</div>';
+    html += '  </div>';
+    html += '  <div class="pass-component-description">' + component.description + '</div>';
+    html += '  <div class="pass-component-bar-container">';
+    html += '    <div class="pass-component-bar ' + scoreClass + '" style="width: ' + barWidth + '%"></div>';
+    html += '  </div>';
+    html += '  <div class="pass-component-stats">';
+    html += '    <span class="pass-component-stat">Weight: ' + component.weight.toFixed(3) + '</span>';
+    html += '    <span class="pass-component-stat">Contribution: ' + component.percent_contribution.toFixed(1) + '%</span>';
+    html += '  </div>';
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
 // ============================================================================
 // CSV EXPORT
 // ============================================================================
@@ -1429,6 +1494,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initialize data timeline section
   initializeTimeSeries();
+
+  // Initialize PASS components section
+  initializePASSComponents();
 
   // Set up scroll tracking for sidebar navigation
   window.addEventListener("scroll", updateActiveNavOnScroll);

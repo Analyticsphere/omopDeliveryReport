@@ -24,6 +24,15 @@
             </div>
         </div>
 
+        <div class="metric-card">
+            <div class="metric-label">PASS Quality Score</div>
+            <div class="text-center mt-20">
+                <div class="pass-score {{pass_class}}">{{pass_score_display}}</div>
+                <div class="pass-ci">{{pass_ci_display}}</div>
+            </div>
+            <div class="metric-sublabel">Profile of Analytic Suitability</div>
+        </div>
+
         <div class="metric-card{{missing_warning}}">
             <div class="metric-label">Missing Identifiers</div>
             <div class="metric-value">{{missing_icon}} {{missing_person_display}}</div>

@@ -4,15 +4,17 @@
 \alias{check_data_availability}
 \title{Check data availability flags}
 \usage{
-check_data_availability(delivery_data, dqd_data)
+check_data_availability(delivery_data, dqd_data, pass_data = NULL)
 }
 \arguments{
 \item{delivery_data}{Delivery report data frame or NULL}
 
 \item{dqd_data}{DQD results data frame or NULL}
+
+\item{pass_data}{PASS results list or NULL}
 }
 \value{
-List with has_delivery_data and has_dqd_data flags
+List with has_delivery_data, has_dqd_data, and has_pass_data flags
 }
 \description{
 Determines which data sources are available.
