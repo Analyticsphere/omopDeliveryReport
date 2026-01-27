@@ -855,13 +855,13 @@ function buildVocabHarmonizationContent(transitions) {
 
     html += "</div>";
 
-    // Calculate harmonization impact as percentage of original dataset
+    // Calculate harmonization impact as percentage of all delivered rows
     const totalInitial = REPORT_DATA.total_initial_rows || 0;
     const harmonizationPercent = totalInitial > 0 ? Math.round((totalStatusRows / totalInitial) * 100) : 0;
 
     html += "<p style=\"margin-top: 15px; margin-bottom: 0;\"><strong>Total Records Harmonized:</strong> " +
             formatNumber(totalStatusRows) + " out of " + formatNumber(totalInitial) +
-            " (" + harmonizationPercent + "% of original dataset)</p>";
+            " (" + harmonizationPercent + "% of all delivered rows across all tables)</p>";
     html += "</div>";
   }
 
@@ -878,6 +878,7 @@ function buildVocabHarmonizationContent(transitions) {
   // Build Table Transition Flow section
   html += "<h5 style=\"margin-top: 30px;\">Table Transition Flow</h5>";
   html += "<div class=\"info-box\" style=\"margin-bottom: 20px;\">";
+  html += "<p style=\"margin-bottom: 10px; color: #6b7280; font-size: 0.95em;\">Clinical data rows that went through vocabulary harmonization (excludes vocabulary reference and metadata tables)</p>";
   html += "<p><strong>Total Rows Processed:</strong> " + formatNumber(totalRows) + "</p>";
   html += "<p><strong>Rows Staying in Same Table:</strong> " + formatNumber(sameTableCount) + " (" + sameTablePercent + "%)</p>";
   html += "<p style=\"margin-bottom: 0;\"><strong>Rows Moving Between Tables:</strong> " + formatNumber(crossTableCount) + " (" + crossTablePercent + "%)</p>";
