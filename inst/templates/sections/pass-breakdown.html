@@ -1,7 +1,7 @@
 <div class="section" id="pass-breakdown">
     <div class="section-header">
         <span class="section-icon"></span>
-        <h2>PASS Quality Assessment</h2>
+        <h2>PASS Assessment</h2>
     </div>
 
     <div class="pass-intro">
@@ -9,19 +9,20 @@
     </div>
 
     <div class="pass-overall-container">
-        <div class="pass-overall-label">Overall PASS Score</div>
+        <div class="pass-overall-label">Composite PASS</div>
         <div class="pass-overall-score-wrapper">
             <span class="pass-overall-score {{pass_overall_class}}">{{pass_overall_score}}</span>
-            <span class="pass-overall-ci">{{pass_overall_ci}}</span>
         </div>
         <div id="pass-overall-visualization" style="margin-top: 16px; display: flex; justify-content: center;">
             <!-- CI visualization populated by JavaScript -->
         </div>
+        <div style="margin-top: 12px; text-align: center;">
+            <span class="pass-overall-ci">{{pass_overall_ci}}</span>
+        </div>
     </div>
 
     <div class="pass-components-section">
-        <h3>Component Breakdown</h3>
-        <p class="pass-components-description">Each metric contributes to the overall PASS score based on its weighted contribution.</p>
+        <h3>Composite Score Breakdown</h3>
 
         <table class="pass-components-table">
             <thead>
