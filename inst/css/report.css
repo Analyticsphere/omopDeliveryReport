@@ -1733,6 +1733,12 @@ tr.row-warning:hover {
   font-size: 2em;
 }
 
+.drilldown-pass-score {
+  min-width: 100px;
+  height: 100px;
+  font-size: 2em;
+}
+
 .drilldown-section-spacing {
   margin-top: 20px;
 }

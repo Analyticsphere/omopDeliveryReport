@@ -386,17 +386,15 @@ function buildTableDrilldownContent(tableData) {
             ` + dqdDisplay + `
           </div>
         </div>
-        <div class="metric-sublabel">Data Quality</div>
       </div>
 
       <div class="metric-card">
-        <div class="metric-label">PASS Score</div>
+        <div class="metric-label">PASS</div>
         <div class="text-center mt-20">
           <div class="pass-score drilldown-pass-score ` + passClass + `">
             ` + passDisplay + `
           </div>
         </div>
-        <div class="metric-sublabel">Analytic Suitability</div>
       </div>
 
       <div class="metric-card">
