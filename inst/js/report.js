@@ -177,7 +177,7 @@ function showTableDrilldown(tableName) {
   }
 
   // Hide all other sections
-  const sectionsToHide = ["overview", "dqd-grid", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToHide = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToHide.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -219,7 +219,7 @@ function hideTableDrilldown() {
   }
 
   // Show all other sections
-  const sectionsToShow = ["overview", "dqd-grid", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToShow = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToShow.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -551,6 +551,47 @@ function buildTableDrilldownContent(tableData) {
   }
 
   html += `</div>`;  // End Data Quality Control subsection
+
+  // PASS Breakdown Section (table-specific)
+  if (tableData.pass_metrics && tableData.pass_metrics.length > 0) {
+    html += `
+      <div class="subsection">
+        <h4 style="margin-bottom: 16px;">PASS Metric Breakdown</h4>
+        <table class="pass-components-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Score</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    // Sort metrics alphabetically for consistent display
+    var sortedMetrics = tableData.pass_metrics.slice().sort(function(a, b) {
+      return a.metric.localeCompare(b.metric);
+    });
+
+    sortedMetrics.forEach(function(metric) {
+      var scoreClass = getPASSClass(metric.score);
+      var scoreFormatted = metric.score.toFixed(2);
+
+      html += `
+            <tr>
+              <td class="pass-metric-name">` + metric.metric + `</td>
+              <td class="pass-score-cell ` + scoreClass + `">` + scoreFormatted + `</td>
+              <td class="pass-description-cell">` + metric.description + `</td>
+            </tr>
+      `;
+    });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
 
   // Type Concepts
   if (tableData.type_concepts && tableData.type_concepts.length > 0) {

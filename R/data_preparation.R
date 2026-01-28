@@ -24,7 +24,7 @@
 #' # Prepare data for one table
 #' person_data <- prepare_table_data("person", metrics, dqd_score = 95, pass_score = 0.85)
 #' }
-prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_real_) {
+prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_real_, pass_metrics = NULL) {
 
   # Extract basic counts
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
@@ -183,6 +183,7 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     same_table_mappings = same_table_mappings,
     dqd_score = dqd_score,
     pass_score = pass_score,
+    pass_metrics = pass_metrics,
     counts_valid = counts_valid,
     expected_final = expected_final
   )
@@ -204,7 +205,7 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
 #' # Prepare data for all valid tables
 #' tables_data <- prepare_tables_data(metrics, table_dqd_scores, table_pass_scores)
 #' }
-prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = list()) {
+prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = list(), pass_data = NULL) {
   # Get all unique tables from valid_tables
   all_tables <- unique(metrics$valid_tables$table_name)
 
@@ -216,7 +217,32 @@ prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = l
     pass_score <- table_pass_scores[[table_name]]
     if (is.null(pass_score)) pass_score <- NA_real_
 
-    prepare_table_data(table_name, metrics, dqd_score, pass_score)
+    # Extract table-specific PASS metrics
+    pass_metrics <- NULL
+    if (!is.null(pass_data) && !is.null(pass_data$table_level_metrics)) {
+      pass_metrics <- list()
+      for (metric_name in names(pass_data$table_level_metrics)) {
+        metric_df <- pass_data$table_level_metrics[[metric_name]]
+        table_row <- metric_df[metric_df$table_name == table_name, ]
+        if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+          pass_metrics[[metric_name]] <- table_row$score[1]
+        }
+      }
+      # Add descriptions
+      if (length(pass_metrics) > 0) {
+        pass_metrics <- lapply(names(pass_metrics), function(m) {
+          list(
+            metric = m,
+            score = pass_metrics[[m]],
+            description = .PASS_METRIC_DESCRIPTIONS[[m]]
+          )
+        })
+      } else {
+        pass_metrics <- NULL
+      }
+    }
+
+    prepare_table_data(table_name, metrics, dqd_score, pass_score, pass_metrics)
   })
 
   names(table_data_list) <- all_tables
@@ -239,7 +265,7 @@ prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = l
 #' @param table_pass_scores Named list of PASS scores per table
 #' @return List containing all pre-calculated report data
 #' @export
-prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores = list()) {
+prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores = list(), pass_data = NULL) {
 
   # Prepare group-level data
   groups_data <- list()
@@ -255,7 +281,32 @@ prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_d
       pass_score <- table_pass_scores[[tbl]]
       if (is.null(pass_score)) pass_score <- NA_real_
 
-      prepare_table_data(tbl, metrics, dqd_score, pass_score)
+      # Extract table-specific PASS metrics
+      pass_metrics <- NULL
+      if (!is.null(pass_data) && !is.null(pass_data$table_level_metrics)) {
+        pass_metrics <- list()
+        for (metric_name in names(pass_data$table_level_metrics)) {
+          metric_df <- pass_data$table_level_metrics[[metric_name]]
+          table_row <- metric_df[metric_df$table_name == tbl, ]
+          if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+            pass_metrics[[metric_name]] <- table_row$score[1]
+          }
+        }
+        # Add descriptions
+        if (length(pass_metrics) > 0) {
+          pass_metrics <- lapply(names(pass_metrics), function(m) {
+            list(
+              metric = m,
+              score = pass_metrics[[m]],
+              description = .PASS_METRIC_DESCRIPTIONS[[m]]
+            )
+          })
+        } else {
+          pass_metrics <- NULL
+        }
+      }
+
+      prepare_table_data(tbl, metrics, dqd_score, pass_score, pass_metrics)
     })
     names(table_data_list) <- group_tables
 

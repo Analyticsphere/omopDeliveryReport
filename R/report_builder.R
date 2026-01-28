@@ -24,14 +24,14 @@
 #' @return Character string containing complete HTML report
 build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_scores, pass_components,
                                        table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores,
-                                       has_delivery_data, has_dqd_data, has_pass_data) {
+                                       has_delivery_data, has_dqd_data, has_pass_data, pass_data = NULL) {
 
   # Calculate summary metrics
   num_participants <- if (has_delivery_data) calculate_num_participants(metrics) else 0
   total_rows_removed <- if (has_delivery_data) calculate_total_rows_removed(metrics) else 0
 
   # Prepare report data (all business logic calculations)
-  report_data <- prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores)
+  report_data <- prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores, pass_data)
 
   # Add PASS data to report_data for JavaScript consumption
   report_data$pass_overall_score <- pass_scores$overall_score

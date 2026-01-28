@@ -151,7 +151,8 @@ generate_omop_report <- function(
     table_pass_scores = table_pass_scores,
     has_delivery_data = has_delivery_data,
     has_dqd_data = has_dqd_data,
-    has_pass_data = has_pass_data
+    has_pass_data = has_pass_data,
+    pass_data = pass_data
   )
 
   # ============================================================================
