@@ -682,8 +682,10 @@ parse_pass_components <- function(pass_data) {
     ))
   }
 
+  # Define custom order for metrics
+  metric_order <- c("accessibility", "concept_diversity", "source_diversity", "provenance", "standards", "temporal")
+
   components <- pass_data$components |>
-    dplyr::arrange(desc(weighted_contribution)) |>
     dplyr::mutate(
       # Add descriptions from constants
       description = dplyr::case_when(
@@ -694,8 +696,12 @@ parse_pass_components <- function(pass_data) {
         metric == "source_diversity" ~ .PASS_METRIC_DESCRIPTIONS$source_diversity,
         metric == "temporal" ~ .PASS_METRIC_DESCRIPTIONS$temporal,
         TRUE ~ ""
-      )
-    )
+      ),
+      # Create ordering factor
+      metric_order_factor = factor(metric, levels = metric_order)
+    ) |>
+    dplyr::arrange(metric_order_factor) |>
+    dplyr::select(-metric_order_factor)
 
   # Add CI bounds from metric overall files (if available)
   if (!is.null(pass_data$metric_overall_data) && length(pass_data$metric_overall_data) > 0) {
@@ -732,6 +738,57 @@ parse_pass_components <- function(pass_data) {
           ci_lower = NA_real_,
           ci_upper = NA_real_
         )
+    }
+  }
+
+  # Add temporal sub-metrics if temporal data is available
+  if ("temporal" %in% components$metric && !is.null(pass_data$metric_overall_data$temporal)) {
+    temporal_overall <- pass_data$metric_overall_data$temporal
+
+    # Extract the three sub-scores
+    if ("mean_range_score" %in% names(temporal_overall) &&
+        "mean_density_score" %in% names(temporal_overall) &&
+        "mean_consistency_score" %in% names(temporal_overall)) {
+
+      # Create sub-metric rows
+      temporal_sub_metrics <- data.frame(
+        metric = c("temporal_range", "temporal_density", "temporal_consistency"),
+        description = c(
+          .PASS_METRIC_DESCRIPTIONS$temporal_range,
+          .PASS_METRIC_DESCRIPTIONS$temporal_density,
+          .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+        ),
+        score = c(
+          temporal_overall$mean_range_score,
+          temporal_overall$mean_density_score,
+          temporal_overall$mean_consistency_score
+        ),
+        standard_error = c(NA_real_, NA_real_, NA_real_),
+        ci_lower = c(NA_real_, NA_real_, NA_real_),
+        ci_upper = c(NA_real_, NA_real_, NA_real_),
+        weight = c(0, 0, 0),  # Sub-metrics don't contribute directly to composite
+        weighted_contribution = c(0, 0, 0),
+        percent_contribution = c(0, 0, 0),
+        stringsAsFactors = FALSE
+      )
+
+      # Find position of temporal row
+      temporal_index <- which(components$metric == "temporal")
+
+      if (length(temporal_index) > 0) {
+        # Insert sub-metrics right after temporal row
+        if (temporal_index == nrow(components)) {
+          # Temporal is last row
+          components <- rbind(components, temporal_sub_metrics)
+        } else {
+          # Insert in middle
+          components <- rbind(
+            components[1:temporal_index, ],
+            temporal_sub_metrics,
+            components[(temporal_index + 1):nrow(components), ]
+          )
+        }
+      }
     }
   }
 

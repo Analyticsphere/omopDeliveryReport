@@ -240,25 +240,54 @@ prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = l
     pass_metrics <- NULL
     if (!is.null(pass_data) && !is.null(pass_data$table_level_metrics)) {
       pass_metrics <- list()
+      pass_metrics_list <- list()  # Ordered list to preserve insertion order
+
       for (metric_name in names(pass_data$table_level_metrics)) {
         metric_df <- pass_data$table_level_metrics[[metric_name]]
         table_row <- metric_df[metric_df$table_name == table_name, ]
+
         if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
-          pass_metrics[[metric_name]] <- table_row$score[1]
+          # Add main metric
+          pass_metrics_list[[length(pass_metrics_list) + 1]] <- list(
+            metric = metric_name,
+            score = table_row$score[1],
+            description = .PASS_METRIC_DESCRIPTIONS[[metric_name]]
+          )
+
+          # If this is temporal metric, also add sub-metrics
+          if (metric_name == "temporal" &&
+              "range_score" %in% colnames(table_row) &&
+              "density_score" %in% colnames(table_row) &&
+              "consistency_score" %in% colnames(table_row)) {
+
+            if (!is.na(table_row$range_score[1])) {
+              pass_metrics_list[[length(pass_metrics_list) + 1]] <- list(
+                metric = "temporal_range",
+                score = table_row$range_score[1],
+                description = .PASS_METRIC_DESCRIPTIONS$temporal_range
+              )
+            }
+
+            if (!is.na(table_row$density_score[1])) {
+              pass_metrics_list[[length(pass_metrics_list) + 1]] <- list(
+                metric = "temporal_density",
+                score = table_row$density_score[1],
+                description = .PASS_METRIC_DESCRIPTIONS$temporal_density
+              )
+            }
+
+            if (!is.na(table_row$consistency_score[1])) {
+              pass_metrics_list[[length(pass_metrics_list) + 1]] <- list(
+                metric = "temporal_consistency",
+                score = table_row$consistency_score[1],
+                description = .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+              )
+            }
+          }
         }
       }
-      # Add descriptions
-      if (length(pass_metrics) > 0) {
-        pass_metrics <- lapply(names(pass_metrics), function(m) {
-          list(
-            metric = m,
-            score = pass_metrics[[m]],
-            description = .PASS_METRIC_DESCRIPTIONS[[m]]
-          )
-        })
-      } else {
-        pass_metrics <- NULL
-      }
+
+      pass_metrics <- if (length(pass_metrics_list) > 0) pass_metrics_list else NULL
     }
 
     prepare_table_data(table_name, metrics, dqd_score, pass_score, pass_metrics)

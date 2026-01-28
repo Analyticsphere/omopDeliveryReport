@@ -566,20 +566,42 @@ function buildTableDrilldownContent(tableData) {
           <tbody>
     `;
 
-    // Sort metrics alphabetically for consistent display
-    var sortedMetrics = tableData.pass_metrics.slice().sort(function(a, b) {
-      return a.metric.localeCompare(b.metric);
-    });
-
-    sortedMetrics.forEach(function(metric) {
+    // Use metrics in the order provided by R (preserves temporal sub-metrics placement)
+    tableData.pass_metrics.forEach(function(metric) {
       var scoreFormatted = metric.score.toFixed(2);
 
       // Table-level metrics don't have standard errors, so no uncertainty range or tooltip
       var visualization = buildPASSScoreVisualization(metric.score, null, null, 140, 32);
 
+      // Check if this is a temporal sub-metric
+      var isTemporalSub = metric.metric.startsWith('temporal_');
+
+      // Format metric name for display
+      var metricDisplayName = metric.metric;
+      if (isTemporalSub) {
+        // Extract sub-metric name (e.g., "temporal_range" -> "Range")
+        var subMetricName = metric.metric.replace('temporal_', '');
+        metricDisplayName = subMetricName.charAt(0).toUpperCase() + subMetricName.slice(1);
+      } else {
+        // Format main metric names with proper capitalization
+        if (metric.metric === 'concept_diversity') {
+          metricDisplayName = 'Concept Diversity';
+        } else if (metric.metric === 'source_diversity') {
+          metricDisplayName = 'Source Diversity';
+        } else {
+          // Capitalize first letter for other metrics
+          metricDisplayName = metric.metric.charAt(0).toUpperCase() + metric.metric.slice(1);
+        }
+      }
+
+      // Apply indentation and special styling for temporal sub-metrics
+      var rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
+      var namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+      var nameStyle = isTemporalSub ? 'padding-left: 24px; color: #64748b; font-size: 0.95em;' : '';
+
       html += `
-            <tr>
-              <td class="pass-metric-name">` + metric.metric + `</td>
+            <tr class="` + rowClass + `">
+              <td class="pass-metric-name" style="` + nameStyle + `">` + namePrefix + metricDisplayName + `</td>
               <td class="pass-score-cell" style="padding: 8px 12px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                   <span style="font-weight: 600; min-width: 40px;">` + scoreFormatted + `</span>
@@ -1483,15 +1505,13 @@ function initializePASSComponents() {
   // Initialize overall score visualization (with 95% CI)
   initializePASSOverallVisualization();
 
-  // Sort components alphabetically by metric name for consistent ordering
-  const sortedComponents = REPORT_DATA.pass_components.slice().sort(function(a, b) {
-    return a.metric.localeCompare(b.metric);
-  });
+  // Use components in the order provided by R (preserves temporal sub-metrics placement)
+  const components = REPORT_DATA.pass_components;
 
   let html = "";
 
   // Build table rows
-  sortedComponents.forEach(function(component) {
+  components.forEach(function(component) {
     const score = component.score;
     const scoreFormatted = score.toFixed(2);
 
@@ -1508,8 +1528,34 @@ function initializePASSComponents() {
       ciText = '<div style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
     }
 
-    html += '<tr>';
-    html += '  <td class="pass-metric-name">' + component.metric + '</td>';
+    // Check if this is a temporal sub-metric
+    const isTemporalSub = component.metric.startsWith('temporal_');
+
+    // Format metric name for display
+    let metricDisplayName = component.metric;
+    if (isTemporalSub) {
+      // Extract sub-metric name (e.g., "temporal_range" -> "Range")
+      const subMetricName = component.metric.replace('temporal_', '');
+      metricDisplayName = subMetricName.charAt(0).toUpperCase() + subMetricName.slice(1);
+    } else {
+      // Format main metric names with proper capitalization
+      if (component.metric === 'concept_diversity') {
+        metricDisplayName = 'Concept Diversity';
+      } else if (component.metric === 'source_diversity') {
+        metricDisplayName = 'Source Diversity';
+      } else {
+        // Capitalize first letter for other metrics
+        metricDisplayName = component.metric.charAt(0).toUpperCase() + component.metric.slice(1);
+      }
+    }
+
+    // Apply indentation and special styling for temporal sub-metrics
+    const rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
+    const namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+    const nameStyle = isTemporalSub ? 'padding-left: 24px; color: #64748b; font-size: 0.95em;' : '';
+
+    html += '<tr class="' + rowClass + '">';
+    html += '  <td class="pass-metric-name" style="' + nameStyle + '">' + namePrefix + metricDisplayName + '</td>';
     html += '  <td class="pass-score-cell" style="padding: 8px 12px;">';
     html += '    <div style="display: flex; align-items: center; gap: 12px;">';
     html += '      <div style="min-width: 40px;">';

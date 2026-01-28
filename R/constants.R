@@ -79,7 +79,10 @@
   standards = "Assesses the use of OHDSI standard concepts",
   concept_diversity = "Measures variety of clinical concepts using Shannon entropy",
   source_diversity = "Counts unique data source types",
-  temporal = "Assesses temporal distribution including coverage, density, and consistency"
+  temporal = "Assesses temporal distribution including coverage, density, and consistency",
+  temporal_range = "Years of data coverage in the dataset",
+  temporal_density = "Rows per patient per time interval (quarterly)",
+  temporal_consistency = "Temporal stability measured by coefficient of variation"
 )
 
 # Color scheme (colorblind-friendly)
