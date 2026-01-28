@@ -597,7 +597,7 @@ function buildTableDrilldownContent(tableData) {
       // Apply indentation and special styling for temporal sub-metrics
       var rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
       var namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
-      var nameStyle = isTemporalSub ? 'padding-left: 24px; color: #64748b; font-size: 0.95em;' : '';
+      var nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
 
       html += `
             <tr class="` + rowClass + `">
@@ -1552,7 +1552,7 @@ function initializePASSComponents() {
     // Apply indentation and special styling for temporal sub-metrics
     const rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
     const namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
-    const nameStyle = isTemporalSub ? 'padding-left: 24px; color: #64748b; font-size: 0.95em;' : '';
+    const nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
 
     html += '<tr class="' + rowClass + '">';
     html += '  <td class="pass-metric-name" style="' + nameStyle + '">' + namePrefix + metricDisplayName + '</td>';

@@ -750,6 +750,14 @@ parse_pass_components <- function(pass_data) {
         "mean_density_score" %in% names(temporal_overall) &&
         "mean_consistency_score" %in% names(temporal_overall)) {
 
+      # Extract CI bounds for sub-metrics if available
+      range_ci_lower <- if ("range_ci_95_lower" %in% names(temporal_overall)) temporal_overall$range_ci_95_lower else NA_real_
+      range_ci_upper <- if ("range_ci_95_upper" %in% names(temporal_overall)) temporal_overall$range_ci_95_upper else NA_real_
+      density_ci_lower <- if ("density_ci_95_lower" %in% names(temporal_overall)) temporal_overall$density_ci_95_lower else NA_real_
+      density_ci_upper <- if ("density_ci_95_upper" %in% names(temporal_overall)) temporal_overall$density_ci_95_upper else NA_real_
+      consistency_ci_lower <- if ("consistency_ci_95_lower" %in% names(temporal_overall)) temporal_overall$consistency_ci_95_lower else NA_real_
+      consistency_ci_upper <- if ("consistency_ci_95_upper" %in% names(temporal_overall)) temporal_overall$consistency_ci_95_upper else NA_real_
+
       # Create sub-metric rows
       temporal_sub_metrics <- data.frame(
         metric = c("temporal_range", "temporal_density", "temporal_consistency"),
@@ -764,8 +772,8 @@ parse_pass_components <- function(pass_data) {
           temporal_overall$mean_consistency_score
         ),
         standard_error = c(NA_real_, NA_real_, NA_real_),
-        ci_lower = c(NA_real_, NA_real_, NA_real_),
-        ci_upper = c(NA_real_, NA_real_, NA_real_),
+        ci_lower = c(range_ci_lower, density_ci_lower, consistency_ci_lower),
+        ci_upper = c(range_ci_upper, density_ci_upper, consistency_ci_upper),
         weight = c(0, 0, 0),  # Sub-metrics don't contribute directly to composite
         weighted_contribution = c(0, 0, 0),
         percent_contribution = c(0, 0, 0),

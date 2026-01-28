@@ -601,6 +601,25 @@ body {
   background: #f8fafc;
 }
 
+/* Temporal sub-metric rows - visually nested */
+.pass-components-table tbody tr.pass-sub-metric-row {
+  background: #f9fafb;
+}
+
+.pass-components-table tbody tr.pass-sub-metric-row:hover {
+  background: #f3f4f6;
+}
+
+/* Only shift the first two columns (Metric and Score), not Description */
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(1),
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(2) {
+  padding-left: 36px;
+}
+
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(3) {
+  padding-left: 16px;
+}
+
 .pass-components-table td {
   padding: 14px 16px;
   font-size: 0.95rem;

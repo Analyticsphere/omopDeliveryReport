@@ -103,48 +103,69 @@ load_pass_results <- function(pass_dir_path) {
   metric_weights <- as.list(components_data$weight)
   names(metric_weights) <- components_data$metric
 
-  # Load all 6 metric-level PASS overall files (contain CI bounds for each metric)
+  # Load consolidated pass_overall.csv (contains all metric overall scores with CI bounds)
+  overall_path <- paste0(pass_dir_path, .PASS_OVERALL_FILE)
+  overall_metrics_data <- tryCatch({
+    read_csv(overall_path)
+  }, error = function(e) {
+    logger::log_warn("PASS overall file not found: {.PASS_OVERALL_FILE}")
+    NULL
+  })
+
+  # Convert consolidated overall data to list structure (one entry per metric)
   metric_overall_data <- list()
-
-  for (metric_name in names(.PASS_METRIC_OVERALL_FILES)) {
-    filename <- .PASS_METRIC_OVERALL_FILES[[metric_name]]
-    file_path <- paste0(pass_dir_path, filename)
-
-    metric_data <- tryCatch({
-      read_csv(file_path)
-    }, error = function(e) {
-      logger::log_info("PASS metric overall file not found: {filename} (optional)")
-      NULL
-    })
-
-    if (!is.null(metric_data) && nrow(metric_data) > 0) {
-      metric_overall_data[[metric_name]] <- metric_data[1, ]
-      logger::log_info("Loaded {metric_name} overall data with CI bounds")
+  if (!is.null(overall_metrics_data) && nrow(overall_metrics_data) > 0) {
+    for (i in seq_len(nrow(overall_metrics_data))) {
+      row <- overall_metrics_data[i, ]
+      metric_name <- row$metric
+      metric_overall_data[[metric_name]] <- row
     }
+    logger::log_info("Loaded overall data for {length(metric_overall_data)} metrics")
   }
 
-  # Load all 6 table-level PASS metric files
+  # Load consolidated pass_table_level.csv (contains all metrics for all tables)
+  table_level_path <- paste0(pass_dir_path, .PASS_TABLE_LEVEL_FILE)
+  table_level_data <- tryCatch({
+    read_csv(table_level_path)
+  }, error = function(e) {
+    logger::log_warn("PASS table-level file not found: {.PASS_TABLE_LEVEL_FILE}")
+    NULL
+  })
+
+  # Convert consolidated table-level data to list structure (one entry per metric)
   table_level_metrics <- list()
+  if (!is.null(table_level_data) && nrow(table_level_data) > 0) {
+    # Get unique metrics
+    unique_metrics <- unique(table_level_data$metric)
 
-  for (metric_name in names(.PASS_TABLE_LEVEL_FILES)) {
-    file_info <- .PASS_TABLE_LEVEL_FILES[[metric_name]]
-    file_path <- paste0(pass_dir_path, file_info$filename)
+    for (metric_name in unique_metrics) {
+      # Filter rows for this metric
+      metric_rows <- table_level_data[table_level_data$metric == metric_name, ]
 
-    metric_data <- tryCatch({
-      read_csv(file_path)
-    }, error = function(e) {
-      logger::log_info("PASS table-level file not found: {file_info$filename} (optional)")
-      NULL
-    })
+      # Get the score column name for this metric
+      score_col <- .PASS_TABLE_LEVEL_SCORE_COLUMNS[[metric_name]]
 
-    if (!is.null(metric_data) && "table_name" %in% colnames(metric_data) && file_info$score_column %in% colnames(metric_data)) {
-      # Extract just table_name and the score column
-      table_level_metrics[[metric_name]] <- data.frame(
-        table_name = metric_data$table_name,
-        score = metric_data[[file_info$score_column]],
-        stringsAsFactors = FALSE
-      )
-      logger::log_info("Loaded {metric_name} table-level scores for {nrow(table_level_metrics[[metric_name]])} tables")
+      if (!is.null(score_col) && score_col %in% colnames(metric_rows)) {
+        # For temporal, also include sub-scores
+        if (metric_name == "temporal") {
+          table_level_metrics[[metric_name]] <- data.frame(
+            table_name = metric_rows$table_name,
+            score = metric_rows[[score_col]],
+            range_score = metric_rows$range_score,
+            density_score = metric_rows$density_score,
+            consistency_score = metric_rows$consistency_score,
+            stringsAsFactors = FALSE
+          )
+        } else {
+          # Standard metrics just need table_name and score
+          table_level_metrics[[metric_name]] <- data.frame(
+            table_name = metric_rows$table_name,
+            score = metric_rows[[score_col]],
+            stringsAsFactors = FALSE
+          )
+        }
+        logger::log_info("Loaded {metric_name} table-level scores for {nrow(table_level_metrics[[metric_name]])} tables")
+      }
     }
   }
 

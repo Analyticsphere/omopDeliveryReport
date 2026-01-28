@@ -34,42 +34,18 @@
   "percent_contribution"
 )
 
-# Table-level PASS files (one per metric)
-.PASS_TABLE_LEVEL_FILES <- list(
-  accessibility = list(
-    filename = "pass_accessibility_table_level.csv",
-    score_column = "table_accessibility_score"
-  ),
-  provenance = list(
-    filename = "pass_provenance_table_level.csv",
-    score_column = "table_provenance_score"
-  ),
-  standards = list(
-    filename = "pass_standards_table_level.csv",
-    score_column = "table_standards_score"
-  ),
-  concept_diversity = list(
-    filename = "pass_concept_diversity_table_level.csv",
-    score_column = "table_diversity_score"
-  ),
-  source_diversity = list(
-    filename = "pass_source_diversity_table_level.csv",
-    score_column = "table_source_diversity_score"
-  ),
-  temporal = list(
-    filename = "pass_temporal_table_level.csv",
-    score_column = "temporal_score"
-  )
-)
+# Consolidated PASS output files (new format)
+.PASS_OVERALL_FILE <- "pass_overall.csv"
+.PASS_TABLE_LEVEL_FILE <- "pass_table_level.csv"
 
-# Metric-level PASS overall files (one per metric, contains CI bounds)
-.PASS_METRIC_OVERALL_FILES <- list(
-  accessibility = "pass_accessibility_overall.csv",
-  provenance = "pass_provenance_overall.csv",
-  standards = "pass_standards_overall.csv",
-  concept_diversity = "pass_concept_diversity_overall.csv",
-  source_diversity = "pass_source_diversity_overall.csv",
-  temporal = "pass_temporal_overall.csv"
+# Column mapping for table-level scores by metric
+.PASS_TABLE_LEVEL_SCORE_COLUMNS <- list(
+  accessibility = "table_score",
+  provenance = "table_score",
+  standards = "table_score",
+  concept_diversity = "table_score",
+  source_diversity = "table_score",
+  temporal = "table_score"
 )
 
 # PASS metric descriptions (one sentence each)
