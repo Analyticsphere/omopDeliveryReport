@@ -717,11 +717,22 @@ parse_pass_components <- function(pass_data) {
       dplyr::ungroup()
   } else {
     # Fallback: Calculate ±1 SE bounds if metric overall files not available
-    components <- components |>
-      dplyr::mutate(
-        ci_lower = pmax(0, score - standard_error),
-        ci_upper = pmin(1, score + standard_error)
-      )
+    # Only if standard_error column exists
+    if ("standard_error" %in% names(components)) {
+      components <- components |>
+        dplyr::mutate(
+          ci_lower = pmax(0, score - standard_error),
+          ci_upper = pmin(1, score + standard_error)
+        )
+    } else {
+      # If no standard_error column, set CIs to NA
+      components <- components |>
+        dplyr::mutate(
+          standard_error = NA_real_,
+          ci_lower = NA_real_,
+          ci_upper = NA_real_
+        )
+    }
   }
 
   components <- components |>

@@ -353,7 +353,7 @@ test_that("load_pass_results loads all components correctly", {
 
   expect_false(is.null(result))
   expect_true(is.list(result))
-  expect_equal(names(result), c("overall", "components", "table_level_metrics", "metric_weights"))
+  expect_equal(names(result), c("overall", "components", "metric_overall_data", "table_level_metrics", "metric_weights"))
 
   # Check overall
   expect_equal(result$overall$composite_score, 0.87)
