@@ -18,16 +18,48 @@
   "composite_score",
   "standard_error",
   "ci_95_lower",
-  "ci_95_upper"
+  "ci_95_upper",
+  "n_metrics",
+  "metrics_included",
+  "weights_used"
 )
 
 .PASS_COMPOSITE_COMPONENTS_FILE <- "pass_composite_components file"
 .PASS_COMPOSITE_COMPONENTS_COLUMNS <- c(
   "metric",
   "score",
+  "standard_error",
   "weight",
   "weighted_contribution",
   "percent_contribution"
+)
+
+# Table-level PASS files (one per metric)
+.PASS_TABLE_LEVEL_FILES <- list(
+  accessibility = list(
+    filename = "pass_accessibility_table_level.csv",
+    score_column = "table_accessibility_score"
+  ),
+  provenance = list(
+    filename = "pass_provenance_table_level.csv",
+    score_column = "table_provenance_score"
+  ),
+  standards = list(
+    filename = "pass_standards_table_level.csv",
+    score_column = "table_standards_score"
+  ),
+  concept_diversity = list(
+    filename = "pass_concept_diversity_table_level.csv",
+    score_column = "table_diversity_score"
+  ),
+  source_diversity = list(
+    filename = "pass_source_diversity_table_level.csv",
+    score_column = "table_source_diversity_score"
+  ),
+  temporal = list(
+    filename = "pass_temporal_table_level.csv",
+    score_column = "temporal_score"
+  )
 )
 
 # PASS metric descriptions (one sentence each)

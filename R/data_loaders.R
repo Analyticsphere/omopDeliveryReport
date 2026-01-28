@@ -99,23 +99,32 @@ load_pass_results <- function(pass_dir_path) {
     return(NULL)
   }
 
-  # Attempt to load table-level PASS scores from accessibility table-level file
-  # (We use accessibility as the primary source since all tables should have it)
-  table_scores_data <- NULL
-  accessibility_table_path <- paste0(pass_dir_path, "pass_accessibility_table_level.csv")
-  accessibility_table_data <- tryCatch({
-    read_csv(accessibility_table_path)
-  }, error = function(e) {
-    logger::log_info("PASS table-level file not found (optional)")
-    NULL
-  })
+  # Extract weights from components data for table-level composite calculation
+  metric_weights <- as.list(components_data$weight)
+  names(metric_weights) <- components_data$metric
 
-  if (!is.null(accessibility_table_data)) {
-    # Extract table_name and table_accessibility_score columns
-    if (all(c("table_name", "table_accessibility_score") %in% colnames(accessibility_table_data))) {
-      table_scores_data <- accessibility_table_data |>
-        dplyr::select(table_name, pass_score = table_accessibility_score)
-      logger::log_info("Loaded PASS table-level scores for {nrow(table_scores_data)} tables")
+  # Load all 6 table-level PASS metric files
+  table_level_metrics <- list()
+
+  for (metric_name in names(.PASS_TABLE_LEVEL_FILES)) {
+    file_info <- .PASS_TABLE_LEVEL_FILES[[metric_name]]
+    file_path <- paste0(pass_dir_path, file_info$filename)
+
+    metric_data <- tryCatch({
+      read_csv(file_path)
+    }, error = function(e) {
+      logger::log_info("PASS table-level file not found: {file_info$filename} (optional)")
+      NULL
+    })
+
+    if (!is.null(metric_data) && "table_name" %in% colnames(metric_data) && file_info$score_column %in% colnames(metric_data)) {
+      # Extract just table_name and the score column
+      table_level_metrics[[metric_name]] <- data.frame(
+        table_name = metric_data$table_name,
+        score = metric_data[[file_info$score_column]],
+        stringsAsFactors = FALSE
+      )
+      logger::log_info("Loaded {metric_name} table-level scores for {nrow(table_level_metrics[[metric_name]])} tables")
     }
   }
 
@@ -123,7 +132,8 @@ load_pass_results <- function(pass_dir_path) {
   list(
     overall = overall_data,
     components = components_data,
-    table_scores = table_scores_data
+    table_level_metrics = table_level_metrics,
+    metric_weights = metric_weights
   )
 }
 

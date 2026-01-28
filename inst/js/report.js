@@ -1329,33 +1329,28 @@ function initializePASSComponents() {
 
   // Check if PASS data exists
   if (!REPORT_DATA || !REPORT_DATA.pass_components || REPORT_DATA.pass_components.length === 0) {
-    container.innerHTML = "<p>No PASS component data available</p>";
+    container.innerHTML = '<tr><td colspan="3">No PASS component data available</td></tr>';
     return;
   }
 
+  // Sort components alphabetically by metric name for consistent ordering
+  const sortedComponents = REPORT_DATA.pass_components.slice().sort(function(a, b) {
+    return a.metric.localeCompare(b.metric);
+  });
+
   let html = "";
 
-  // Build component rows with CSS bars
-  REPORT_DATA.pass_components.forEach(function(component) {
+  // Build table rows
+  sortedComponents.forEach(function(component) {
     const score = component.score;
     const scoreClass = getPASSClass(score);
-    const scorePercent = Math.round(score * 100);
-    const barWidth = (score * 100).toFixed(1);
+    const scoreFormatted = score.toFixed(2);
 
-    html += '<div class="pass-component-row">';
-    html += '  <div class="pass-component-header">';
-    html += '    <div class="pass-component-metric">' + component.metric + '</div>';
-    html += '    <div class="pass-component-score ' + scoreClass + '">' + score.toFixed(2) + '</div>';
-    html += '  </div>';
-    html += '  <div class="pass-component-description">' + component.description + '</div>';
-    html += '  <div class="pass-component-bar-container">';
-    html += '    <div class="pass-component-bar ' + scoreClass + '" style="width: ' + barWidth + '%"></div>';
-    html += '  </div>';
-    html += '  <div class="pass-component-stats">';
-    html += '    <span class="pass-component-stat">Weight: ' + component.weight.toFixed(3) + '</span>';
-    html += '    <span class="pass-component-stat">Contribution: ' + component.percent_contribution.toFixed(1) + '%</span>';
-    html += '  </div>';
-    html += '</div>';
+    html += '<tr>';
+    html += '  <td class="pass-metric-name">' + component.metric + '</td>';
+    html += '  <td class="pass-score-cell ' + scoreClass + '">' + scoreFormatted + '</td>';
+    html += '  <td class="pass-description-cell">' + component.description + '</td>';
+    html += '</tr>';
   });
 
   container.innerHTML = html;

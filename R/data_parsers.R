@@ -706,15 +706,58 @@ parse_pass_components <- function(pass_data) {
 #' @return Named list where names are table names and values are PASS scores
 #' @export
 extract_pass_table_scores <- function(pass_data) {
-  if (is.null(pass_data) || is.null(pass_data$table_scores) || nrow(pass_data$table_scores) == 0) {
+  if (is.null(pass_data) || is.null(pass_data$table_level_metrics) || length(pass_data$table_level_metrics) == 0) {
     return(list())
   }
 
-  # Convert to named list
-  scores <- as.list(pass_data$table_scores$pass_score)
-  names(scores) <- tolower(pass_data$table_scores$table_name)
+  # Get all unique table names across all metrics
+  all_tables <- unique(unlist(lapply(pass_data$table_level_metrics, function(df) df$table_name)))
 
-  scores
+  if (length(all_tables) == 0) {
+    return(list())
+  }
+
+  # Calculate composite score for each table
+  table_composite_scores <- list()
+
+  for (table_name in all_tables) {
+    # Collect scores for all metrics for this table
+    metric_scores <- list()
+
+    for (metric_name in names(pass_data$table_level_metrics)) {
+      metric_df <- pass_data$table_level_metrics[[metric_name]]
+      table_row <- metric_df[metric_df$table_name == table_name, ]
+
+      if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+        metric_scores[[metric_name]] <- table_row$score[1]
+      }
+    }
+
+    # Calculate weighted composite score (only if we have at least one metric)
+    if (length(metric_scores) > 0) {
+      # Get weights for the metrics we have scores for
+      weights <- sapply(names(metric_scores), function(m) {
+        if (m %in% names(pass_data$metric_weights)) {
+          pass_data$metric_weights[[m]]
+        } else {
+          1/6  # Default equal weight if not found
+        }
+      })
+
+      # Calculate weighted average
+      weighted_sum <- sum(unlist(metric_scores) * weights)
+      weight_sum <- sum(weights)
+
+      composite_score <- if (weight_sum > 0) weighted_sum / weight_sum else NA_real_
+
+      table_composite_scores[[tolower(table_name)]] <- composite_score
+    } else {
+      # No valid scores for this table
+      table_composite_scores[[tolower(table_name)]] <- NA_real_
+    }
+  }
+
+  table_composite_scores
 }
 
 #' Create empty PASS scores structure
