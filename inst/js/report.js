@@ -643,12 +643,8 @@ function buildTableDrilldownContent(tableData) {
   var rowsOut = tableData.rows_out || 0;
   var harmonizationNet = tableData.harmonization || 0;
 
-  // Calculate rows added from 1:N same-table mappings
-  // Use valid_rows (not initial_rows) as the baseline and add back rows_out
-  // This gives us the net expansion from 1:N mappings, separate from rows moved out
-  var same_table_result_rows = tableData.same_table_result_rows || 0;
-  var valid_rows = tableData.valid_rows || 0;
-  var rowsAddedFromMappings = (same_table_result_rows - valid_rows) + rowsOut;
+  // Use pre-calculated rows added from mappings (calculated in R)
+  var rowsAddedFromMappings = tableData.rows_added_from_mappings || 0;
 
   // Only show harmonization flow if there was actual harmonization activity
   if (harmonizationNet !== 0) {
@@ -692,7 +688,10 @@ function buildTableDrilldownContent(tableData) {
 
     // Harmonization Strategies (if available)
     if (tableData.harmonization_statuses && tableData.harmonization_statuses.length > 0) {
-      const totalStatusRows = tableData.harmonization_statuses.reduce(function(sum, s) { return sum + s.count; }, 0);
+      // Use pre-calculated values from R
+      const totalStatusRows = tableData.total_harmonization_status_rows || 0;
+      const tableInitialRows = tableData.initial_rows || 0;
+      const tableHarmonizationPercent = tableData.harmonization_percent || 0;
 
       html += `
         <div class="info-box" style="margin-bottom: 20px;">
@@ -709,10 +708,6 @@ function buildTableDrilldownContent(tableData) {
             <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${formatNumber(status.count)}</div>
         `;
       });
-
-      // Calculate harmonization impact as percentage of table's initial rows
-      const tableInitialRows = tableData.initial_rows || 0;
-      const tableHarmonizationPercent = tableInitialRows > 0 ? Math.round((totalStatusRows / tableInitialRows) * 100) : 0;
 
       html += `
           </div>

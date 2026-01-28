@@ -83,6 +83,10 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     0
   }
 
+  # Calculate rows added from 1:N same-table mappings
+  # This represents the net expansion from 1:N mappings, separate from rows moved out
+  rows_added_from_mappings <- (same_table_result_rows - valid_rows) + rows_out
+
   # Calculate percentages
   default_date_percent <- calculate_percentage(default_date_rows, final_rows)
   invalid_concept_percent <- calculate_percentage(invalid_concept_rows, final_rows)
@@ -115,6 +119,18 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
 
   harmonization_statuses <- metrics$harmonization_statuses |>
     dplyr::filter(table_name == !!table_name)
+
+  # Calculate total harmonization status rows and percentage
+  total_harmonization_status_rows <- harmonization_statuses |>
+    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
+    dplyr::pull(total)
+  total_harmonization_status_rows <- ifelse(length(total_harmonization_status_rows) > 0, total_harmonization_status_rows[1], 0)
+
+  harmonization_percent <- if (initial_rows > 0) {
+    round((total_harmonization_status_rows / initial_rows) * 100)
+  } else {
+    0
+  }
 
   dispositions <- metrics$row_dispositions |>
     dplyr::filter(table_name == !!table_name)
@@ -164,6 +180,9 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     transitions_in = transitions_in,
     rows_out = rows_out,
     same_table_result_rows = same_table_result_rows,
+    rows_added_from_mappings = rows_added_from_mappings,
+    total_harmonization_status_rows = total_harmonization_status_rows,
+    harmonization_percent = harmonization_percent,
     default_date_rows = default_date_rows,
     invalid_concept_rows = invalid_concept_rows,
     default_date_percent = default_date_percent,
