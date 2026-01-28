@@ -16,7 +16,8 @@ build_complete_html_report(
   table_pass_scores,
   has_delivery_data,
   has_dqd_data,
-  has_pass_data
+  has_pass_data,
+  pass_data = NULL
 )
 }
 \arguments{

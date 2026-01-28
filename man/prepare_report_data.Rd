@@ -9,7 +9,8 @@ prepare_report_data(
   table_groups,
   group_dqd_scores,
   table_dqd_scores,
-  table_pass_scores = list()
+  table_pass_scores = list(),
+  pass_data = NULL
 )
 }
 \arguments{

@@ -1778,3 +1778,65 @@ tr.row-warning:hover {
   margin-top: 16px;
   min-height: 400px;
 }
+
+/* ============================================================================
+   PASS SCORE VISUALIZATION TOOLTIPS
+   ============================================================================ */
+
+/* Container for PASS score visualizations with tooltip */
+.pass-viz-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Tooltip box - hidden by default */
+.pass-viz-tooltip .pass-tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #1e293b;
+  color: #ffffff;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-line;
+
+  /* Position below the element */
+  position: absolute;
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  /* Minimum width */
+  min-width: 140px;
+
+  /* Smooth transition with no delay */
+  transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+
+  /* Box shadow for depth */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* Prevent tooltip from being clipped */
+  pointer-events: none;
+}
+
+/* Arrow pointing up */
+.pass-viz-tooltip .pass-tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #1e293b transparent;
+}
+
+/* Show tooltip on hover - instant appearance */
+.pass-viz-tooltip:hover .pass-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

@@ -4,7 +4,12 @@
 \alias{prepare_tables_data}
 \title{Prepare data for multiple tables}
 \usage{
-prepare_tables_data(metrics, table_dqd_scores, table_pass_scores = list())
+prepare_tables_data(
+  metrics,
+  table_dqd_scores,
+  table_pass_scores = list(),
+  pass_data = NULL
+)
 }
 \arguments{
 \item{metrics}{List of metric data frames from parse_delivery_metrics()}

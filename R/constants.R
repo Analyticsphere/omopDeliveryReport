@@ -62,6 +62,16 @@
   )
 )
 
+# Metric-level PASS overall files (one per metric, contains CI bounds)
+.PASS_METRIC_OVERALL_FILES <- list(
+  accessibility = "pass_accessibility_overall.csv",
+  provenance = "pass_provenance_overall.csv",
+  standards = "pass_standards_overall.csv",
+  concept_diversity = "pass_concept_diversity_overall.csv",
+  source_diversity = "pass_source_diversity_overall.csv",
+  temporal = "pass_temporal_overall.csv"
+)
+
 # PASS metric descriptions (one sentence each)
 .PASS_METRIC_DESCRIPTIONS <- list(
   accessibility = "Measures whether clinical facts are present and discoverable in the dataset",

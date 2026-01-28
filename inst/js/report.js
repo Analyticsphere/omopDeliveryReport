@@ -574,13 +574,20 @@ function buildTableDrilldownContent(tableData) {
     });
 
     sortedMetrics.forEach(function(metric) {
-      var scoreClass = getPASSClass(metric.score);
       var scoreFormatted = metric.score.toFixed(2);
+
+      // Table-level metrics don't have standard errors, so no uncertainty range or tooltip
+      var visualization = buildPASSScoreVisualization(metric.score, null, null, 140, 32);
 
       html += `
             <tr>
               <td class="pass-metric-name">` + metric.metric + `</td>
-              <td class="pass-score-cell ` + scoreClass + `">` + scoreFormatted + `</td>
+              <td class="pass-score-cell" style="padding: 8px 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-weight: 600; min-width: 40px;">` + scoreFormatted + `</span>
+                  ` + visualization + `
+                </div>
+              </td>
               <td class="pass-description-cell">` + metric.description + `</td>
             </tr>
       `;
@@ -1360,9 +1367,115 @@ function getPASSClass(score) {
   return "verypoor";
 }
 
+function getPASSColor(score) {
+  if (score === null || score === undefined || isNaN(score)) return "#94a3b8";
+  if (score >= 0.90) return "#059669";  // excellent - emerald-600
+  if (score >= 0.80) return "#10b981";  // good - emerald-500
+  if (score >= 0.60) return "#f59e0b";  // moderate - amber-500
+  if (score >= 0.40) return "#ef4444";  // poor - red-500
+  return "#991b1b";  // verypoor - red-800
+}
+
+/**
+ * Generate inline SVG visualization for PASS score with optional uncertainty range
+ * @param {number} score - The PASS score (0-1)
+ * @param {number|null} lowerBound - Lower bound of uncertainty (CI or score-SE)
+ * @param {number|null} upperBound - Upper bound of uncertainty (CI or score+SE)
+ * @param {number} width - SVG width in pixels (default: 140)
+ * @param {number} height - SVG height in pixels (default: 32)
+ * @returns {string} SVG HTML string
+ */
+function buildPASSScoreVisualization(score, lowerBound, upperBound, width, height) {
+  width = width || 140;
+  height = height || 32;
+
+  if (score === null || score === undefined || isNaN(score)) {
+    return '<span style="color: #94a3b8;">N/A</span>';
+  }
+
+  var padding = 12;
+  var lineY = height / 2;
+  var scaleStart = padding;
+  var scaleEnd = width - padding;
+  var scaleWidth = scaleEnd - scaleStart;
+
+  // Helper to convert score (0-1) to x position
+  function scoreToX(s) {
+    return scaleStart + (s * scaleWidth);
+  }
+
+  var scoreX = scoreToX(score);
+  var scoreColor = getPASSColor(score);
+  var hasRange = (lowerBound !== null && lowerBound !== undefined &&
+                  upperBound !== null && upperBound !== undefined &&
+                  !isNaN(lowerBound) && !isNaN(upperBound));
+
+  var svg = '<svg width="' + width + '" height="' + height + '" style="display: inline-block; vertical-align: middle;">';
+
+  // Background line (0 to 1 scale)
+  svg += '<line x1="' + scaleStart + '" y1="' + lineY + '" x2="' + scaleEnd + '" y2="' + lineY + '" ';
+  svg += 'stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>';
+
+  // Uncertainty range (if provided)
+  if (hasRange) {
+    var lowerX = scoreToX(Math.max(0, Math.min(1, lowerBound)));
+    var upperX = scoreToX(Math.max(0, Math.min(1, upperBound)));
+    var rangeWidth = upperX - lowerX;
+
+    // Range indicator - thicker line segment
+    svg += '<line x1="' + lowerX + '" y1="' + lineY + '" x2="' + upperX + '" y2="' + lineY + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="6" opacity="0.25" stroke-linecap="round"/>';
+
+    // Whiskers at ends
+    var whiskerHeight = 8;
+    svg += '<line x1="' + lowerX + '" y1="' + (lineY - whiskerHeight/2) + '" ';
+    svg += 'x2="' + lowerX + '" y2="' + (lineY + whiskerHeight/2) + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="2" opacity="0.6"/>';
+
+    svg += '<line x1="' + upperX + '" y1="' + (lineY - whiskerHeight/2) + '" ';
+    svg += 'x2="' + upperX + '" y2="' + (lineY + whiskerHeight/2) + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="2" opacity="0.6"/>';
+  }
+
+  // Score marker - filled circle
+  var markerRadius = 5;
+  svg += '<circle cx="' + scoreX + '" cy="' + lineY + '" r="' + markerRadius + '" ';
+  svg += 'fill="' + scoreColor + '" stroke="#ffffff" stroke-width="2"/>';
+
+  // Scale labels (0, 1)
+  svg += '<text x="' + scaleStart + '" y="' + (height - 2) + '" ';
+  svg += 'font-size="9" fill="#94a3b8" text-anchor="start">0</text>';
+
+  svg += '<text x="' + scaleEnd + '" y="' + (height - 2) + '" ';
+  svg += 'font-size="9" fill="#94a3b8" text-anchor="end">1</text>';
+
+  svg += '</svg>';
+
+  return svg;
+}
+
 // ============================================================================
 // PASS COMPONENTS
 // ============================================================================
+
+function initializePASSOverallVisualization() {
+  const vizContainer = document.getElementById("pass-overall-visualization");
+  if (!vizContainer) return;
+
+  // Check if PASS data exists
+  if (!REPORT_DATA || REPORT_DATA.pass_overall_score === null || REPORT_DATA.pass_overall_score === undefined) {
+    return;
+  }
+
+  const score = REPORT_DATA.pass_overall_score;
+  const ciLower = REPORT_DATA.pass_ci_lower;
+  const ciUpper = REPORT_DATA.pass_ci_upper;
+
+  // Generate larger visualization for overall score (200px wide, no tooltip)
+  const visualization = buildPASSScoreVisualization(score, ciLower, ciUpper, 200, 36);
+
+  vizContainer.innerHTML = visualization;
+}
 
 function initializePASSComponents() {
   const container = document.getElementById("pass-components-container");
@@ -1374,6 +1487,9 @@ function initializePASSComponents() {
     return;
   }
 
+  // Initialize overall score visualization (with 95% CI)
+  initializePASSOverallVisualization();
+
   // Sort components alphabetically by metric name for consistent ordering
   const sortedComponents = REPORT_DATA.pass_components.slice().sort(function(a, b) {
     return a.metric.localeCompare(b.metric);
@@ -1384,12 +1500,32 @@ function initializePASSComponents() {
   // Build table rows
   sortedComponents.forEach(function(component) {
     const score = component.score;
-    const scoreClass = getPASSClass(score);
     const scoreFormatted = score.toFixed(2);
+
+    // Use pre-calculated CI bounds from R (95% CI from metric overall files)
+    const lowerBound = component.ci_lower || null;
+    const upperBound = component.ci_upper || null;
+
+    // Generate visualization (no tooltip)
+    const visualization = buildPASSScoreVisualization(score, lowerBound, upperBound, 140, 32);
+
+    // Build CI text if available
+    let ciText = '';
+    if (lowerBound !== null && upperBound !== null) {
+      ciText = '<div style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
+    }
 
     html += '<tr>';
     html += '  <td class="pass-metric-name">' + component.metric + '</td>';
-    html += '  <td class="pass-score-cell ' + scoreClass + '">' + scoreFormatted + '</td>';
+    html += '  <td class="pass-score-cell" style="padding: 8px 12px;">';
+    html += '    <div style="display: flex; align-items: center; gap: 12px;">';
+    html += '      <div style="min-width: 40px;">';
+    html += '        <div style="font-weight: 600;">' + scoreFormatted + '</div>';
+    html += '        ' + ciText;
+    html += '      </div>';
+    html += '      ' + visualization;
+    html += '    </div>';
+    html += '  </td>';
     html += '  <td class="pass-description-cell">' + component.description + '</td>';
     html += '</tr>';
   });

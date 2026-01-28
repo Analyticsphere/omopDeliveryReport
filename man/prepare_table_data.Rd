@@ -4,7 +4,13 @@
 \alias{prepare_table_data}
 \title{Prepare data for a single table}
 \usage{
-prepare_table_data(table_name, metrics, dqd_score, pass_score = NA_real_)
+prepare_table_data(
+  table_name,
+  metrics,
+  dqd_score,
+  pass_score = NA_real_,
+  pass_metrics = NULL
+)
 }
 \arguments{
 \item{table_name}{Character table name}

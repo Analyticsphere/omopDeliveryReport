@@ -673,6 +673,9 @@ parse_pass_components <- function(pass_data) {
       metric = character(),
       description = character(),
       score = numeric(),
+      standard_error = numeric(),
+      ci_lower = numeric(),
+      ci_upper = numeric(),
       weight = numeric(),
       weighted_contribution = numeric(),
       percent_contribution = numeric()
@@ -692,8 +695,37 @@ parse_pass_components <- function(pass_data) {
         metric == "temporal" ~ .PASS_METRIC_DESCRIPTIONS$temporal,
         TRUE ~ ""
       )
-    ) |>
-    dplyr::select(metric, description, score, weight, weighted_contribution, percent_contribution)
+    )
+
+  # Add CI bounds from metric overall files (if available)
+  if (!is.null(pass_data$metric_overall_data) && length(pass_data$metric_overall_data) > 0) {
+    # For each metric, look up CI bounds from metric_overall_data
+    components <- components |>
+      dplyr::rowwise() |>
+      dplyr::mutate(
+        ci_lower = if (!is.null(pass_data$metric_overall_data[[metric]])) {
+          pass_data$metric_overall_data[[metric]]$ci_95_lower
+        } else {
+          NA_real_
+        },
+        ci_upper = if (!is.null(pass_data$metric_overall_data[[metric]])) {
+          pass_data$metric_overall_data[[metric]]$ci_95_upper
+        } else {
+          NA_real_
+        }
+      ) |>
+      dplyr::ungroup()
+  } else {
+    # Fallback: Calculate ±1 SE bounds if metric overall files not available
+    components <- components |>
+      dplyr::mutate(
+        ci_lower = pmax(0, score - standard_error),
+        ci_upper = pmin(1, score + standard_error)
+      )
+  }
+
+  components <- components |>
+    dplyr::select(metric, description, score, standard_error, ci_lower, ci_upper, weight, weighted_contribution, percent_contribution)
 
   components
 }

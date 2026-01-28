@@ -103,6 +103,26 @@ load_pass_results <- function(pass_dir_path) {
   metric_weights <- as.list(components_data$weight)
   names(metric_weights) <- components_data$metric
 
+  # Load all 6 metric-level PASS overall files (contain CI bounds for each metric)
+  metric_overall_data <- list()
+
+  for (metric_name in names(.PASS_METRIC_OVERALL_FILES)) {
+    filename <- .PASS_METRIC_OVERALL_FILES[[metric_name]]
+    file_path <- paste0(pass_dir_path, filename)
+
+    metric_data <- tryCatch({
+      read_csv(file_path)
+    }, error = function(e) {
+      logger::log_info("PASS metric overall file not found: {filename} (optional)")
+      NULL
+    })
+
+    if (!is.null(metric_data) && nrow(metric_data) > 0) {
+      metric_overall_data[[metric_name]] <- metric_data[1, ]
+      logger::log_info("Loaded {metric_name} overall data with CI bounds")
+    }
+  }
+
   # Load all 6 table-level PASS metric files
   table_level_metrics <- list()
 
@@ -132,6 +152,7 @@ load_pass_results <- function(pass_dir_path) {
   list(
     overall = overall_data,
     components = components_data,
+    metric_overall_data = metric_overall_data,
     table_level_metrics = table_level_metrics,
     metric_weights = metric_weights
   )
