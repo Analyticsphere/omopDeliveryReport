@@ -51,13 +51,13 @@
 # PASS metric descriptions (one sentence each)
 .PASS_METRIC_DESCRIPTIONS <- list(
   accessibility = "Measures whether clinical facts are present and discoverable in the dataset",
-  provenance = "Measures coding quality and traceability to source data",
+  provenance = "Measures traceability to source data",
   standards = "Assesses the use of OHDSI standard concepts",
-  concept_diversity = "Measures variety of clinical concepts using Shannon entropy",
-  source_diversity = "Counts unique data source types",
+  concept_diversity = "Measures variety of clinical concepts",
+  source_diversity = "Measures variety of data sources",
   temporal = "Assesses temporal distribution including coverage, density, and consistency",
   temporal_range = "Years of data coverage in the dataset",
-  temporal_density = "Rows per patient per time interval (quarterly)",
+  temporal_density = "Rows per patient per time interval",
   temporal_consistency = "Temporal stability measured by coefficient of variation"
 )
 
