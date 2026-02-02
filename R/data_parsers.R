@@ -659,6 +659,111 @@ calculate_overall_pass_score <- function(pass_data) {
   )
 }
 
+#' Build PASS component list from metrics
+#'
+#' Generic function to build PASS component display list from metric scores.
+#' Handles temporal sub-metrics and ordering consistently.
+#'
+#' @param metric_scores Named list of metric scores (e.g., list(accessibility = 0.78, temporal = 0.70, ...))
+#' @param pass_data PASS data structure (for accessing temporal sub-scores and CI bounds)
+#' @param table_name Optional table name for table-level metrics (NULL for overall)
+#' @return List of metric components ready for display
+#' @export
+build_pass_component_list <- function(metric_scores, pass_data, table_name = NULL) {
+  if (is.null(metric_scores) || length(metric_scores) == 0) {
+    return(list())
+  }
+
+  # Define custom order for metrics
+  metric_order <- c("accessibility", "concept_diversity", "source_diversity", "provenance", "standards", "temporal")
+
+  # Get metrics that exist in both the order and the scores
+  available_metrics <- intersect(metric_order, names(metric_scores))
+
+  components_list <- list()
+
+  for (metric_name in available_metrics) {
+    score <- metric_scores[[metric_name]]
+
+    # Skip if score is NA or NULL
+    if (is.null(score) || is.na(score)) {
+      next
+    }
+
+    # Add main metric
+    components_list[[length(components_list) + 1]] <- list(
+      metric = metric_name,
+      score = score,
+      description = .PASS_METRIC_DESCRIPTIONS[[metric_name]]
+    )
+
+    # Handle temporal sub-metrics
+    if (metric_name == "temporal") {
+      # Determine source of temporal sub-scores
+      if (!is.null(table_name) && !is.null(pass_data$table_level_metrics$temporal)) {
+        # Table-level: get from table_level_metrics
+        temporal_df <- pass_data$table_level_metrics$temporal
+        table_row <- temporal_df[temporal_df$table_name == table_name, ]
+
+        if (nrow(table_row) > 0) {
+          if ("range_score" %in% colnames(table_row) && !is.na(table_row$range_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_range",
+              score = table_row$range_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_range
+            )
+          }
+
+          if ("density_score" %in% colnames(table_row) && !is.na(table_row$density_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_density",
+              score = table_row$density_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_density
+            )
+          }
+
+          if ("consistency_score" %in% colnames(table_row) && !is.na(table_row$consistency_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_consistency",
+              score = table_row$consistency_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+            )
+          }
+        }
+      } else if (!is.null(pass_data$metric_overall_data$temporal)) {
+        # Overall: get from metric_overall_data
+        temporal_overall <- pass_data$metric_overall_data$temporal
+
+        if ("mean_range_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_range_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_range",
+            score = temporal_overall$mean_range_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_range
+          )
+        }
+
+        if ("mean_density_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_density_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_density",
+            score = temporal_overall$mean_density_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_density
+          )
+        }
+
+        if ("mean_consistency_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_consistency_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_consistency",
+            score = temporal_overall$mean_consistency_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+          )
+        }
+      }
+    }
+  }
+
+  return(components_list)
+}
+
 #' Parse PASS component breakdown
 #'
 #' Extracts and formats PASS component metrics with descriptions.

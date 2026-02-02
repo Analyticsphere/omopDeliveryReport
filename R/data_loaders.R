@@ -148,14 +148,28 @@ load_pass_results <- function(pass_dir_path) {
       if (!is.null(score_col) && score_col %in% colnames(metric_rows)) {
         # For temporal, also include sub-scores
         if (metric_name == "temporal") {
-          table_level_metrics[[metric_name]] <- data.frame(
-            table_name = metric_rows$table_name,
-            score = metric_rows[[score_col]],
-            range_score = metric_rows$range_score,
-            density_score = metric_rows$density_score,
-            consistency_score = metric_rows$consistency_score,
-            stringsAsFactors = FALSE
-          )
+          # Check if sub-score columns exist before accessing them
+          if ("range_score" %in% colnames(metric_rows) &&
+              "density_score" %in% colnames(metric_rows) &&
+              "consistency_score" %in% colnames(metric_rows)) {
+            table_level_metrics[[metric_name]] <- data.frame(
+              table_name = metric_rows$table_name,
+              score = metric_rows[[score_col]],
+              range_score = metric_rows$range_score,
+              density_score = metric_rows$density_score,
+              consistency_score = metric_rows$consistency_score,
+              stringsAsFactors = FALSE
+            )
+            logger::log_info("Loaded temporal with sub-scores: {nrow(table_level_metrics[[metric_name]])} tables")
+          } else {
+            # Fallback if sub-score columns missing
+            table_level_metrics[[metric_name]] <- data.frame(
+              table_name = metric_rows$table_name,
+              score = metric_rows[[score_col]],
+              stringsAsFactors = FALSE
+            )
+            logger::log_warn("Temporal sub-score columns not found in pass_table_level.csv")
+          }
         } else {
           # Standard metrics just need table_name and score
           table_level_metrics[[metric_name]] <- data.frame(

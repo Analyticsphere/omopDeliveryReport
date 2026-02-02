@@ -554,7 +554,7 @@ function buildTableDrilldownContent(tableData) {
   if (tableData.pass_metrics && tableData.pass_metrics.length > 0) {
     html += `
       <div class="subsection">
-        <h4 style="margin-bottom: 16px;">PASS Metric Breakdown</h4>
+        <h4 style="margin-bottom: 16px;">Composite Score Breakdown</h4>
         <table class="pass-components-table">
           <thead>
             <tr>
