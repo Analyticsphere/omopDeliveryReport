@@ -1369,7 +1369,7 @@ function formatNumber(num) {
 }
 
 function getDQDClass(score) {
-  if (score === null || score === undefined) return "";
+  if (score === null || score === undefined) return "neutral";
   if (score >= 95) return "good";
   if (score >= 85) return "fair";
   return "poor";
