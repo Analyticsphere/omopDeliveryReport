@@ -246,6 +246,56 @@ get_dqd_score_class <- function(score) {
   }
 }
 
+#' Get CSS class for PASS score
+#'
+#' Maps PASS score (0-1 scale) to quality band CSS class.
+#'
+#' @param score Numeric PASS score (0-1), or NA
+#' @return Character CSS class name ("excellent", "good", "moderate", "poor", "verypoor", or "neutral")
+#' @export
+get_pass_score_class <- function(score) {
+  if (is.na(score)) {
+    return("neutral")
+  } else if (score >= 0.90) {
+    return("excellent")
+  } else if (score >= 0.80) {
+    return("good")
+  } else if (score >= 0.60) {
+    return("moderate")
+  } else if (score >= 0.40) {
+    return("poor")
+  } else {
+    return("verypoor")
+  }
+}
+
+#' Format PASS score for display
+#'
+#' Formats PASS score with optional confidence interval.
+#'
+#' @param score Numeric PASS score (0-1), or NA
+#' @param ci_lower Numeric lower bound of 95% CI (optional)
+#' @param ci_upper Numeric upper bound of 95% CI (optional)
+#' @param decimals Integer number of decimal places (default: 2)
+#' @return Character formatted score, e.g., "0.72 (0.68-0.76)" or "N/A"
+#' @export
+format_pass_score_display <- function(score, ci_lower = NULL, ci_upper = NULL, decimals = 2) {
+  if (is.na(score)) {
+    return("N/A")
+  }
+
+  score_str <- format(round(score, decimals), nsmall = decimals)
+
+  # Add confidence interval if provided
+  if (!is.null(ci_lower) && !is.null(ci_upper) && !is.na(ci_lower) && !is.na(ci_upper)) {
+    ci_lower_str <- format(round(ci_lower, decimals), nsmall = decimals)
+    ci_upper_str <- format(round(ci_upper, decimals), nsmall = decimals)
+    return(glue::glue("{score_str} ({ci_lower_str}-{ci_upper_str})"))
+  }
+
+  return(score_str)
+}
+
 #' Determine status badge based on delivery status
 #'
 #' @param delivered Logical whether table was delivered

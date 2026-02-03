@@ -15,15 +15,16 @@
 #' @param table_name Character table name
 #' @param metrics List of metric data frames from parse_delivery_metrics()
 #' @param dqd_score Numeric DQD score for this table (or NA)
+#' @param pass_score Numeric PASS score for this table (or NA)
 #' @return List with all table metrics and calculated values
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Prepare data for one table
-#' person_data <- prepare_table_data("person", metrics, dqd_score = 95)
+#' person_data <- prepare_table_data("person", metrics, dqd_score = 95, pass_score = 0.85)
 #' }
-prepare_table_data <- function(table_name, metrics, dqd_score) {
+prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_real_, pass_metrics = NULL) {
 
   # Extract basic counts
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
@@ -82,6 +83,10 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
     0
   }
 
+  # Calculate rows added from 1:N same-table mappings
+  # This represents the net expansion from 1:N mappings, separate from rows moved out
+  rows_added_from_mappings <- (same_table_result_rows - valid_rows) + rows_out
+
   # Calculate percentages
   default_date_percent <- calculate_percentage(default_date_rows, final_rows)
   invalid_concept_percent <- calculate_percentage(invalid_concept_rows, final_rows)
@@ -114,6 +119,18 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
 
   harmonization_statuses <- metrics$harmonization_statuses |>
     dplyr::filter(table_name == !!table_name)
+
+  # Calculate total harmonization status rows and percentage
+  total_harmonization_status_rows <- harmonization_statuses |>
+    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
+    dplyr::pull(total)
+  total_harmonization_status_rows <- ifelse(length(total_harmonization_status_rows) > 0, total_harmonization_status_rows[1], 0)
+
+  harmonization_percent <- if (initial_rows > 0) {
+    round((total_harmonization_status_rows / initial_rows) * 100)
+  } else {
+    0
+  }
 
   dispositions <- metrics$row_dispositions |>
     dplyr::filter(table_name == !!table_name)
@@ -163,6 +180,9 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
     transitions_in = transitions_in,
     rows_out = rows_out,
     same_table_result_rows = same_table_result_rows,
+    rows_added_from_mappings = rows_added_from_mappings,
+    total_harmonization_status_rows = total_harmonization_status_rows,
+    harmonization_percent = harmonization_percent,
     default_date_rows = default_date_rows,
     invalid_concept_rows = invalid_concept_rows,
     default_date_percent = default_date_percent,
@@ -181,6 +201,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
     dispositions = dispositions,
     same_table_mappings = same_table_mappings,
     dqd_score = dqd_score,
+    pass_score = pass_score,
+    pass_metrics = pass_metrics,
     counts_valid = counts_valid,
     expected_final = expected_final
   )
@@ -193,15 +215,16 @@ prepare_table_data <- function(table_name, metrics, dqd_score) {
 #'
 #' @param metrics List of metric data frames from parse_delivery_metrics()
 #' @param table_dqd_scores Named list of DQD scores per table
+#' @param table_pass_scores Named list of PASS scores per table
 #' @return Named list of table data structures (one per table)
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Prepare data for all valid tables
-#' tables_data <- prepare_tables_data(metrics, table_dqd_scores)
+#' tables_data <- prepare_tables_data(metrics, table_dqd_scores, table_pass_scores)
 #' }
-prepare_tables_data <- function(metrics, table_dqd_scores) {
+prepare_tables_data <- function(metrics, table_dqd_scores, table_pass_scores = list(), pass_data = NULL) {
   # Get all unique tables from valid_tables
   all_tables <- unique(metrics$valid_tables$table_name)
 
@@ -210,7 +233,31 @@ prepare_tables_data <- function(metrics, table_dqd_scores) {
     dqd_score <- table_dqd_scores[[table_name]]
     if (is.null(dqd_score)) dqd_score <- NA_real_
 
-    prepare_table_data(table_name, metrics, dqd_score)
+    pass_score <- table_pass_scores[[table_name]]
+    if (is.null(pass_score)) pass_score <- NA_real_
+
+    # Extract table-specific PASS metrics using generic function
+    pass_metrics <- NULL
+    if (!is.null(pass_data) && !is.null(pass_data$table_level_metrics)) {
+      # Build metric_scores list for this table
+      metric_scores <- list()
+
+      for (metric_name in names(pass_data$table_level_metrics)) {
+        metric_df <- pass_data$table_level_metrics[[metric_name]]
+        table_row <- metric_df[metric_df$table_name == table_name, ]
+
+        if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+          metric_scores[[metric_name]] <- table_row$score[1]
+        }
+      }
+
+      # Use generic function to build component list (includes temporal sub-metrics)
+      if (length(metric_scores) > 0) {
+        pass_metrics <- build_pass_component_list(metric_scores, pass_data, table_name)
+      }
+    }
+
+    prepare_table_data(table_name, metrics, dqd_score, pass_score, pass_metrics)
   })
 
   names(table_data_list) <- all_tables
@@ -221,7 +268,7 @@ prepare_tables_data <- function(metrics, table_dqd_scores) {
 # GROUP-LEVEL AGGREGATION
 # ==============================================================================
 
-#' Prepare report with all data (delivery report, DQD, etc.)
+#' Prepare report with all data (delivery report, DQD, PASS, etc.)
 #'
 #' Aggregates data by groups, calculates statistics, and prepares
 #' structured data for JSON serialization.
@@ -230,9 +277,10 @@ prepare_tables_data <- function(metrics, table_dqd_scores) {
 #' @param table_groups Named list of table groups from get_table_groups()
 #' @param group_dqd_scores Named list of DQD scores per group
 #' @param table_dqd_scores Named list of DQD scores per table
+#' @param table_pass_scores Named list of PASS scores per table
 #' @return List containing all pre-calculated report data
 #' @export
-prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_dqd_scores) {
+prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores = list(), pass_data = NULL) {
 
   # Prepare group-level data
   groups_data <- list()
@@ -242,7 +290,34 @@ prepare_report_data <- function(metrics, table_groups, group_dqd_scores, table_d
 
     # Get data for each table in group
     table_data_list <- lapply(group_tables, function(tbl) {
-      prepare_table_data(tbl, metrics, table_dqd_scores[[tbl]])
+      dqd_score <- table_dqd_scores[[tbl]]
+      if (is.null(dqd_score)) dqd_score <- NA_real_
+
+      pass_score <- table_pass_scores[[tbl]]
+      if (is.null(pass_score)) pass_score <- NA_real_
+
+      # Extract table-specific PASS metrics using generic function
+      pass_metrics <- NULL
+      if (!is.null(pass_data) && !is.null(pass_data$table_level_metrics)) {
+        # Build metric_scores list for this table
+        metric_scores <- list()
+
+        for (metric_name in names(pass_data$table_level_metrics)) {
+          metric_df <- pass_data$table_level_metrics[[metric_name]]
+          table_row <- metric_df[metric_df$table_name == tbl, ]
+
+          if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+            metric_scores[[metric_name]] <- table_row$score[1]
+          }
+        }
+
+        # Use generic function to build component list (includes temporal sub-metrics)
+        if (length(metric_scores) > 0) {
+          pass_metrics <- build_pass_component_list(metric_scores, pass_data, tbl)
+        }
+      }
+
+      prepare_table_data(tbl, metrics, dqd_score, pass_score, pass_metrics)
     })
     names(table_data_list) <- group_tables
 
@@ -428,7 +503,7 @@ fill_missing_type_groups <- function(type_concept_data) {
 #' @param has_dqd_data Logical whether DQD data is available
 #' @return List of template variables
 #' @export
-prepare_overview_data <- function(metrics, dqd_scores, num_participants, total_rows_removed, has_delivery_data, has_dqd_data) {
+prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_participants, total_rows_removed, has_delivery_data, has_dqd_data, has_pass_data) {
   # Format displays
   tables_delivered <- if (has_delivery_data) as.character(nrow(metrics$valid_tables)) else "N/A"
   participants_display <- if (has_delivery_data) format_number(num_participants) else "N/A"
@@ -454,11 +529,23 @@ prepare_overview_data <- function(metrics, dqd_scores, num_participants, total_r
   dqd_class <- get_dqd_score_class(dqd_scores$overall)
   dqd_score_display <- if (is.na(dqd_scores$overall)) "N/A" else paste0(dqd_scores$overall, "%")
 
+  # PASS score
+  pass_class <- get_pass_score_class(pass_scores$overall_score)
+  pass_score_display <- format_pass_score_display(pass_scores$overall_score, decimals = 2)
+  pass_ci_display <- if (!is.na(pass_scores$ci_lower) && !is.na(pass_scores$ci_upper)) {
+    glue::glue("({format(round(pass_scores$ci_lower, 2), nsmall = 2)}-{format(round(pass_scores$ci_upper, 2), nsmall = 2)})")
+  } else {
+    ""
+  }
+
   list(
     tables_delivered = tables_delivered,
     participants_display = participants_display,
     dqd_class = dqd_class,
     dqd_score_display = dqd_score_display,
+    pass_class = pass_class,
+    pass_score_display = pass_score_display,
+    pass_ci_display = pass_ci_display,
     missing_warning = missing_warning,
     missing_icon = missing_icon,
     missing_person_display = missing_person_display,

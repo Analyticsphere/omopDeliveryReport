@@ -8,11 +8,16 @@ build_complete_html_report(
   metrics,
   dqd_data,
   dqd_scores,
+  pass_scores,
+  pass_components,
   table_groups,
   group_dqd_scores,
   table_dqd_scores,
+  table_pass_scores,
   has_delivery_data,
-  has_dqd_data
+  has_dqd_data,
+  has_pass_data,
+  pass_data = NULL
 )
 }
 \arguments{
@@ -22,15 +27,23 @@ build_complete_html_report(
 
 \item{dqd_scores}{List with overall score and grid}
 
+\item{pass_scores}{List with overall_score, ci_lower, ci_upper}
+
+\item{pass_components}{Data frame with PASS component breakdown}
+
 \item{table_groups}{Named list of table groups}
 
 \item{group_dqd_scores}{Named list of DQD scores per group}
 
 \item{table_dqd_scores}{Named list of DQD scores per table}
 
+\item{table_pass_scores}{Named list of PASS scores per table}
+
 \item{has_delivery_data}{Logical whether delivery data available}
 
 \item{has_dqd_data}{Logical whether DQD data available}
+
+\item{has_pass_data}{Logical whether PASS data available}
 }
 \value{
 Character string containing complete HTML report

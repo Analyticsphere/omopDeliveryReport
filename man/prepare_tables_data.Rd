@@ -4,12 +4,19 @@
 \alias{prepare_tables_data}
 \title{Prepare data for multiple tables}
 \usage{
-prepare_tables_data(metrics, table_dqd_scores)
+prepare_tables_data(
+  metrics,
+  table_dqd_scores,
+  table_pass_scores = list(),
+  pass_data = NULL
+)
 }
 \arguments{
 \item{metrics}{List of metric data frames from parse_delivery_metrics()}
 
 \item{table_dqd_scores}{Named list of DQD scores per table}
+
+\item{table_pass_scores}{Named list of PASS scores per table}
 }
 \value{
 Named list of table data structures (one per table)
@@ -21,6 +28,6 @@ Returns a named list where each element contains the prepared data for one table
 \examples{
 \dontrun{
 # Prepare data for all valid tables
-tables_data <- prepare_tables_data(metrics, table_dqd_scores)
+tables_data <- prepare_tables_data(metrics, table_dqd_scores, table_pass_scores)
 }
 }

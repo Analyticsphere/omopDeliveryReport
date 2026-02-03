@@ -42,6 +42,10 @@ validate_schema <- function(data, results_file_type) {
     required_columns <- .RAW_DELIVERY_REPORT_FILE_COLUMNS
   } else if (results_file_type == .DQD_FILE) {
     required_columns <- .DQD_FILE_COLUMNS
+  } else if (results_file_type == .PASS_COMPOSITE_OVERALL_FILE) {
+    required_columns <- .PASS_COMPOSITE_OVERALL_COLUMNS
+  } else if (results_file_type == .PASS_COMPOSITE_COMPONENTS_FILE) {
+    required_columns <- .PASS_COMPOSITE_COMPONENTS_COLUMNS
   } else {
     stop(glue::glue("Unknown results file type: {results_file_type}"))
   }
@@ -56,16 +60,151 @@ validate_schema <- function(data, results_file_type) {
   return(TRUE)
 }
 
+#' Load PASS results from directory
+#'
+#' Loads PASS composite overall, components, and optionally table-level files
+#' from a directory containing PASS output CSVs.
+#'
+#' @param pass_dir_path Path to directory containing PASS CSV files (local or gs:// URI)
+#' @return List with overall, components, and table_scores data frames, or NULL if not found
+#' @export
+load_pass_results <- function(pass_dir_path) {
+  if (is.null(pass_dir_path) || pass_dir_path == "") {
+    logger::log_info("No PASS directory path provided")
+    return(NULL)
+  }
+
+  logger::log_info("Loading PASS results from: {pass_dir_path}")
+
+  # Ensure path ends with /
+  if (!grepl("/$", pass_dir_path)) {
+    pass_dir_path <- paste0(pass_dir_path, "/")
+  }
+
+  # Load composite overall file
+  overall_path <- paste0(pass_dir_path, "pass_composite_overall.csv")
+  overall_data <- load_data(overall_path, .PASS_COMPOSITE_OVERALL_FILE)
+
+  if (is.null(overall_data)) {
+    logger::log_warn("PASS composite overall file not found")
+    return(NULL)
+  }
+
+  # Load composite components file
+  components_path <- paste0(pass_dir_path, "pass_composite_components.csv")
+  components_data <- load_data(components_path, .PASS_COMPOSITE_COMPONENTS_FILE)
+
+  if (is.null(components_data)) {
+    logger::log_warn("PASS composite components file not found")
+    return(NULL)
+  }
+
+  # Extract weights from components data for table-level composite calculation
+  metric_weights <- as.list(components_data$weight)
+  names(metric_weights) <- components_data$metric
+
+  # Load consolidated pass_overall.csv (contains all metric overall scores with CI bounds)
+  overall_path <- paste0(pass_dir_path, .PASS_OVERALL_FILE)
+  overall_metrics_data <- tryCatch({
+    read_csv(overall_path)
+  }, error = function(e) {
+    logger::log_warn("PASS overall file not found: {.PASS_OVERALL_FILE}")
+    NULL
+  })
+
+  # Convert consolidated overall data to list structure (one entry per metric)
+  metric_overall_data <- list()
+  if (!is.null(overall_metrics_data) && nrow(overall_metrics_data) > 0) {
+    for (i in seq_len(nrow(overall_metrics_data))) {
+      row <- overall_metrics_data[i, ]
+      metric_name <- row$metric
+      metric_overall_data[[metric_name]] <- row
+    }
+    logger::log_info("Loaded overall data for {length(metric_overall_data)} metrics")
+  }
+
+  # Load consolidated pass_table_level.csv (contains all metrics for all tables)
+  table_level_path <- paste0(pass_dir_path, .PASS_TABLE_LEVEL_FILE)
+  table_level_data <- tryCatch({
+    read_csv(table_level_path)
+  }, error = function(e) {
+    logger::log_warn("PASS table-level file not found: {.PASS_TABLE_LEVEL_FILE}")
+    NULL
+  })
+
+  # Convert consolidated table-level data to list structure (one entry per metric)
+  table_level_metrics <- list()
+  if (!is.null(table_level_data) && nrow(table_level_data) > 0) {
+    # Get unique metrics
+    unique_metrics <- unique(table_level_data$metric)
+
+    for (metric_name in unique_metrics) {
+      # Filter rows for this metric
+      metric_rows <- table_level_data[table_level_data$metric == metric_name, ]
+
+      # Get the score column name for this metric
+      score_col <- .PASS_TABLE_LEVEL_SCORE_COLUMNS[[metric_name]]
+
+      if (!is.null(score_col) && score_col %in% colnames(metric_rows)) {
+        # For temporal, also include sub-scores
+        if (metric_name == "temporal") {
+          # Check if sub-score columns exist before accessing them
+          if ("range_score" %in% colnames(metric_rows) &&
+              "density_score" %in% colnames(metric_rows) &&
+              "consistency_score" %in% colnames(metric_rows)) {
+            table_level_metrics[[metric_name]] <- data.frame(
+              table_name = metric_rows$table_name,
+              score = metric_rows[[score_col]],
+              range_score = metric_rows$range_score,
+              density_score = metric_rows$density_score,
+              consistency_score = metric_rows$consistency_score,
+              stringsAsFactors = FALSE
+            )
+            logger::log_info("Loaded temporal with sub-scores: {nrow(table_level_metrics[[metric_name]])} tables")
+          } else {
+            # Fallback if sub-score columns missing
+            table_level_metrics[[metric_name]] <- data.frame(
+              table_name = metric_rows$table_name,
+              score = metric_rows[[score_col]],
+              stringsAsFactors = FALSE
+            )
+            logger::log_warn("Temporal sub-score columns not found in pass_table_level.csv")
+          }
+        } else {
+          # Standard metrics just need table_name and score
+          table_level_metrics[[metric_name]] <- data.frame(
+            table_name = metric_rows$table_name,
+            score = metric_rows[[score_col]],
+            stringsAsFactors = FALSE
+          )
+        }
+        logger::log_info("Loaded {metric_name} table-level scores for {nrow(table_level_metrics[[metric_name]])} tables")
+      }
+    }
+  }
+
+  # Return structured PASS data
+  list(
+    overall = overall_data,
+    components = components_data,
+    metric_overall_data = metric_overall_data,
+    table_level_metrics = table_level_metrics,
+    metric_weights = metric_weights
+  )
+}
+
 #' Check data availability flags
 #'
 #' Determines which data sources are available.
 #'
 #' @param delivery_data Delivery report data frame or NULL
 #' @param dqd_data DQD results data frame or NULL
-#' @return List with has_delivery_data and has_dqd_data flags
-check_data_availability <- function(delivery_data, dqd_data) {
+#' @param pass_data PASS results list or NULL
+#' @return List with has_delivery_data, has_dqd_data, and has_pass_data flags
+check_data_availability <- function(delivery_data, dqd_data, pass_data = NULL) {
   list(
     has_delivery_data = !is.null(delivery_data),
-    has_dqd_data = !is.null(dqd_data)
+    has_dqd_data = !is.null(dqd_data),
+    has_pass_data = !is.null(pass_data)
   )
 }

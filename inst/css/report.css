@@ -242,17 +242,25 @@ body {
 }
 
 .metric-label {
-  /* Fluid: scales from ~10px to ~12px */
-  font-size: clamp(0.625rem, 0.4vw + 0.3rem, 0.75rem);
+  /* Fluid: scales from ~12px to ~15px (increased from 10-12px) */
+  font-size: clamp(0.75rem, 0.5vw + 0.4rem, 0.9375rem);
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 600;
 }
 
+/* Compact label for longer metric names */
+.metric-label-compact {
+  /* Slightly smaller font and tighter spacing for long labels */
+  font-size: clamp(0.7rem, 0.45vw + 0.38rem, 0.85rem);
+  letter-spacing: 0.7px;
+  line-height: 1.3;
+}
+
 .metric-value {
-  /* Fluid: scales from ~24px to ~36px */
-  font-size: clamp(1.5rem, 1.5vw + 0.5rem, 2.25rem);
+  /* Fluid: scales from ~28px to ~44px (increased from 24-36px) */
+  font-size: clamp(1.75rem, 1.8vw + 0.6rem, 2.75rem);
   font-weight: 700;
   color: #0f172a;
   line-height: 1;
@@ -270,7 +278,7 @@ body {
 /* Overview metrics grid - responsive layout */
 .overview-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: clamp(12px, 1vw, 20px);
   margin-bottom: clamp(24px, 2.5vw, 40px);
 }
@@ -280,24 +288,15 @@ body {
   display: flex;
   flex-direction: column;
   min-height: clamp(120px, 10vw, 160px);
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Responsive breakpoints for card stacking - LAPTOP TO DESKTOP ONLY */
-@media (max-width: 1600px) {
-  .overview-metrics-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 1280px) {
-  .overview-metrics-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 @media (max-width: 1024px) {
   .overview-metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
@@ -387,8 +386,8 @@ body {
 }
 
 .metric-sublabel {
-  /* Fluid: scales from ~12px to ~14px */
-  font-size: clamp(0.75rem, 0.5vw + 0.35rem, 0.875rem);
+  /* Fluid: scales from ~13px to ~16px (increased from 12-14px) */
+  font-size: clamp(0.8125rem, 0.55vw + 0.4rem, 1rem);
   color: #64748b;
   font-weight: 400;
   margin-top: 4px;
@@ -439,6 +438,244 @@ body {
   font-weight: 700;
   font-size: 0.95em;
   font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   PASS SCORE
+   ============================================================================ */
+
+.pass-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(80px, 8vw, 120px);
+  height: clamp(80px, 8vw, 120px);
+  border-radius: 50%;
+  font-size: clamp(1.5rem, 1.8vw + 0.4rem, 2.25rem);
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pass-score.excellent {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.pass-score.good {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.pass-score.moderate {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.pass-score.poor {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.pass-score.verypoor {
+  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+}
+
+.pass-score.neutral {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+}
+
+.pass-ci {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 8px;
+  font-weight: 400;
+}
+
+/* PASS Section Styling */
+.pass-intro {
+  background: #f9fafb;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.pass-intro p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.pass-overall-container {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 40px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pass-overall-label {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 15px;
+}
+
+.pass-overall-score-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.pass-overall-score {
+  font-size: 3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pass-overall-score.excellent { color: #059669; }
+.pass-overall-score.good { color: #10b981; }
+.pass-overall-score.moderate { color: #f59e0b; }
+.pass-overall-score.poor { color: #ef4444; }
+.pass-overall-score.verypoor { color: #991b1b; }
+.pass-overall-score.neutral { color: #6b7280; }
+
+.pass-overall-ci {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pass-components-section {
+  margin-top: 40px;
+}
+
+.pass-components-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.pass-components-description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* PASS Components Table */
+.pass-components-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pass-components-table thead {
+  background: #f8fafc;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.pass-components-table th {
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pass-components-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.pass-components-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.pass-components-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Temporal sub-metric rows - visually nested */
+.pass-components-table tbody tr.pass-sub-metric-row {
+  background: #f9fafb;
+}
+
+.pass-components-table tbody tr.pass-sub-metric-row:hover {
+  background: #f3f4f6;
+}
+
+/* Only shift the first two columns (Metric and Score), not Description */
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(1),
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(2) {
+  padding-left: 36px;
+}
+
+.pass-components-table tbody tr.pass-sub-metric-row td:nth-child(3) {
+  padding-left: 16px;
+}
+
+.pass-components-table td {
+  padding: 14px 16px;
+  font-size: 0.95rem;
+}
+
+/* Metric name column */
+.pass-metric-name {
+  font-weight: 600;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+
+/* Score cell - color coded */
+.pass-score-cell {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border-radius: 4px;
+  padding: 6px 12px !important;
+}
+
+.pass-score-cell.excellent {
+  color: #059669;
+  background: #d1fae5;
+}
+
+.pass-score-cell.good {
+  color: #10b981;
+  background: #d1fae5;
+}
+
+.pass-score-cell.moderate {
+  color: #d97706;
+  background: #fef3c7;
+}
+
+.pass-score-cell.poor {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.pass-score-cell.verypoor {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.pass-score-cell.neutral {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+/* Description cell */
+.pass-description-cell {
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 500px;
 }
 
 /* ============================================================================
@@ -1515,6 +1752,12 @@ tr.row-warning:hover {
   font-size: 2em;
 }
 
+.drilldown-pass-score {
+  min-width: 100px;
+  height: 100px;
+  font-size: 2em;
+}
+
 .drilldown-section-spacing {
   margin-top: 20px;
 }
@@ -1558,4 +1801,66 @@ tr.row-warning:hover {
 .drilldown-time-series-chart {
   margin-top: 16px;
   min-height: 400px;
+}
+
+/* ============================================================================
+   PASS SCORE VISUALIZATION TOOLTIPS
+   ============================================================================ */
+
+/* Container for PASS score visualizations with tooltip */
+.pass-viz-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Tooltip box - hidden by default */
+.pass-viz-tooltip .pass-tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #1e293b;
+  color: #ffffff;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-line;
+
+  /* Position below the element */
+  position: absolute;
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  /* Minimum width */
+  min-width: 140px;
+
+  /* Smooth transition with no delay */
+  transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out;
+
+  /* Box shadow for depth */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* Prevent tooltip from being clipped */
+  pointer-events: none;
+}
+
+/* Arrow pointing up */
+.pass-viz-tooltip .pass-tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #1e293b transparent;
+}
+
+/* Show tooltip on hover - instant appearance */
+.pass-viz-tooltip:hover .pass-tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

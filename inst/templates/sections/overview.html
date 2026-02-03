@@ -18,22 +18,29 @@
         </div>
 
         <div class="metric-card">
-            <div class="metric-label">Data Quality Score</div>
+            <div class="metric-label">Data Quality Dashboard Score</div>
             <div class="text-center mt-20">
                 <div class="dqd-score {{dqd_class}}">{{dqd_score_display}}</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label metric-label-compact">Profile of Analytic Suitability Score</div>
+            <div class="text-center mt-20">
+                <div class="pass-score {{pass_class}}">{{pass_score_display}}</div>
             </div>
         </div>
 
         <div class="metric-card{{missing_warning}}">
             <div class="metric-label">Missing Identifiers</div>
             <div class="metric-value">{{missing_icon}} {{missing_person_display}}</div>
-            <div class="metric-sublabel">{{person_word}} with missing Connect ID</div>
+            <div class="metric-sublabel">{{person_word}} with missing identifiers</div>
         </div>
 
         <div class="metric-card{{rows_warning}}">
             <div class="metric-label">Rows Removed</div>
             <div class="metric-value">{{rows_icon}} {{rows_removed_display}}</div>
-            <div class="metric-sublabel">Due to missing Connect ID</div>
+            <div class="metric-sublabel">Due to missing person identifiers</div>
         </div>
     </div>
 

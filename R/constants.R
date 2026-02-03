@@ -13,6 +13,54 @@
   "context"
 )
 
+.PASS_COMPOSITE_OVERALL_FILE <- "pass_composite_overall file"
+.PASS_COMPOSITE_OVERALL_COLUMNS <- c(
+  "composite_score",
+  "standard_error",
+  "ci_95_lower",
+  "ci_95_upper",
+  "n_metrics",
+  "metrics_included",
+  "weights_used"
+)
+
+.PASS_COMPOSITE_COMPONENTS_FILE <- "pass_composite_components file"
+.PASS_COMPOSITE_COMPONENTS_COLUMNS <- c(
+  "metric",
+  "score",
+  "standard_error",
+  "weight",
+  "weighted_contribution",
+  "percent_contribution"
+)
+
+# Consolidated PASS output files (new format)
+.PASS_OVERALL_FILE <- "pass_overall.csv"
+.PASS_TABLE_LEVEL_FILE <- "pass_table_level.csv"
+
+# Column mapping for table-level scores by metric
+.PASS_TABLE_LEVEL_SCORE_COLUMNS <- list(
+  accessibility = "table_score",
+  provenance = "table_score",
+  standards = "table_score",
+  concept_diversity = "table_score",
+  source_diversity = "table_score",
+  temporal = "table_score"
+)
+
+# PASS metric descriptions (optimized for clarity to newcomers)
+.PASS_METRIC_DESCRIPTIONS <- list(
+  accessibility = "Evaluates whether clinical data is present and accessible for analysis",
+  provenance = "Evaluates information preservation and traceability through the mapping process",
+  standards = "Measures use of standardized vocabularies required for interoperable research",
+  concept_diversity = "Quantifies the variety of distinct clinical concepts captured in the data",
+  source_diversity = "Evaluates variety of data source types (e.g., EHR, claims, registries)",
+  temporal = "Assesses data distribution over time including span, density, and consistency",
+  temporal_range = "Historical span of data, measured in years",
+  temporal_density = "Average volume of clinical records per patient over time",
+  temporal_consistency = "Stability of data capture over time, detecting gaps or irregular patterns"
+)
+
 # Color scheme (colorblind-friendly)
 .COLORS <- list(
   type_concepts = list(
@@ -40,6 +88,17 @@
     "good_color" = "#10b981",
     "fair_color" = "#f59e0b",
     "poor_color" = "#ef4444"
+  ),
+  pass_scores = list(
+    "excellent_threshold" = 0.90,  # >= 0.90 is "excellent"
+    "good_threshold" = 0.80,       # >= 0.80 is "good"
+    "moderate_threshold" = 0.60,   # >= 0.60 is "moderate"
+    "poor_threshold" = 0.40,       # >= 0.40 is "poor", below is "very poor"
+    "excellent_color" = "#059669",  # emerald-600
+    "good_color" = "#10b981",       # emerald-500
+    "moderate_color" = "#f59e0b",   # amber-500
+    "poor_color" = "#ef4444",       # red-500
+    "verypoor_color" = "#991b1b"    # red-800
   )
 )
 

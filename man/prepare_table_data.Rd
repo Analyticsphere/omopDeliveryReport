@@ -4,7 +4,13 @@
 \alias{prepare_table_data}
 \title{Prepare data for a single table}
 \usage{
-prepare_table_data(table_name, metrics, dqd_score)
+prepare_table_data(
+  table_name,
+  metrics,
+  dqd_score,
+  pass_score = NA_real_,
+  pass_metrics = NULL
+)
 }
 \arguments{
 \item{table_name}{Character table name}
@@ -12,6 +18,8 @@ prepare_table_data(table_name, metrics, dqd_score)
 \item{metrics}{List of metric data frames from parse_delivery_metrics()}
 
 \item{dqd_score}{Numeric DQD score for this table (or NA)}
+
+\item{pass_score}{Numeric PASS score for this table (or NA)}
 }
 \value{
 List with all table metrics and calculated values
@@ -23,6 +31,6 @@ This is the base function - use prepare_tables_data() for multiple tables.
 \examples{
 \dontrun{
 # Prepare data for one table
-person_data <- prepare_table_data("person", metrics, dqd_score = 95)
+person_data <- prepare_table_data("person", metrics, dqd_score = 95, pass_score = 0.85)
 }
 }

@@ -629,3 +629,368 @@ create_empty_dqd_scores <- function() {
     grid = create_dqd_grid(NULL)
   )
 }
+
+# ==============================================================================
+# PASS SCORE FUNCTIONS
+# ==============================================================================
+
+#' Calculate overall PASS score
+#'
+#' Extracts composite PASS score with confidence intervals from PASS results.
+#'
+#' @param pass_data List containing PASS results (overall, components, table_scores)
+#' @return List with overall_score, ci_lower, ci_upper, or NA values if unavailable
+#' @export
+calculate_overall_pass_score <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$overall) || nrow(pass_data$overall) == 0) {
+    return(list(
+      overall_score = NA_real_,
+      ci_lower = NA_real_,
+      ci_upper = NA_real_
+    ))
+  }
+
+  overall_row <- pass_data$overall[1, ]
+
+  list(
+    overall_score = overall_row$composite_score,
+    ci_lower = overall_row$ci_95_lower,
+    ci_upper = overall_row$ci_95_upper
+  )
+}
+
+#' Build PASS component list from metrics
+#'
+#' Generic function to build PASS component display list from metric scores.
+#' Handles temporal sub-metrics and ordering consistently.
+#'
+#' @param metric_scores Named list of metric scores (e.g., list(accessibility = 0.78, temporal = 0.70, ...))
+#' @param pass_data PASS data structure (for accessing temporal sub-scores and CI bounds)
+#' @param table_name Optional table name for table-level metrics (NULL for overall)
+#' @return List of metric components ready for display
+#' @export
+build_pass_component_list <- function(metric_scores, pass_data, table_name = NULL) {
+  if (is.null(metric_scores) || length(metric_scores) == 0) {
+    return(list())
+  }
+
+  # Define custom order for metrics
+  metric_order <- c("accessibility", "concept_diversity", "source_diversity", "provenance", "standards", "temporal")
+
+  # Get metrics that exist in both the order and the scores
+  available_metrics <- intersect(metric_order, names(metric_scores))
+
+  components_list <- list()
+
+  for (metric_name in available_metrics) {
+    score <- metric_scores[[metric_name]]
+
+    # Skip if score is NA or NULL
+    if (is.null(score) || is.na(score)) {
+      next
+    }
+
+    # Add main metric
+    components_list[[length(components_list) + 1]] <- list(
+      metric = metric_name,
+      score = score,
+      description = .PASS_METRIC_DESCRIPTIONS[[metric_name]]
+    )
+
+    # Handle temporal sub-metrics
+    if (metric_name == "temporal") {
+      # Determine source of temporal sub-scores
+      if (!is.null(table_name) && !is.null(pass_data$table_level_metrics$temporal)) {
+        # Table-level: get from table_level_metrics
+        temporal_df <- pass_data$table_level_metrics$temporal
+        table_row <- temporal_df[temporal_df$table_name == table_name, ]
+
+        if (nrow(table_row) > 0) {
+          if ("range_score" %in% colnames(table_row) && !is.na(table_row$range_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_range",
+              score = table_row$range_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_range
+            )
+          }
+
+          if ("density_score" %in% colnames(table_row) && !is.na(table_row$density_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_density",
+              score = table_row$density_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_density
+            )
+          }
+
+          if ("consistency_score" %in% colnames(table_row) && !is.na(table_row$consistency_score[1])) {
+            components_list[[length(components_list) + 1]] <- list(
+              metric = "temporal_consistency",
+              score = table_row$consistency_score[1],
+              description = .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+            )
+          }
+        }
+      } else if (!is.null(pass_data$metric_overall_data$temporal)) {
+        # Overall: get from metric_overall_data
+        temporal_overall <- pass_data$metric_overall_data$temporal
+
+        if ("mean_range_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_range_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_range",
+            score = temporal_overall$mean_range_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_range
+          )
+        }
+
+        if ("mean_density_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_density_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_density",
+            score = temporal_overall$mean_density_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_density
+          )
+        }
+
+        if ("mean_consistency_score" %in% names(temporal_overall) && !is.na(temporal_overall$mean_consistency_score)) {
+          components_list[[length(components_list) + 1]] <- list(
+            metric = "temporal_consistency",
+            score = temporal_overall$mean_consistency_score,
+            description = .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+          )
+        }
+      }
+    }
+  }
+
+  return(components_list)
+}
+
+#' Parse PASS component breakdown
+#'
+#' Extracts and formats PASS component metrics with descriptions.
+#' Sorts by weighted_contribution descending.
+#'
+#' @param pass_data List containing PASS results
+#' @return Data frame with metric, description, score, weight, contribution, percent
+#' @export
+parse_pass_components <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$components) || nrow(pass_data$components) == 0) {
+    return(tibble::tibble(
+      metric = character(),
+      description = character(),
+      score = numeric(),
+      standard_error = numeric(),
+      ci_lower = numeric(),
+      ci_upper = numeric(),
+      weight = numeric(),
+      weighted_contribution = numeric(),
+      percent_contribution = numeric()
+    ))
+  }
+
+  # Define custom order for metrics
+  metric_order <- c("accessibility", "concept_diversity", "source_diversity", "provenance", "standards", "temporal")
+
+  components <- pass_data$components |>
+    dplyr::mutate(
+      # Add descriptions from constants
+      description = dplyr::case_when(
+        metric == "accessibility" ~ .PASS_METRIC_DESCRIPTIONS$accessibility,
+        metric == "provenance" ~ .PASS_METRIC_DESCRIPTIONS$provenance,
+        metric == "standards" ~ .PASS_METRIC_DESCRIPTIONS$standards,
+        metric == "concept_diversity" ~ .PASS_METRIC_DESCRIPTIONS$concept_diversity,
+        metric == "source_diversity" ~ .PASS_METRIC_DESCRIPTIONS$source_diversity,
+        metric == "temporal" ~ .PASS_METRIC_DESCRIPTIONS$temporal,
+        TRUE ~ ""
+      ),
+      # Create ordering factor
+      metric_order_factor = factor(metric, levels = metric_order)
+    ) |>
+    dplyr::arrange(metric_order_factor) |>
+    dplyr::select(-metric_order_factor)
+
+  # Add CI bounds from metric overall files (if available)
+  if (!is.null(pass_data$metric_overall_data) && length(pass_data$metric_overall_data) > 0) {
+    # For each metric, look up CI bounds from metric_overall_data
+    components <- components |>
+      dplyr::rowwise() |>
+      dplyr::mutate(
+        ci_lower = if (!is.null(pass_data$metric_overall_data[[metric]])) {
+          pass_data$metric_overall_data[[metric]]$ci_95_lower
+        } else {
+          NA_real_
+        },
+        ci_upper = if (!is.null(pass_data$metric_overall_data[[metric]])) {
+          pass_data$metric_overall_data[[metric]]$ci_95_upper
+        } else {
+          NA_real_
+        }
+      ) |>
+      dplyr::ungroup()
+  } else {
+    # Fallback: Calculate ±1 SE bounds if metric overall files not available
+    # Only if standard_error column exists
+    if ("standard_error" %in% names(components)) {
+      components <- components |>
+        dplyr::mutate(
+          ci_lower = pmax(0, score - standard_error),
+          ci_upper = pmin(1, score + standard_error)
+        )
+    } else {
+      # If no standard_error column, set CIs to NA
+      components <- components |>
+        dplyr::mutate(
+          standard_error = NA_real_,
+          ci_lower = NA_real_,
+          ci_upper = NA_real_
+        )
+    }
+  }
+
+  # Add temporal sub-metrics if temporal data is available
+  if ("temporal" %in% components$metric && !is.null(pass_data$metric_overall_data$temporal)) {
+    temporal_overall <- pass_data$metric_overall_data$temporal
+
+    # Extract the three sub-scores
+    if ("mean_range_score" %in% names(temporal_overall) &&
+        "mean_density_score" %in% names(temporal_overall) &&
+        "mean_consistency_score" %in% names(temporal_overall)) {
+
+      # Extract CI bounds for sub-metrics if available
+      range_ci_lower <- if ("range_ci_95_lower" %in% names(temporal_overall)) temporal_overall$range_ci_95_lower else NA_real_
+      range_ci_upper <- if ("range_ci_95_upper" %in% names(temporal_overall)) temporal_overall$range_ci_95_upper else NA_real_
+      density_ci_lower <- if ("density_ci_95_lower" %in% names(temporal_overall)) temporal_overall$density_ci_95_lower else NA_real_
+      density_ci_upper <- if ("density_ci_95_upper" %in% names(temporal_overall)) temporal_overall$density_ci_95_upper else NA_real_
+      consistency_ci_lower <- if ("consistency_ci_95_lower" %in% names(temporal_overall)) temporal_overall$consistency_ci_95_lower else NA_real_
+      consistency_ci_upper <- if ("consistency_ci_95_upper" %in% names(temporal_overall)) temporal_overall$consistency_ci_95_upper else NA_real_
+
+      # Create sub-metric rows
+      temporal_sub_metrics <- data.frame(
+        metric = c("temporal_range", "temporal_density", "temporal_consistency"),
+        description = c(
+          .PASS_METRIC_DESCRIPTIONS$temporal_range,
+          .PASS_METRIC_DESCRIPTIONS$temporal_density,
+          .PASS_METRIC_DESCRIPTIONS$temporal_consistency
+        ),
+        score = c(
+          temporal_overall$mean_range_score,
+          temporal_overall$mean_density_score,
+          temporal_overall$mean_consistency_score
+        ),
+        standard_error = c(NA_real_, NA_real_, NA_real_),
+        ci_lower = c(range_ci_lower, density_ci_lower, consistency_ci_lower),
+        ci_upper = c(range_ci_upper, density_ci_upper, consistency_ci_upper),
+        weight = c(0, 0, 0),  # Sub-metrics don't contribute directly to composite
+        weighted_contribution = c(0, 0, 0),
+        percent_contribution = c(0, 0, 0),
+        stringsAsFactors = FALSE
+      )
+
+      # Find position of temporal row
+      temporal_index <- which(components$metric == "temporal")
+
+      if (length(temporal_index) > 0) {
+        # Insert sub-metrics right after temporal row
+        if (temporal_index == nrow(components)) {
+          # Temporal is last row
+          components <- rbind(components, temporal_sub_metrics)
+        } else {
+          # Insert in middle
+          components <- rbind(
+            components[1:temporal_index, ],
+            temporal_sub_metrics,
+            components[(temporal_index + 1):nrow(components), ]
+          )
+        }
+      }
+    }
+  }
+
+  components <- components |>
+    dplyr::select(metric, description, score, standard_error, ci_lower, ci_upper, weight, weighted_contribution, percent_contribution)
+
+  components
+}
+
+#' Extract table-level PASS scores
+#'
+#' Creates a named list of PASS scores by table name.
+#'
+#' @param pass_data List containing PASS results
+#' @return Named list where names are table names and values are PASS scores
+#' @export
+extract_pass_table_scores <- function(pass_data) {
+  if (is.null(pass_data) || is.null(pass_data$table_level_metrics) || length(pass_data$table_level_metrics) == 0) {
+    return(list())
+  }
+
+  # Get all unique table names across all metrics
+  all_tables <- unique(unlist(lapply(pass_data$table_level_metrics, function(df) df$table_name)))
+
+  if (length(all_tables) == 0) {
+    return(list())
+  }
+
+  # Calculate composite score for each table
+  table_composite_scores <- list()
+
+  for (table_name in all_tables) {
+    # Collect scores for all metrics for this table
+    metric_scores <- list()
+
+    for (metric_name in names(pass_data$table_level_metrics)) {
+      metric_df <- pass_data$table_level_metrics[[metric_name]]
+      table_row <- metric_df[metric_df$table_name == table_name, ]
+
+      if (nrow(table_row) > 0 && !is.na(table_row$score[1])) {
+        metric_scores[[metric_name]] <- table_row$score[1]
+      }
+    }
+
+    # Calculate weighted composite score (only if we have at least one metric)
+    if (length(metric_scores) > 0) {
+      # Get weights for the metrics we have scores for
+      weights <- sapply(names(metric_scores), function(m) {
+        if (m %in% names(pass_data$metric_weights)) {
+          pass_data$metric_weights[[m]]
+        } else {
+          1/6  # Default equal weight if not found
+        }
+      })
+
+      # Calculate weighted average
+      weighted_sum <- sum(unlist(metric_scores) * weights)
+      weight_sum <- sum(weights)
+
+      composite_score <- if (weight_sum > 0) weighted_sum / weight_sum else NA_real_
+
+      table_composite_scores[[tolower(table_name)]] <- composite_score
+    } else {
+      # No valid scores for this table
+      table_composite_scores[[tolower(table_name)]] <- NA_real_
+    }
+  }
+
+  table_composite_scores
+}
+
+#' Create empty PASS scores structure
+#'
+#' Used when PASS data is unavailable.
+#'
+#' @return List with NA overall score and empty components
+#' @export
+create_empty_pass_scores <- function() {
+  list(
+    overall_score = NA_real_,
+    ci_lower = NA_real_,
+    ci_upper = NA_real_,
+    components = tibble::tibble(
+      metric = character(),
+      description = character(),
+      score = numeric(),
+      weight = numeric(),
+      weighted_contribution = numeric(),
+      percent_contribution = numeric()
+    )
+  )
+}

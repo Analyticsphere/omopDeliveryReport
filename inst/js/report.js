@@ -177,7 +177,7 @@ function showTableDrilldown(tableName) {
   }
 
   // Hide all other sections
-  const sectionsToHide = ["overview", "dqd-grid", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToHide = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToHide.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -219,7 +219,7 @@ function hideTableDrilldown() {
   }
 
   // Show all other sections
-  const sectionsToShow = ["overview", "dqd-grid", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToShow = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToShow.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -374,6 +374,9 @@ function buildTableDrilldownContent(tableData) {
   var dqdClass = tableData.final_rows === 0 ? "neutral" : getDQDClass(tableData.dqd_score);
   var dqdDisplay = tableData.final_rows === 0 ? "N/A" : (tableData.dqd_score !== null && tableData.dqd_score !== undefined ? tableData.dqd_score + "%" : "N/A");
 
+  var passClass = tableData.final_rows === 0 ? "neutral" : getPASSClass(tableData.pass_score);
+  var passDisplay = tableData.final_rows === 0 ? "N/A" : (tableData.pass_score !== null && tableData.pass_score !== undefined ? tableData.pass_score.toFixed(2) : "N/A");
+
   html += `
     <div class="metrics-grid">
       <div class="metric-card">
@@ -381,6 +384,15 @@ function buildTableDrilldownContent(tableData) {
         <div class="text-center mt-20">
           <div class="dqd-score drilldown-dqd-score ` + dqdClass + `">
             ` + dqdDisplay + `
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">PASS</div>
+        <div class="text-center mt-20">
+          <div class="pass-score drilldown-pass-score ` + passClass + `">
+            ` + passDisplay + `
           </div>
         </div>
       </div>
@@ -538,6 +550,76 @@ function buildTableDrilldownContent(tableData) {
 
   html += `</div>`;  // End Data Quality Control subsection
 
+  // PASS Breakdown Section (table-specific)
+  if (tableData.pass_metrics && tableData.pass_metrics.length > 0) {
+    html += `
+      <div class="subsection">
+        <h4 style="margin-bottom: 16px;">Composite Score Breakdown</h4>
+        <table class="pass-components-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Score</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    // Use metrics in the order provided by R (preserves temporal sub-metrics placement)
+    tableData.pass_metrics.forEach(function(metric) {
+      var scoreFormatted = metric.score.toFixed(2);
+
+      // Table-level metrics don't have standard errors, so no uncertainty range or tooltip
+      var visualization = buildPASSScoreVisualization(metric.score, null, null, 140, 32);
+
+      // Check if this is a temporal sub-metric
+      var isTemporalSub = metric.metric.startsWith('temporal_');
+
+      // Format metric name for display
+      var metricDisplayName = metric.metric;
+      if (isTemporalSub) {
+        // Extract sub-metric name (e.g., "temporal_range" -> "Range")
+        var subMetricName = metric.metric.replace('temporal_', '');
+        metricDisplayName = subMetricName.charAt(0).toUpperCase() + subMetricName.slice(1);
+      } else {
+        // Format main metric names with proper capitalization
+        if (metric.metric === 'concept_diversity') {
+          metricDisplayName = 'Concept Diversity';
+        } else if (metric.metric === 'source_diversity') {
+          metricDisplayName = 'Source Diversity';
+        } else {
+          // Capitalize first letter for other metrics
+          metricDisplayName = metric.metric.charAt(0).toUpperCase() + metric.metric.slice(1);
+        }
+      }
+
+      // Apply indentation and special styling for temporal sub-metrics
+      var rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
+      var namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+      var nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
+
+      html += `
+            <tr class="` + rowClass + `">
+              <td class="pass-metric-name" style="` + nameStyle + `">` + namePrefix + metricDisplayName + `</td>
+              <td class="pass-score-cell" style="padding: 8px 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-weight: 600; min-width: 40px;">` + scoreFormatted + `</span>
+                  ` + visualization + `
+                </div>
+              </td>
+              <td class="pass-description-cell">` + metric.description + `</td>
+            </tr>
+      `;
+    });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
   // Type Concepts
   if (tableData.type_concepts && tableData.type_concepts.length > 0) {
     html += `
@@ -583,12 +665,8 @@ function buildTableDrilldownContent(tableData) {
   var rowsOut = tableData.rows_out || 0;
   var harmonizationNet = tableData.harmonization || 0;
 
-  // Calculate rows added from 1:N same-table mappings
-  // Use valid_rows (not initial_rows) as the baseline and add back rows_out
-  // This gives us the net expansion from 1:N mappings, separate from rows moved out
-  var same_table_result_rows = tableData.same_table_result_rows || 0;
-  var valid_rows = tableData.valid_rows || 0;
-  var rowsAddedFromMappings = (same_table_result_rows - valid_rows) + rowsOut;
+  // Use pre-calculated rows added from mappings (calculated in R)
+  var rowsAddedFromMappings = tableData.rows_added_from_mappings || 0;
 
   // Only show harmonization flow if there was actual harmonization activity
   if (harmonizationNet !== 0) {
@@ -632,7 +710,10 @@ function buildTableDrilldownContent(tableData) {
 
     // Harmonization Strategies (if available)
     if (tableData.harmonization_statuses && tableData.harmonization_statuses.length > 0) {
-      const totalStatusRows = tableData.harmonization_statuses.reduce(function(sum, s) { return sum + s.count; }, 0);
+      // Use pre-calculated values from R
+      const totalStatusRows = tableData.total_harmonization_status_rows || 0;
+      const tableInitialRows = tableData.initial_rows || 0;
+      const tableHarmonizationPercent = tableData.harmonization_percent || 0;
 
       html += `
         <div class="info-box" style="margin-bottom: 20px;">
@@ -649,10 +730,6 @@ function buildTableDrilldownContent(tableData) {
             <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${formatNumber(status.count)}</div>
         `;
       });
-
-      // Calculate harmonization impact as percentage of table's initial rows
-      const tableInitialRows = tableData.initial_rows || 0;
-      const tableHarmonizationPercent = tableInitialRows > 0 ? Math.round((totalStatusRows / tableInitialRows) * 100) : 0;
 
       html += `
           </div>
@@ -1296,6 +1373,205 @@ function getDQDClass(score) {
   return "poor";
 }
 
+function getPASSClass(score) {
+  if (score === null || score === undefined || isNaN(score)) return "neutral";
+  if (score >= 0.90) return "excellent";
+  if (score >= 0.80) return "good";
+  if (score >= 0.60) return "moderate";
+  if (score >= 0.40) return "poor";
+  return "verypoor";
+}
+
+function getPASSColor(score) {
+  if (score === null || score === undefined || isNaN(score)) return "#94a3b8";
+  if (score >= 0.90) return "#059669";  // excellent - emerald-600
+  if (score >= 0.80) return "#10b981";  // good - emerald-500
+  if (score >= 0.60) return "#f59e0b";  // moderate - amber-500
+  if (score >= 0.40) return "#ef4444";  // poor - red-500
+  return "#991b1b";  // verypoor - red-800
+}
+
+/**
+ * Generate inline SVG visualization for PASS score with optional uncertainty range
+ * @param {number} score - The PASS score (0-1)
+ * @param {number|null} lowerBound - Lower bound of uncertainty (CI or score-SE)
+ * @param {number|null} upperBound - Upper bound of uncertainty (CI or score+SE)
+ * @param {number} width - SVG width in pixels (default: 140)
+ * @param {number} height - SVG height in pixels (default: 32)
+ * @returns {string} SVG HTML string
+ */
+function buildPASSScoreVisualization(score, lowerBound, upperBound, width, height) {
+  width = width || 140;
+  height = height || 32;
+
+  if (score === null || score === undefined || isNaN(score)) {
+    return '<span style="color: #94a3b8;">N/A</span>';
+  }
+
+  var padding = 12;
+  var lineY = height / 2;
+  var scaleStart = padding;
+  var scaleEnd = width - padding;
+  var scaleWidth = scaleEnd - scaleStart;
+
+  // Helper to convert score (0-1) to x position
+  function scoreToX(s) {
+    return scaleStart + (s * scaleWidth);
+  }
+
+  var scoreX = scoreToX(score);
+  var scoreColor = getPASSColor(score);
+  var hasRange = (lowerBound !== null && lowerBound !== undefined &&
+                  upperBound !== null && upperBound !== undefined &&
+                  !isNaN(lowerBound) && !isNaN(upperBound));
+
+  var svg = '<svg width="' + width + '" height="' + height + '" style="display: inline-block; vertical-align: middle;">';
+
+  // Background line (0 to 1 scale)
+  svg += '<line x1="' + scaleStart + '" y1="' + lineY + '" x2="' + scaleEnd + '" y2="' + lineY + '" ';
+  svg += 'stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>';
+
+  // Uncertainty range (if provided)
+  if (hasRange) {
+    var lowerX = scoreToX(Math.max(0, Math.min(1, lowerBound)));
+    var upperX = scoreToX(Math.max(0, Math.min(1, upperBound)));
+    var rangeWidth = upperX - lowerX;
+
+    // Range indicator - thicker line segment
+    svg += '<line x1="' + lowerX + '" y1="' + lineY + '" x2="' + upperX + '" y2="' + lineY + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="6" opacity="0.25" stroke-linecap="round"/>';
+
+    // Whiskers at ends
+    var whiskerHeight = 8;
+    svg += '<line x1="' + lowerX + '" y1="' + (lineY - whiskerHeight/2) + '" ';
+    svg += 'x2="' + lowerX + '" y2="' + (lineY + whiskerHeight/2) + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="2" opacity="0.6"/>';
+
+    svg += '<line x1="' + upperX + '" y1="' + (lineY - whiskerHeight/2) + '" ';
+    svg += 'x2="' + upperX + '" y2="' + (lineY + whiskerHeight/2) + '" ';
+    svg += 'stroke="' + scoreColor + '" stroke-width="2" opacity="0.6"/>';
+  }
+
+  // Score marker - filled circle
+  var markerRadius = 5;
+  svg += '<circle cx="' + scoreX + '" cy="' + lineY + '" r="' + markerRadius + '" ';
+  svg += 'fill="' + scoreColor + '" stroke="#ffffff" stroke-width="2"/>';
+
+  // Scale labels (0, 1)
+  svg += '<text x="' + scaleStart + '" y="' + (height - 2) + '" ';
+  svg += 'font-size="9" fill="#94a3b8" text-anchor="start">0</text>';
+
+  svg += '<text x="' + scaleEnd + '" y="' + (height - 2) + '" ';
+  svg += 'font-size="9" fill="#94a3b8" text-anchor="end">1</text>';
+
+  svg += '</svg>';
+
+  return svg;
+}
+
+// ============================================================================
+// PASS COMPONENTS
+// ============================================================================
+
+function initializePASSOverallVisualization() {
+  const vizContainer = document.getElementById("pass-overall-visualization");
+  if (!vizContainer) return;
+
+  // Check if PASS data exists
+  if (!REPORT_DATA || REPORT_DATA.pass_overall_score === null || REPORT_DATA.pass_overall_score === undefined) {
+    return;
+  }
+
+  const score = REPORT_DATA.pass_overall_score;
+  const ciLower = REPORT_DATA.pass_ci_lower;
+  const ciUpper = REPORT_DATA.pass_ci_upper;
+
+  // Generate larger visualization for overall score (200px wide, no tooltip)
+  const visualization = buildPASSScoreVisualization(score, ciLower, ciUpper, 200, 36);
+
+  vizContainer.innerHTML = visualization;
+}
+
+function initializePASSComponents() {
+  const container = document.getElementById("pass-components-container");
+  if (!container) return;
+
+  // Check if PASS data exists
+  if (!REPORT_DATA || !REPORT_DATA.pass_components || REPORT_DATA.pass_components.length === 0) {
+    container.innerHTML = '<tr><td colspan="3">No PASS component data available</td></tr>';
+    return;
+  }
+
+  // Initialize overall score visualization (with 95% CI)
+  initializePASSOverallVisualization();
+
+  // Use components in the order provided by R (preserves temporal sub-metrics placement)
+  const components = REPORT_DATA.pass_components;
+
+  let html = "";
+
+  // Build table rows
+  components.forEach(function(component) {
+    const score = component.score;
+    const scoreFormatted = score.toFixed(2);
+
+    // Use pre-calculated CI bounds from R (95% CI from metric overall files)
+    const lowerBound = component.ci_lower || null;
+    const upperBound = component.ci_upper || null;
+
+    // Generate visualization (no tooltip)
+    const visualization = buildPASSScoreVisualization(score, lowerBound, upperBound, 140, 32);
+
+    // Build CI text if available
+    let ciText = '';
+    if (lowerBound !== null && upperBound !== null) {
+      ciText = '<div style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
+    }
+
+    // Check if this is a temporal sub-metric
+    const isTemporalSub = component.metric.startsWith('temporal_');
+
+    // Format metric name for display
+    let metricDisplayName = component.metric;
+    if (isTemporalSub) {
+      // Extract sub-metric name (e.g., "temporal_range" -> "Range")
+      const subMetricName = component.metric.replace('temporal_', '');
+      metricDisplayName = subMetricName.charAt(0).toUpperCase() + subMetricName.slice(1);
+    } else {
+      // Format main metric names with proper capitalization
+      if (component.metric === 'concept_diversity') {
+        metricDisplayName = 'Concept Diversity';
+      } else if (component.metric === 'source_diversity') {
+        metricDisplayName = 'Source Diversity';
+      } else {
+        // Capitalize first letter for other metrics
+        metricDisplayName = component.metric.charAt(0).toUpperCase() + component.metric.slice(1);
+      }
+    }
+
+    // Apply indentation and special styling for temporal sub-metrics
+    const rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
+    const namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+    const nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
+
+    html += '<tr class="' + rowClass + '">';
+    html += '  <td class="pass-metric-name" style="' + nameStyle + '">' + namePrefix + metricDisplayName + '</td>';
+    html += '  <td class="pass-score-cell" style="padding: 8px 12px;">';
+    html += '    <div style="display: flex; align-items: center; gap: 12px;">';
+    html += '      <div style="min-width: 40px;">';
+    html += '        <div style="font-weight: 600;">' + scoreFormatted + '</div>';
+    html += '        ' + ciText;
+    html += '      </div>';
+    html += '      ' + visualization;
+    html += '    </div>';
+    html += '  </td>';
+    html += '  <td class="pass-description-cell">' + component.description + '</td>';
+    html += '</tr>';
+  });
+
+  container.innerHTML = html;
+}
+
 // ============================================================================
 // CSV EXPORT
 // ============================================================================
@@ -1429,6 +1705,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initialize data timeline section
   initializeTimeSeries();
+
+  // Initialize PASS components section
+  initializePASSComponents();
 
   // Set up scroll tracking for sidebar navigation
   window.addEventListener("scroll", updateActiveNavOnScroll);

@@ -12,22 +12,32 @@
 #' @param metrics List of parsed delivery metrics
 #' @param dqd_data Data frame with DQD results (or NULL)
 #' @param dqd_scores List with overall score and grid
+#' @param pass_scores List with overall_score, ci_lower, ci_upper
+#' @param pass_components Data frame with PASS component breakdown
 #' @param table_groups Named list of table groups
 #' @param group_dqd_scores Named list of DQD scores per group
 #' @param table_dqd_scores Named list of DQD scores per table
+#' @param table_pass_scores Named list of PASS scores per table
 #' @param has_delivery_data Logical whether delivery data available
 #' @param has_dqd_data Logical whether DQD data available
+#' @param has_pass_data Logical whether PASS data available
 #' @return Character string containing complete HTML report
-build_complete_html_report <- function(metrics, dqd_data, dqd_scores, table_groups,
-                                       group_dqd_scores, table_dqd_scores,
-                                       has_delivery_data, has_dqd_data) {
+build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_scores, pass_components,
+                                       table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores,
+                                       has_delivery_data, has_dqd_data, has_pass_data, pass_data = NULL) {
 
   # Calculate summary metrics
   num_participants <- if (has_delivery_data) calculate_num_participants(metrics) else 0
   total_rows_removed <- if (has_delivery_data) calculate_total_rows_removed(metrics) else 0
 
   # Prepare report data (all business logic calculations)
-  report_data <- prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores)
+  report_data <- prepare_report_data(metrics, table_groups, group_dqd_scores, table_dqd_scores, table_pass_scores, pass_data)
+
+  # Add PASS data to report_data for JavaScript consumption
+  report_data$pass_overall_score <- pass_scores$overall_score
+  report_data$pass_ci_lower <- pass_scores$ci_lower
+  report_data$pass_ci_upper <- pass_scores$ci_upper
+  report_data$pass_components <- pass_components
 
   # Serialize to JSON for JavaScript
   report_data_json <- build_report_data_json(report_data)
@@ -43,14 +53,14 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, table_grou
   ))
 
   # Overview section - use template
-  overview_html <- if (!has_delivery_data && !has_dqd_data) {
+  overview_html <- if (!has_delivery_data && !has_dqd_data && !has_pass_data) {
     render_template("sections/data-unavailable", list(
       section_id = "overview",
       section_title = "Delivery Overview",
-      data_type = "Delivery and DQD"
+      data_type = "Delivery, DQD, and PASS"
     ))
   } else {
-    overview_data <- prepare_overview_data(metrics, dqd_scores, num_participants, total_rows_removed, has_delivery_data, has_dqd_data)
+    overview_data <- prepare_overview_data(metrics, dqd_scores, pass_scores, num_participants, total_rows_removed, has_delivery_data, has_dqd_data, has_pass_data)
     render_template("sections/overview", overview_data)
   }
 
@@ -69,6 +79,26 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, table_grou
       '<tr><td colspan="13">No DQD data available</td></tr>'
     }
     render_template("sections/dqd-grid", list(grid_rows = grid_rows_html))
+  }
+
+  # PASS breakdown section - use template
+  pass_breakdown_html <- if (!has_pass_data) {
+    render_template("sections/data-unavailable", list(
+      section_id = "pass-breakdown",
+      section_title = "PASS Quality Assessment",
+      data_type = "PASS"
+    ))
+  } else {
+    pass_data <- list(
+      pass_overall_class = get_pass_score_class(pass_scores$overall_score),
+      pass_overall_score = format_pass_score_display(pass_scores$overall_score, decimals = 2),
+      pass_overall_ci = if (!is.na(pass_scores$ci_lower) && !is.na(pass_scores$ci_upper)) {
+        glue::glue("95% CI: {format(round(pass_scores$ci_lower, 2), nsmall = 2)}-{format(round(pass_scores$ci_upper, 2), nsmall = 2)}")
+      } else {
+        ""
+      }
+    )
+    render_template("sections/pass-breakdown", pass_data)
   }
 
   # Time series section - use template
@@ -169,6 +199,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, table_grou
     header_html = header_html,
     overview_html = overview_html,
     dqd_grid_html = dqd_grid_html,
+    pass_breakdown_html = pass_breakdown_html,
     time_series_html = time_series_html,
     delivery_report_html = delivery_report_html,
     vocab_harm_html = vocab_harm_html,
