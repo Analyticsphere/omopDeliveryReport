@@ -22,4 +22,6 @@ when multiple date columns have defaults.
 \details{
 Vocabulary tables are excluded from alerts as they often have standard
 default dates by design (e.g., valid_start_date = 1900-01-01).
+
+Alert thresholds: >1% for most tables, >10% for PERSON table.
 }

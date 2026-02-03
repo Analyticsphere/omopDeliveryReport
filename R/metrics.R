@@ -400,6 +400,8 @@ format_quality_issues_display <- function(quality_issues) {
 #' Vocabulary tables are excluded from alerts as they often have standard
 #' default dates by design (e.g., valid_start_date = 1900-01-01).
 #'
+#' Alert thresholds: >1% for most tables, >10% for PERSON table.
+#'
 #' @param table_name Character table name
 #' @param metrics List from parse_delivery_metrics()
 #' @return List with rows, percent, and has_alert
@@ -409,7 +411,9 @@ calculate_default_date_metric <- function(table_name, metrics) {
   rows <- get_table_count_max(metrics$default_date_values, table_name)
   final_rows <- get_table_count(metrics$final_row_counts, table_name)
   percent <- calculate_percentage(rows, final_rows)
-  threshold <- .ALERT_THRESHOLDS$default_dates_pct
+
+  # Use 10% threshold for PERSON table, 1% for all others
+  threshold <- if (tolower(table_name) == "person") 10 else .ALERT_THRESHOLDS$default_dates_pct
 
   # Check if this is a vocabulary table (they have default dates by design)
   vocab_tables <- .TABLE_GROUPS[["Vocabulary"]]

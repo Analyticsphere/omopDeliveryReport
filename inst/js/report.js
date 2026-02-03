@@ -298,8 +298,9 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final_rows) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
   }
 
-  // Default dates warning (>1%) - skip for vocabulary tables
-  if (parseFloat(defaultDatePercent) > 1 && tableData.final_rows > 0 && !isVocabularyTable) {
+  // Default dates warning (>1% for most tables, >10% for PERSON) - skip for vocabulary tables
+  var defaultDateThreshold = tableData.name.toLowerCase() === 'person' ? 10 : 1;
+  if (parseFloat(defaultDatePercent) > defaultDateThreshold && tableData.final_rows > 0 && !isVocabularyTable) {
     qualityWarnings.push(`📅 <strong>` + defaultDatePercent + `%</strong> of rows have default/placeholder dates`);
   }
 
@@ -470,13 +471,14 @@ function buildTableDrilldownContent(tableData) {
   `;
 
   // Default Date Values Card (variables already declared at top for warnings)
-  // Determine color based on percentage: 0-1% green, >1-15% yellow, >15% red
+  // Determine color based on percentage: 0-1% green (0-10% for PERSON), >threshold yellow, >15% red
   var defaultDateClass = "success";
+  var colorThreshold = tableData.name.toLowerCase() === 'person' ? 10 : 1;
   if (tableData.final_rows === 0) {
     defaultDateClass = "neutral";
   } else if (parseFloat(defaultDatePercent) > 15) {
     defaultDateClass = "warning";  // Use warning for >15% (will show red-ish)
-  } else if (parseFloat(defaultDatePercent) > 1) {
+  } else if (parseFloat(defaultDatePercent) > colorThreshold) {
     defaultDateClass = "warning";
   }
 
@@ -1367,7 +1369,7 @@ function formatNumber(num) {
 }
 
 function getDQDClass(score) {
-  if (score === null || score === undefined) return "";
+  if (score === null || score === undefined) return "neutral";
   if (score >= 95) return "good";
   if (score >= 85) return "fair";
   return "poor";

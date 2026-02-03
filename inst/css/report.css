@@ -1758,6 +1758,11 @@ tr.row-warning:hover {
   font-size: 2em;
 }
 
+/* Make N/A text readable in drilldown */
+.dqd-score.drilldown-dqd-score.neutral {
+  color: #f9f9f9;
+}
+
 .drilldown-section-spacing {
   margin-top: 20px;
 }
