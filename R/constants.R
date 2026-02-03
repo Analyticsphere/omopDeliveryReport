@@ -48,17 +48,17 @@
   temporal = "table_score"
 )
 
-# PASS metric descriptions (one sentence each)
+# PASS metric descriptions (optimized for clarity to newcomers)
 .PASS_METRIC_DESCRIPTIONS <- list(
-  accessibility = "Measures whether clinical facts are present and discoverable in the dataset",
-  provenance = "Measures traceability to source data",
-  standards = "Assesses the use of OHDSI standard concepts",
-  concept_diversity = "Measures variety of clinical concepts",
-  source_diversity = "Measures variety of data sources",
-  temporal = "Assesses temporal distribution including coverage, density, and consistency",
-  temporal_range = "Years of data coverage in the dataset",
-  temporal_density = "Rows per patient per time interval",
-  temporal_consistency = "Temporal stability measured by coefficient of variation"
+  accessibility = "Evaluates whether clinical data is present and accessible for analysis",
+  provenance = "Evaluates information preservation and traceability through the mapping process",
+  standards = "Measures use of standardized vocabularies required for interoperable research",
+  concept_diversity = "Quantifies the variety of distinct clinical concepts captured in the data",
+  source_diversity = "Evaluates variety of data source types (e.g., EHR, claims, registries)",
+  temporal = "Assesses data distribution over time including span, density, and consistency",
+  temporal_range = "Historical span of data, measured in years",
+  temporal_density = "Average volume of clinical records per patient over time",
+  temporal_consistency = "Stability of data capture over time, detecting gaps or irregular patterns"
 )
 
 # Color scheme (colorblind-friendly)
