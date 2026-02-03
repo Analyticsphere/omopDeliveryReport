@@ -1,0 +1,2 @@
+"composite_score","standard_error","ci_95_lower","ci_95_upper","n_metrics","metrics_included","weights_used"
+0.722908863357421,0.0200936444034138,0.68352532032673,0.762292406388112,6,"accessibility, provenance, standards, concept_diversity, source_diversity, temporal","accessibility=0.167, provenance=0.167, standards=0.167, concept_diversity=0.167, source_diversity=0.167, temporal=0.167"
