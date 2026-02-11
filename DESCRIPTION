@@ -1,7 +1,7 @@
 Package: omopDeliveryReport
 Type: Package
 Title: OMOP CDM Delivery Report Generator
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: person("Edward", "Frankenberger", email = "edward.frankenberger@nih.gov",
                   role = c("aut", "cre"))
 Description: Generates interactive HTML reports for OMOP Common Data Model (CDM)
