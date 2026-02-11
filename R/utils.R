@@ -144,6 +144,7 @@ write_file <- function(content, path, max_retries = 3) {
 #' Get type concept color mapping
 #'
 #' @return Named character vector of hex colors
+#' @export
 get_type_concept_colors <- function() {
   unlist(.COLORS$type_concepts)
 }
@@ -158,6 +159,7 @@ get_table_colors <- function() {
 #' Get canonical order for type concept groups
 #'
 #' @return Character vector of group names in display order
+#' @export
 get_type_concept_group_order <- function() {
   .TYPE_CONCEPT_ORDER
 }
@@ -165,6 +167,7 @@ get_type_concept_group_order <- function() {
 #' Get canonical display order for tables
 #'
 #' @return Character vector of table names in display order
+#' @export
 get_table_order <- function() {
   .TABLE_ORDER
 }
@@ -196,6 +199,7 @@ sort_tables_by_order <- function(tables) {
 #' Get table groups with tables sorted by canonical order
 #'
 #' @return Named list of table groups, with tables sorted according to .TABLE_ORDER
+#' @export
 get_table_groups <- function() {
   # Apply canonical ordering to tables within each group
   lapply(.TABLE_GROUPS, sort_tables_by_order)
