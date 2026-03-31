@@ -701,16 +701,18 @@ function buildTableDrilldownContent(tableData) {
 
   // Use pre-computed harmonization data from R
   var rowsIn = tableData.transitions_in || 0;
-  var rowsOut = tableData.rows_out || 0;
+  var rowsMovedOut = tableData.rows_moved_out || 0;
+  var rowsCopiedOut = tableData.rows_copied_out || 0;
   var harmonizationNet = tableData.harmonization || 0;
 
   // Use pre-calculated rows added from mappings (calculated in R)
   var rowsAddedFromMappings = tableData.rows_added_from_mappings || 0;
+  var hasHarmonizationFlow = harmonizationNet !== 0 || rowsMovedOut !== 0 || rowsCopiedOut !== 0 || rowsIn !== 0 || rowsAddedFromMappings !== 0;
 
   // Only show harmonization flow if there was actual harmonization activity
-  if (harmonizationNet !== 0) {
+  if (hasHarmonizationFlow) {
     // Format rows out (red with minus sign if > 0)
-    var rowsOutFormatted = rowsOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsOut) + '</span>' : formatNumber(rowsOut);
+    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
 
     // Format rows in (green with plus sign if > 0)
     var rowsInFormatted = rowsIn > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
@@ -718,12 +720,24 @@ function buildTableDrilldownContent(tableData) {
     // Format rows added from mappings (green with plus sign if > 0)
     var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
 
+    // Generated rows are additional rows created during mapping and sent elsewhere
+    var rowsCopiedFormatted = rowsCopiedOut > 0 ? '<span style="color: #6b7280;">' + formatNumber(rowsCopiedOut) + '</span>' : formatNumber(rowsCopiedOut);
+
     html += `
       <div class="subsection">
         <h4>Vocabulary Harmonization Flow</h4>
         <div class="info-box">
           <ul style="margin: 0; padding-left: 20px;">
             <li>Rows moved to other tables: ` + rowsOutFormatted + `</li>
+    `;
+
+    if (rowsCopiedOut > 0) {
+      html += `
+            <li>Rows generated for other tables: ` + rowsCopiedFormatted + `</li>
+      `;
+    }
+
+    html += `
             <li>Rows received from other tables: ` + rowsInFormatted + `</li>
             <li>Rows added from 1:N mappings: ` + rowsAddedFormatted + `</li>
           </ul>
@@ -734,6 +748,15 @@ function buildTableDrilldownContent(tableData) {
 
     html += `
           <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + netClass + `">` + netSign + formatNumber(harmonizationNet) + ` rows</span></p>
+    `;
+
+    if (rowsCopiedOut > 0) {
+      html += `
+          <p style="margin-top: 10px; margin-bottom: 0; color: #6b7280; font-size: 0.95em;">Rows generated for other tables are additional rows created during 1:N mappings and routed elsewhere, so they do not affect the source table's row count.</p>
+      `;
+    }
+
+    html += `
         </div>
       </div>
     `;

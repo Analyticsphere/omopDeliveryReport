@@ -230,6 +230,21 @@ get_rows_added_from_mappings <- function(table_name, metrics) {
   ifelse(length(total_rows_added) > 0, total_rows_added[1], 0)
 }
 
+calculate_rows_moved_out <- function(rows_available_for_harmonization,
+                                     same_table_rows,
+                                     rows_added_from_mappings,
+                                     total_rows_out) {
+  rows_moved_out <- rows_available_for_harmonization + rows_added_from_mappings - same_table_rows
+  rows_moved_out <- max(rows_moved_out, 0)
+  rows_moved_out <- min(rows_moved_out, total_rows_out)
+
+  rows_moved_out
+}
+
+calculate_rows_copied_out <- function(total_rows_out, rows_moved_out) {
+  max(total_rows_out - rows_moved_out, 0)
+}
+
 #' Calculate total number of participants
 #'
 #' Sums all rows in person table (valid + invalid) to get participant count.
@@ -652,6 +667,8 @@ calculate_harmonization_metric <- function(table_name, metrics) {
       same_table_rows = 0,
       transitions_in = 0,
       rows_out = 0,
+      rows_moved_out = 0,
+      rows_copied_out = 0,
       rows_added_from_mappings = 0,
       display = list(text = "--", class = "harmonization-neutral")
     ))
@@ -687,10 +704,18 @@ calculate_harmonization_metric <- function(table_name, metrics) {
     dplyr::pull(total)
   rows_out <- ifelse(length(rows_out) > 0, rows_out[1], 0)
 
+  rows_added_from_mappings <- get_rows_added_from_mappings(table_name, metrics)
+  rows_moved_out <- calculate_rows_moved_out(
+    rows_available_for_harmonization = rows_available_for_harmonization,
+    same_table_rows = same_table_rows,
+    rows_added_from_mappings = rows_added_from_mappings,
+    total_rows_out = rows_out
+  )
+  rows_copied_out <- calculate_rows_copied_out(rows_out, rows_moved_out)
+
   # Calculate harmonization impact
   value <- calculate_harmonization(same_table_rows, rows_available_for_harmonization, transitions_in)
   display <- format_harmonization_display(value, TRUE)
-  rows_added_from_mappings <- get_rows_added_from_mappings(table_name, metrics)
 
   list(
     value = value,
@@ -700,6 +725,8 @@ calculate_harmonization_metric <- function(table_name, metrics) {
     same_table_rows = same_table_rows,
     transitions_in = transitions_in,
     rows_out = rows_out,
+    rows_moved_out = rows_moved_out,
+    rows_copied_out = rows_copied_out,
     rows_added_from_mappings = rows_added_from_mappings,
     display = display
   )

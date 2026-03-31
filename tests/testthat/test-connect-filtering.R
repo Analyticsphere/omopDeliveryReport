@@ -191,3 +191,23 @@ test_that("table drilldown separates participant filtering from data quality con
   expect_match(html, "\"connect_exclusion_rows\":5791", fixed = TRUE)
   expect_false(grepl("Connect exclusion-rule criteria and", html, fixed = TRUE))
 })
+
+test_that("table drilldown vocabulary harmonization flow distinguishes copied rows", {
+  output_path <- tempfile(fileext = ".html")
+
+  generate_omop_report(
+    delivery_report_path = "../../example_raw_delivery_report.csv",
+    dqd_results_path = "../../inst/ref/dqd_results.csv",
+    pass_results_path = "../../inst/ref/example_pass",
+    output_path = output_path
+  )
+
+  html <- paste(readLines(output_path, warn = FALSE), collapse = "\n")
+
+  expect_match(html, "Rows generated for other tables", fixed = TRUE)
+  expect_match(html, "Rows generated for other tables are additional rows created during 1:N mappings", fixed = TRUE)
+  expect_match(html, "do not reduce the source table's row count", fixed = TRUE)
+  expect_match(html, "\"rows_moved_out\":0", fixed = TRUE)
+  expect_match(html, "\"rows_copied_out\":1", fixed = TRUE)
+  expect_match(html, "\"rows_moved_out\":375", fixed = TRUE)
+})

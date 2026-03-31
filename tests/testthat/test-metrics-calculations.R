@@ -296,6 +296,8 @@ test_that("calculate_harmonization_metric uses parsed 1:N mapping counts as sour
 
   expect_equal(result$rows_available_for_harmonization, 39511)
   expect_equal(result$rows_added_from_mappings, 1)
+  expect_equal(result$rows_moved_out, 0)
+  expect_equal(result$rows_copied_out, 1)
   expect_equal(result$value, 5)
 })
 
@@ -307,6 +309,7 @@ test_that("prepare_delivery_table_row shows participant filter and adjusted harm
   person_row <- prepare_delivery_table_row("person", metrics, num_participants)
   procedure_row <- prepare_delivery_table_row("procedure_occurrence", metrics, num_participants)
   procedure_metrics <- calculate_table_metrics("procedure_occurrence", metrics, NA)
+  measurement_data <- prepare_table_data("measurement", metrics, NA)
 
   expect_equal(person_row$quality_issues_display, "0")
   expect_equal(person_row$participant_filter_display, "-46")
@@ -316,6 +319,10 @@ test_that("prepare_delivery_table_row shows participant filter and adjusted harm
   expect_true(procedure_metrics$counts_valid)
   expect_equal(procedure_metrics$expected_final, 9562)
   expect_equal(procedure_metrics$harmonization$rows_added_from_mappings, 0)
+  expect_equal(procedure_metrics$harmonization$rows_moved_out, 375)
+  expect_equal(procedure_metrics$harmonization$rows_copied_out, 0)
+  expect_equal(measurement_data$rows_moved_out, 0)
+  expect_equal(measurement_data$rows_copied_out, 1)
 })
 
 test_that("prepare_delivery_table_row shows Connect participant warning icon when identifier is not in Connect", {

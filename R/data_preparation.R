@@ -54,6 +54,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
 
   transitions_in <- harmonization_metrics$transitions_in
   rows_out <- harmonization_metrics$rows_out
+  rows_moved_out <- harmonization_metrics$rows_moved_out
+  rows_copied_out <- harmonization_metrics$rows_copied_out
 
   # Calculate harmonization impact
   is_harmonized <- harmonization_metrics$is_harmonized
@@ -135,6 +137,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     harmonization = harmonization,
     transitions_in = transitions_in,
     rows_out = rows_out,
+    rows_moved_out = rows_moved_out,
+    rows_copied_out = rows_copied_out,
     same_table_result_rows = same_table_result_rows,
     rows_added_from_mappings = rows_added_from_mappings,
     total_harmonization_status_rows = total_harmonization_status_rows,
