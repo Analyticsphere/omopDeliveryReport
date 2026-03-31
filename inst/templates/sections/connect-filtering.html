@@ -9,16 +9,28 @@
     </div>
 
     <div class="overview-metrics-grid connect-filtering-summary-grid">
-        <div class="metric-card{{connect_not_in_delivery_class}}">
-            <div class="metric-label">Connect Patients Not In Delivery</div>
-            <div class="metric-value">{{connect_not_in_delivery_display}}</div>
-            <div class="metric-sublabel">Present in Connect but absent from the delivery output</div>
+        <div class="metric-card{{missing_connect_id_class}}">
+            <div class="metric-label">Missing Connect ID</div>
+            <div class="metric-value">{{missing_connect_id_display}}</div>
+            <div class="metric-sublabel">Patients with missing Connect ID</div>
         </div>
 
         <div class="metric-card{{delivery_not_in_connect_class}}">
             <div class="metric-label">Unmatched Patients</div>
             <div class="metric-value">{{delivery_not_in_connect_display}}</div>
             <div class="metric-sublabel">Patients who cannot be identified as Connect participants</div>
+        </div>
+
+        <div class="metric-card{{excluded_participants_class}}">
+            <div class="metric-label">Excluded Participants</div>
+            <div class="metric-value">{{excluded_participants_display}}</div>
+            <div class="metric-sublabel">Participants excluded by Connect filtering criteria</div>
+        </div>
+
+        <div class="metric-card{{connect_not_in_delivery_class}}">
+            <div class="metric-label">Connect Patients Not In Delivery</div>
+            <div class="metric-value">{{connect_not_in_delivery_display}}</div>
+            <div class="metric-sublabel">Eligible Connect participants absent from the delivery</div>
         </div>
     </div>
 

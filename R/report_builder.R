@@ -72,33 +72,28 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
     ))
   } else {
     connect_filtering_data <- prepare_connect_filtering_data(metrics)
-
-    if (!connect_filtering_data$has_data) {
-      render_template("sections/data-unavailable", list(
-        section_id = "connect-filtering",
-        section_title = "Connect Participant Filtering",
-        data_type = "Connect participant filtering"
-      ))
-    } else {
-      build_rows_html <- function(rows_data) {
-        if (length(rows_data) > 0) {
-          render_component_list("components/connect-filter-row", rows_data)
-        } else {
-          '<tr><td colspan="3">Not available</td></tr>'
-        }
+    build_rows_html <- function(rows_data) {
+      if (length(rows_data) > 0) {
+        render_component_list("components/connect-filter-row", rows_data)
+      } else {
+        '<tr><td colspan="3">Not available</td></tr>'
       }
-
-      render_template("sections/connect-filtering", list(
-        connect_not_in_delivery_display = connect_filtering_data$connect_not_in_delivery_display,
-        connect_not_in_delivery_class = connect_filtering_data$connect_not_in_delivery_class,
-        delivery_not_in_connect_display = connect_filtering_data$delivery_not_in_connect_display,
-        delivery_not_in_connect_class = connect_filtering_data$delivery_not_in_connect_class,
-        consent_rows = build_rows_html(connect_filtering_data$consent_rows_data),
-        data_destruction_rows = build_rows_html(connect_filtering_data$data_destruction_rows_data),
-        hipaa_rows = build_rows_html(connect_filtering_data$hipaa_rows_data),
-        study_status_rows = build_rows_html(connect_filtering_data$study_status_rows_data)
-      ))
     }
+
+    render_template("sections/connect-filtering", list(
+      missing_connect_id_display = connect_filtering_data$missing_connect_id_display,
+      missing_connect_id_class = connect_filtering_data$missing_connect_id_class,
+      excluded_participants_display = connect_filtering_data$excluded_participants_display,
+      excluded_participants_class = connect_filtering_data$excluded_participants_class,
+      connect_not_in_delivery_display = connect_filtering_data$connect_not_in_delivery_display,
+      connect_not_in_delivery_class = connect_filtering_data$connect_not_in_delivery_class,
+      delivery_not_in_connect_display = connect_filtering_data$delivery_not_in_connect_display,
+      delivery_not_in_connect_class = connect_filtering_data$delivery_not_in_connect_class,
+      consent_rows = build_rows_html(connect_filtering_data$consent_rows_data),
+      data_destruction_rows = build_rows_html(connect_filtering_data$data_destruction_rows_data),
+      hipaa_rows = build_rows_html(connect_filtering_data$hipaa_rows_data),
+      study_status_rows = build_rows_html(connect_filtering_data$study_status_rows_data)
+    ))
   }
 
   # DQD grid section - use template

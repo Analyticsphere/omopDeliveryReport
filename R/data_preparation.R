@@ -507,46 +507,6 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
   # Format displays
   tables_delivered <- if (has_delivery_data) as.character(nrow(metrics$valid_tables)) else "N/A"
   participants_display <- if (has_delivery_data) format_number(num_participants) else "N/A"
-  missing_person_display <- if (has_delivery_data) as.character(metrics$missing_person_id_count) else "N/A"
-
-  delivery_not_in_connect_count <- if (has_delivery_data && !is.null(metrics$connect_patient_counts)) {
-    metrics$connect_patient_counts$delivery_not_in_connect
-  } else {
-    NA_real_
-  }
-
-  delivery_not_in_connect_display <- if (has_delivery_data && !is.na(delivery_not_in_connect_count)) {
-    format_number(round(delivery_not_in_connect_count))
-  } else {
-    "N/A"
-  }
-
-  # Warning classes and icons
-  if (has_delivery_data) {
-    missing_warning <- if (metrics$missing_person_id_count > 0) " warning" else " success"
-    missing_icon <- if (metrics$missing_person_id_count > 0) '<span class="warning-icon">⚠️</span>' else '<span class="success-icon">✓</span>'
-    delivery_not_in_connect_warning <- if (is.na(delivery_not_in_connect_count)) {
-      " neutral"
-    } else if (delivery_not_in_connect_count > 0) {
-      " warning"
-    } else {
-      " success"
-    }
-    delivery_not_in_connect_icon <- if (is.na(delivery_not_in_connect_count)) {
-      ""
-    } else if (delivery_not_in_connect_count > 0) {
-      '<span class="warning-icon">⚠️</span>'
-    } else {
-      '<span class="success-icon">✓</span>'
-    }
-    person_word <- if (metrics$missing_person_id_count == 1) "Person" else "Persons"
-  } else {
-    missing_warning <- " neutral"
-    missing_icon <- ""
-    delivery_not_in_connect_warning <- " neutral"
-    delivery_not_in_connect_icon <- ""
-    person_word <- "Persons"
-  }
 
   # DQD score
   dqd_class <- get_dqd_score_class(dqd_scores$overall)
@@ -568,14 +528,7 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
     dqd_score_display = dqd_score_display,
     pass_class = pass_class,
     pass_score_display = pass_score_display,
-    pass_ci_display = pass_ci_display,
-    missing_warning = missing_warning,
-    missing_icon = missing_icon,
-    missing_person_display = missing_person_display,
-    person_word = person_word,
-    delivery_not_in_connect_warning = delivery_not_in_connect_warning,
-    delivery_not_in_connect_icon = delivery_not_in_connect_icon,
-    delivery_not_in_connect_display = delivery_not_in_connect_display
+    pass_ci_display = pass_ci_display
   )
 }
 
@@ -667,17 +620,30 @@ prepare_connect_filtering_data <- function(metrics) {
     })
   }
 
+  excluded_participants_count <- metrics$excluded_participants_count
+  if (is.null(excluded_participants_count)) {
+    excluded_participants_count <- NA_real_
+  }
+
+  missing_connect_id <- build_summary_card(metrics$missing_person_id_count)
   connect_not_in_delivery <- build_summary_card(connect_patient_counts$connect_not_in_delivery)
   delivery_not_in_connect <- build_summary_card(connect_patient_counts$delivery_not_in_connect)
+  excluded_participants <- build_summary_card(excluded_participants_count)
 
   has_data <- (
+    !is.na(metrics$missing_person_id_count) ||
     nrow(breakdowns) > 0 ||
+      !is.na(excluded_participants_count) ||
       !is.na(connect_patient_counts$connect_not_in_delivery) ||
       !is.na(connect_patient_counts$delivery_not_in_connect)
   )
 
   list(
     has_data = has_data,
+    missing_connect_id_display = missing_connect_id$display,
+    missing_connect_id_class = missing_connect_id$card_class,
+    excluded_participants_display = excluded_participants$display,
+    excluded_participants_class = excluded_participants$card_class,
     connect_not_in_delivery_display = connect_not_in_delivery$display,
     connect_not_in_delivery_class = connect_not_in_delivery$card_class,
     delivery_not_in_connect_display = delivery_not_in_connect$display,

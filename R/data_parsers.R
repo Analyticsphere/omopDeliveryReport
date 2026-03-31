@@ -146,6 +146,13 @@
     regex = "^Connect participant breakdown: (.+) \\((.+)\\)$",
     fields = c("breakdown_type", "status"),
     value_field = "count"
+  ),
+
+  connect_exclusion_rule_rows = list(
+    pattern = "^Number of rows removed due to Connect exclusion rules:",
+    regex = "^Number of rows removed due to Connect exclusion rules: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
   )
 )
 
@@ -324,6 +331,12 @@ parse_delivery_metrics <- function(delivery_data) {
     ))
   )
 
+  # For the PERSON table, one OMOP row corresponds to one participant.
+  # This makes the person-level exclusion-rule count the participant count.
+  metrics$excluded_participants_count <- get_single_metric_value(c(
+    "Number of rows removed due to Connect exclusion rules: person"
+  ))
+
   # Perform type concept grouping
   metrics$type_concepts_grouped <- group_type_concepts(metrics$type_concepts)
 
@@ -433,6 +446,11 @@ create_empty_metrics <- function() {
       status = character(),
       count = integer()
     ),
+    connect_exclusion_rule_rows = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    excluded_participants_count = NA_real_,
     connect_patient_counts = list(
       connect_not_in_delivery = NA_real_,
       delivery_not_in_connect = NA_real_
