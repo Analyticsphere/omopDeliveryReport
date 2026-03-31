@@ -419,11 +419,10 @@ function buildTableDrilldownContent(tableData) {
     </div>
   `;
 
-  // Data Quality Control Section - Always show, highlight issues
-  html += `<div class="subsection"><h4>Data Quality Control</h4>`;
+  // Participant Filtering Section
+  html += `<div class="subsection"><h4>Participant Filtering</h4>`;
 
-  // Row 1: participant filtering and integrity checks
-  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
+  html += `<div class="quality-cards-grid quality-cards-grid-three">`;
 
   // Rows Without Connect ID Card
   var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
@@ -463,6 +462,14 @@ function buildTableDrilldownContent(tableData) {
     </div>
   `;
 
+  html += `</div>`;
+  html += `</div>`;  // End Participant Filtering subsection
+
+  // Data Quality Control Section - quality and integrity checks
+  html += `<div class="subsection"><h4>Data Quality Control</h4>`;
+
+  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
+
   // Referential Integrity Violations Card
   var refIntegrityViolations = tableData.referential_integrity_violations || 0;
   var refIntegrityClass = tableData.final_rows === 0 ? "neutral" : (refIntegrityViolations > 0 ? "warning" : "success");
@@ -475,11 +482,6 @@ function buildTableDrilldownContent(tableData) {
       <div class="metric-sublabel">Rows with person_id not in person table</div>
     </div>
   `;
-
-  html += `</div>`;
-
-  // Row 2: OMOP row-quality checks
-  html += `<div class="quality-cards-grid quality-cards-grid-three">`;
 
   // Invalid Rows Card
   var invalidClass = tableData.final_rows === 0 ? "neutral" : (tableData.invalid_rows > 0 ? "warning" : "success");
@@ -527,7 +529,7 @@ function buildTableDrilldownContent(tableData) {
     </div>
   `;
 
-  html += `</div>`;  // End cards grids
+  html += `</div>`;  // End Data Quality Control cards grid
 
   // Extra Columns Removed - Always show for delivered tables
   if (tableData.delivered) {

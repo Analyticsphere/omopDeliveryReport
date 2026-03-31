@@ -171,7 +171,7 @@ test_that("prepare_overview_data no longer exposes overview filtering cards", {
   expect_false("delivery_not_in_connect_display" %in% names(result))
 })
 
-test_that("table drilldown data quality control includes Connect filtering cards", {
+test_that("table drilldown separates participant filtering from data quality control", {
   output_path <- tempfile(fileext = ".html")
 
   generate_omop_report(
@@ -183,7 +183,9 @@ test_that("table drilldown data quality control includes Connect filtering cards
 
   html <- paste(readLines(output_path, warn = FALSE), collapse = "\n")
 
-  expect_match(html, "Rows Not in Connect Data", fixed = TRUE)
+  expect_match(html, "Participant Filtering", fixed = TRUE)
+  expect_match(html, "Data Quality Control", fixed = TRUE)
+  expect_match(html, "Rows Not in Connect", fixed = TRUE)
   expect_match(html, "Rows Matching Exclusion Rules", fixed = TRUE)
   expect_match(html, "\"identifier_not_in_connect_rows\":23", fixed = TRUE)
   expect_match(html, "\"connect_exclusion_rows\":5791", fixed = TRUE)
