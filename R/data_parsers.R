@@ -139,6 +139,13 @@
         dplyr::mutate(year = as.integer(year)) |>
         dplyr::arrange(table_name, year)
     }
+  ),
+
+  connect_participant_breakdowns = list(
+    pattern = "^Connect participant breakdown:",
+    regex = "^Connect participant breakdown: (.+) \\((.+)\\)$",
+    fields = c("breakdown_type", "status"),
+    value_field = "count"
   )
 )
 
@@ -294,6 +301,29 @@ parse_delivery_metrics <- function(delivery_data) {
     metrics$missing_person_id_count <- 0
   }
 
+  # Connect participant filtering metrics
+  get_single_metric_value <- function(metric_names) {
+    values <- delivery_data |>
+      dplyr::filter(name %in% metric_names) |>
+      dplyr::pull(value_as_number)
+
+    values <- values[!is.na(values)]
+
+    if (length(values) == 0) {
+      return(NA_real_)
+    }
+
+    values[1]
+  }
+
+  metrics$connect_patient_counts <- list(
+    connect_not_in_delivery = get_single_metric_value(c("Number of Connect patients not in delivery")),
+    delivery_not_in_connect = get_single_metric_value(c(
+      "Number of delivery patients not in Connect data",
+      "Delivery patient IDs not in Connect data"
+    ))
+  )
+
   # Perform type concept grouping
   metrics$type_concepts_grouped <- group_type_concepts(metrics$type_concepts)
 
@@ -397,7 +427,16 @@ create_empty_metrics <- function() {
     type_concepts_grouped = data.frame(table_name = character(), type_group = character(), count = integer()),
     harmonization_statuses = data.frame(table_name = character(), status = character(), count = integer()),
     row_dispositions = data.frame(table_name = character(), disposition = character(), count = integer()),
-    time_series = data.frame(year = integer(), table_name = character(), count = integer())
+    time_series = data.frame(year = integer(), table_name = character(), count = integer()),
+    connect_participant_breakdowns = data.frame(
+      breakdown_type = character(),
+      status = character(),
+      count = integer()
+    ),
+    connect_patient_counts = list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    )
   )
 }
 

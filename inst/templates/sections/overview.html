@@ -14,7 +14,7 @@
         <div class="metric-card">
             <div class="metric-label">Participants</div>
             <div class="metric-value">{{participants_display}}</div>
-            <div class="metric-sublabel">Total identifiable persons in dataset</div>
+            <div class="metric-sublabel">Total Connect participants</div>
         </div>
 
         <div class="metric-card">
@@ -37,10 +37,10 @@
             <div class="metric-sublabel">{{person_word}} with missing identifiers</div>
         </div>
 
-        <div class="metric-card{{rows_warning}}">
-            <div class="metric-label">Rows Removed</div>
-            <div class="metric-value">{{rows_icon}} {{rows_removed_display}}</div>
-            <div class="metric-sublabel">Due to missing person identifiers</div>
+        <div class="metric-card{{delivery_not_in_connect_warning}}">
+            <div class="metric-label">Unmatched Patients</div>
+            <div class="metric-value">{{delivery_not_in_connect_icon}} {{delivery_not_in_connect_display}}</div>
+            <div class="metric-sublabel">Patients who cannot be identified as Connect participants</div>
         </div>
     </div>
 

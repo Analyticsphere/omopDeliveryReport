@@ -508,20 +508,43 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
   tables_delivered <- if (has_delivery_data) as.character(nrow(metrics$valid_tables)) else "N/A"
   participants_display <- if (has_delivery_data) format_number(num_participants) else "N/A"
   missing_person_display <- if (has_delivery_data) as.character(metrics$missing_person_id_count) else "N/A"
-  rows_removed_display <- if (has_delivery_data) format_number(total_rows_removed) else "N/A"
+
+  delivery_not_in_connect_count <- if (has_delivery_data && !is.null(metrics$connect_patient_counts)) {
+    metrics$connect_patient_counts$delivery_not_in_connect
+  } else {
+    NA_real_
+  }
+
+  delivery_not_in_connect_display <- if (has_delivery_data && !is.na(delivery_not_in_connect_count)) {
+    format_number(round(delivery_not_in_connect_count))
+  } else {
+    "N/A"
+  }
 
   # Warning classes and icons
   if (has_delivery_data) {
     missing_warning <- if (metrics$missing_person_id_count > 0) " warning" else " success"
     missing_icon <- if (metrics$missing_person_id_count > 0) '<span class="warning-icon">⚠️</span>' else '<span class="success-icon">✓</span>'
-    rows_warning <- if (total_rows_removed > 0) " warning" else " success"
-    rows_icon <- if (total_rows_removed > 0) '<span class="warning-icon">⚠️</span>' else '<span class="success-icon">✓</span>'
+    delivery_not_in_connect_warning <- if (is.na(delivery_not_in_connect_count)) {
+      " neutral"
+    } else if (delivery_not_in_connect_count > 0) {
+      " warning"
+    } else {
+      " success"
+    }
+    delivery_not_in_connect_icon <- if (is.na(delivery_not_in_connect_count)) {
+      ""
+    } else if (delivery_not_in_connect_count > 0) {
+      '<span class="warning-icon">⚠️</span>'
+    } else {
+      '<span class="success-icon">✓</span>'
+    }
     person_word <- if (metrics$missing_person_id_count == 1) "Person" else "Persons"
   } else {
     missing_warning <- " neutral"
     missing_icon <- ""
-    rows_warning <- " neutral"
-    rows_icon <- ""
+    delivery_not_in_connect_warning <- " neutral"
+    delivery_not_in_connect_icon <- ""
     person_word <- "Persons"
   }
 
@@ -550,9 +573,119 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
     missing_icon = missing_icon,
     missing_person_display = missing_person_display,
     person_word = person_word,
-    rows_warning = rows_warning,
-    rows_icon = rows_icon,
-    rows_removed_display = rows_removed_display
+    delivery_not_in_connect_warning = delivery_not_in_connect_warning,
+    delivery_not_in_connect_icon = delivery_not_in_connect_icon,
+    delivery_not_in_connect_display = delivery_not_in_connect_display
+  )
+}
+
+#' Prepare data for Connect participant filtering section
+#'
+#' Builds summary cards and status breakdown tables from Connect participant
+#' filtering metrics found in the raw delivery report.
+#'
+#' @param metrics List of parsed metrics from parse_delivery_metrics()
+#' @return List with formatted values and row data for the section template
+prepare_connect_filtering_data <- function(metrics) {
+  empty_breakdowns <- tibble::tibble(
+    breakdown_type = character(),
+    status = character(),
+    count = numeric()
+  )
+
+  breakdowns <- metrics$connect_participant_breakdowns
+  if (is.null(breakdowns)) {
+    breakdowns <- empty_breakdowns
+  }
+
+  connect_patient_counts <- metrics$connect_patient_counts
+  if (is.null(connect_patient_counts)) {
+    connect_patient_counts <- list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    )
+  }
+
+  build_summary_card <- function(value) {
+    if (is.null(value) || is.na(value)) {
+      return(list(
+        display = "N/A",
+        card_class = " neutral"
+      ))
+    }
+
+    rounded_value <- round(value)
+
+    list(
+      display = format_number(rounded_value),
+      card_class = if (rounded_value > 0) " warning" else " success"
+    )
+  }
+
+  build_breakdown_rows <- function(category_name) {
+    category_data <- breakdowns |>
+      dplyr::filter(breakdown_type == category_name) |>
+      dplyr::mutate(count = as.numeric(count))
+
+    if (nrow(category_data) == 0) {
+      return(list())
+    }
+
+    ordered_statuses <- if (category_name == "Study status") {
+      known_statuses <- c("Verified", "Not Yet Verified", "Duplicate")
+      c(
+        known_statuses[known_statuses %in% category_data$status],
+        sort(setdiff(category_data$status, known_statuses))
+      )
+    } else {
+      c(
+        c("No", "Yes")[c("No", "Yes") %in% category_data$status],
+        sort(setdiff(category_data$status, c("No", "Yes")))
+      )
+    }
+
+    category_data <- category_data |>
+      dplyr::mutate(status = factor(status, levels = ordered_statuses)) |>
+      dplyr::arrange(status) |>
+      dplyr::mutate(status = as.character(status))
+
+    total_count <- sum(category_data$count, na.rm = TRUE)
+
+    lapply(seq_len(nrow(category_data)), function(i) {
+      count_value <- round(category_data$count[i])
+      percent_value <- if (total_count > 0) {
+        paste0(format(round((count_value / total_count) * 100, 1), nsmall = 1), "%")
+      } else {
+        "0.0%"
+      }
+
+      list(
+        status = category_data$status[i],
+        count_display = format_number(count_value),
+        percent_display = percent_value
+      )
+    })
+  }
+
+  connect_not_in_delivery <- build_summary_card(connect_patient_counts$connect_not_in_delivery)
+  delivery_not_in_connect <- build_summary_card(connect_patient_counts$delivery_not_in_connect)
+
+  has_data <- (
+    nrow(breakdowns) > 0 ||
+      !is.na(connect_patient_counts$connect_not_in_delivery) ||
+      !is.na(connect_patient_counts$delivery_not_in_connect)
+  )
+
+  list(
+    has_data = has_data,
+    connect_not_in_delivery_display = connect_not_in_delivery$display,
+    connect_not_in_delivery_class = connect_not_in_delivery$card_class,
+    delivery_not_in_connect_display = delivery_not_in_connect$display,
+    delivery_not_in_connect_class = delivery_not_in_connect$card_class,
+    consent_rows_data = build_breakdown_rows("Consent withdrawn status"),
+    data_destruction_rows_data = build_breakdown_rows("Data destruction status"),
+    hipaa_rows_data = build_breakdown_rows("HIPAA revoked status"),
+    study_status_rows_data = build_breakdown_rows("Study status")
   )
 }
 

@@ -394,6 +394,48 @@ body {
 }
 
 /* ============================================================================
+   CONNECT FILTERING
+   ============================================================================ */
+
+.connect-filtering-intro {
+  margin-top: 0;
+}
+
+.connect-filtering-summary-grid {
+  margin-bottom: 24px;
+}
+
+.connect-filter-table-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.connect-filter-table-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.connect-filter-table-title {
+  margin-bottom: 12px;
+}
+
+.connect-filter-table td:nth-child(2),
+.connect-filter-table td:nth-child(3),
+.connect-filter-table th:nth-child(2),
+.connect-filter-table th:nth-child(3) {
+  text-align: right;
+}
+
+@media (max-width: 1024px) {
+  .connect-filter-table-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
    DQD SCORE
    ============================================================================ */
 

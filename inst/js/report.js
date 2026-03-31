@@ -177,7 +177,7 @@ function showTableDrilldown(tableName) {
   }
 
   // Hide all other sections
-  const sectionsToHide = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToHide = ["overview", "connect-filtering", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToHide.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -219,7 +219,7 @@ function hideTableDrilldown() {
   }
 
   // Show all other sections
-  const sectionsToShow = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToShow = ["overview", "connect-filtering", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToShow.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {

@@ -1,0 +1,98 @@
+<div class="section" id="connect-filtering">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Connect Participant Filtering</h2>
+    </div>
+
+    <div class="info-box connect-filtering-intro">
+        <p>This section summarizes Connect participant filtering metadata captured in the raw delivery report. Counts only are shown here; no individual Connect identifiers are displayed in the report.</p>
+    </div>
+
+    <div class="overview-metrics-grid connect-filtering-summary-grid">
+        <div class="metric-card{{connect_not_in_delivery_class}}">
+            <div class="metric-label">Connect Patients Not In Delivery</div>
+            <div class="metric-value">{{connect_not_in_delivery_display}}</div>
+            <div class="metric-sublabel">Present in Connect but absent from the delivery output</div>
+        </div>
+
+        <div class="metric-card{{delivery_not_in_connect_class}}">
+            <div class="metric-label">Unmatched Patients</div>
+            <div class="metric-value">{{delivery_not_in_connect_display}}</div>
+            <div class="metric-sublabel">Patients who cannot be identified as Connect participants</div>
+        </div>
+    </div>
+
+    <div class="connect-filter-table-grid">
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Consent Withdrawn Status</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{consent_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Data Destruction Status</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{data_destruction_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">HIPAA Revoked Status</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{hipaa_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Study Status</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{study_status_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
