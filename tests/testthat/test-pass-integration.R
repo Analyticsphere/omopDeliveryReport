@@ -186,8 +186,14 @@ test_that("parse_pass_components adds correct descriptions", {
 
   result <- parse_pass_components(pass_data)
 
-  expect_match(result$description[result$metric == "accessibility"], "present and discoverable")
-  expect_match(result$description[result$metric == "provenance"], "coding quality and traceability")
+  expect_equal(
+    result$description[result$metric == "accessibility"],
+    .PASS_METRIC_DESCRIPTIONS$accessibility
+  )
+  expect_equal(
+    result$description[result$metric == "provenance"],
+    .PASS_METRIC_DESCRIPTIONS$provenance
+  )
 })
 
 # ==============================================================================
@@ -290,11 +296,20 @@ test_that("load_pass_results adds trailing slash if missing", {
   )
   write.csv(components_data, file.path(temp_dir, "pass_composite_components.csv"), row.names = FALSE)
 
-  table_data <- data.frame(
-    table_name = c("person"),
-    table_accessibility_score = c(0.85)
+  overall_metrics_data <- data.frame(
+    metric = c("accessibility", "provenance"),
+    overall_score = c(0.90, 0.80),
+    ci_95_lower = c(0.88, 0.76),
+    ci_95_upper = c(0.92, 0.84)
   )
-  write.csv(table_data, file.path(temp_dir, "pass_accessibility_table_level.csv"), row.names = FALSE)
+  write.csv(overall_metrics_data, file.path(temp_dir, "pass_overall.csv"), row.names = FALSE)
+
+  table_level_data <- data.frame(
+    metric = c("accessibility", "provenance"),
+    table_name = c("person", "person"),
+    table_score = c(0.85, 0.80)
+  )
+  write.csv(table_level_data, file.path(temp_dir, "pass_table_level.csv"), row.names = FALSE)
 
   # Test with and without trailing slash
   result_with_slash <- load_pass_results(paste0(temp_dir, "/"))
@@ -335,18 +350,22 @@ test_that("load_pass_results loads all components correctly", {
   )
   write.csv(components_data, file.path(temp_dir, "pass_composite_components.csv"), row.names = FALSE)
 
-  # Create table-level files for accessibility and provenance
-  accessibility_data <- data.frame(
-    table_name = c("person", "visit_occurrence"),
-    table_accessibility_score = c(0.85, 0.90)
+  # Create consolidated overall metrics file
+  overall_metrics_data <- data.frame(
+    metric = c("accessibility", "provenance", "standards"),
+    overall_score = c(0.90, 0.85, 0.80),
+    ci_95_lower = c(0.88, 0.82, 0.78),
+    ci_95_upper = c(0.92, 0.88, 0.82)
   )
-  write.csv(accessibility_data, file.path(temp_dir, "pass_accessibility_table_level.csv"), row.names = FALSE)
+  write.csv(overall_metrics_data, file.path(temp_dir, "pass_overall.csv"), row.names = FALSE)
 
-  provenance_data <- data.frame(
-    table_name = c("person", "visit_occurrence"),
-    table_provenance_score = c(0.80, 0.88)
+  # Create consolidated table-level file
+  table_level_data <- data.frame(
+    metric = c("accessibility", "accessibility", "provenance", "provenance", "standards", "standards"),
+    table_name = c("person", "visit_occurrence", "person", "visit_occurrence", "person", "visit_occurrence"),
+    table_score = c(0.85, 0.90, 0.80, 0.88, 0.95, 0.92)
   )
-  write.csv(provenance_data, file.path(temp_dir, "pass_provenance_table_level.csv"), row.names = FALSE)
+  write.csv(table_level_data, file.path(temp_dir, "pass_table_level.csv"), row.names = FALSE)
 
   # Load and test
   result <- load_pass_results(temp_dir)
@@ -369,6 +388,7 @@ test_that("load_pass_results loads all components correctly", {
   expect_true(is.list(result$table_level_metrics))
   expect_true("accessibility" %in% names(result$table_level_metrics))
   expect_true("provenance" %in% names(result$table_level_metrics))
+  expect_true("standards" %in% names(result$table_level_metrics))
   expect_equal(nrow(result$table_level_metrics$accessibility), 2)
   expect_equal(result$table_level_metrics$accessibility$table_name, c("person", "visit_occurrence"))
 
