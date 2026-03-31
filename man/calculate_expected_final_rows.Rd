@@ -4,12 +4,12 @@
 \alias{calculate_expected_final_rows}
 \title{Calculate expected final row count}
 \usage{
-calculate_expected_final_rows(initial_rows, quality_issues, harmonization)
+calculate_expected_final_rows(initial_rows, rows_removed, harmonization)
 }
 \arguments{
 \item{initial_rows}{Integer initial row count}
 
-\item{quality_issues}{Integer quality issues to subtract}
+\item{rows_removed}{Integer count of rows removed before harmonization}
 
 \item{harmonization}{Integer harmonization impact}
 }
@@ -17,7 +17,7 @@ calculate_expected_final_rows(initial_rows, quality_issues, harmonization)
 Integer expected final rows
 }
 \description{
-Determines expected final row count after quality filtering and harmonization.
-Formula: initial_rows - quality_issues + harmonization
+Determines expected final row count after row removals and harmonization.
+Formula: initial_rows - rows_removed + harmonization
 For non-harmonized tables, harmonization is 0.
 }

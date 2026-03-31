@@ -25,18 +25,16 @@
 #' person_data <- prepare_table_data("person", metrics, dqd_score = 95, pass_score = 0.85)
 #' }
 prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_real_, pass_metrics = NULL) {
+  table_metrics <- calculate_table_metrics(table_name, metrics, dqd_score)
+  count_metrics <- table_metrics$counts
+  harmonization_metrics <- table_metrics$harmonization
 
   # Extract basic counts
-  valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
-  invalid_rows <- get_table_count(metrics$invalid_row_counts, table_name)
-  final_rows <- get_table_count(metrics$final_row_counts, table_name)
-
-  # Special handling for person table missing person_id
-  missing_rows <- if (table_name == "person") {
-    metrics$missing_person_id_count
-  } else {
-    get_table_count(metrics$missing_person_id, table_name)
-  }
+  valid_rows <- count_metrics$valid
+  invalid_rows <- count_metrics$invalid
+  final_rows <- count_metrics$final
+  missing_rows <- count_metrics$missing
+  participant_filter_rows <- count_metrics$participant_filter
 
   # Quality metrics
   referential_integrity_violations <- get_table_count(metrics$referential_integrity_violations, table_name)
@@ -45,47 +43,24 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   invalid_concept_rows <- get_table_count_sum(metrics$invalid_concepts, table_name)
 
   # Calculate derived counts
-  initial_rows <- valid_rows + invalid_rows + missing_rows
-  quality_issues <- calculate_quality_issues(invalid_rows, missing_rows)
+  initial_rows <- count_metrics$initial
+  quality_issues <- count_metrics$quality_issues
 
   # Vocabulary harmonization metrics
-  # Note: same_table_mappings uses 'total_rows' not 'count'
-  same_table_result_rows <- if (is.null(metrics$same_table_mappings) || nrow(metrics$same_table_mappings) == 0) {
-    0
-  } else {
-    total <- metrics$same_table_mappings |>
-      dplyr::filter(table_name == !!table_name) |>
-      dplyr::summarise(total = sum(total_rows, na.rm = TRUE)) |>
-      dplyr::pull(total)
-    ifelse(length(total) > 0, total[1], 0)
-  }
+  same_table_result_rows <- harmonization_metrics$same_table_rows
 
   transitions <- metrics$table_transitions |>
     dplyr::filter(source_table == !!table_name | target_table == !!table_name)
 
-  transitions_in <- transitions |>
-    dplyr::filter(target_table == !!table_name, source_table != !!table_name) |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  transitions_in <- ifelse(length(transitions_in) > 0, transitions_in[1], 0)
-
-  rows_out <- transitions |>
-    dplyr::filter(source_table == !!table_name, target_table != !!table_name) |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  rows_out <- ifelse(length(rows_out) > 0, rows_out[1], 0)
+  transitions_in <- harmonization_metrics$transitions_in
+  rows_out <- harmonization_metrics$rows_out
 
   # Calculate harmonization impact
-  is_harmonized <- is_harmonized_table(table_name)
-  harmonization <- if (is_harmonized) {
-    calculate_harmonization(same_table_result_rows, valid_rows, transitions_in)
-  } else {
-    0
-  }
+  is_harmonized <- harmonization_metrics$is_harmonized
+  harmonization <- harmonization_metrics$value
 
   # Calculate rows added from 1:N same-table mappings
-  # This represents the net expansion from 1:N mappings, separate from rows moved out
-  rows_added_from_mappings <- (same_table_result_rows - valid_rows) + rows_out
+  rows_added_from_mappings <- harmonization_metrics$rows_added_from_mappings
 
   # Calculate percentages
   default_date_percent <- calculate_percentage(default_date_rows, final_rows)
@@ -141,30 +116,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   # Delivery status
   delivered <- table_name %in% metrics$valid_tables$table_name
 
-  # Validation: check if type concepts sum to final rows
-  type_concept_total <- type_concepts |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  type_concept_total <- ifelse(length(type_concept_total) > 0, type_concept_total[1], 0)
-
-  has_transitions <- (transitions_in > 0 || same_table_result_rows > 0)
-
-  # Determine expected final count and validation status
-  if (type_concept_total > 0) {
-    expected_final <- type_concept_total
-    counts_valid <- (type_concept_total == final_rows)
-  } else if (valid_rows == 0 && !has_transitions) {
-    expected_final <- 0
-    counts_valid <- (final_rows == 0)
-  } else {
-    expected_final <- final_rows
-    counts_valid <- TRUE
-  }
-
-  # Skip validation warnings for non-harmonized tables
-  if (!is_harmonized) {
-    counts_valid <- TRUE
-  }
+  counts_valid <- table_metrics$counts_valid
+  expected_final <- table_metrics$expected_final
 
   # Return comprehensive table data
   list(
@@ -175,6 +128,9 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     initial_rows = initial_rows,
     final_rows = final_rows,
     missing_person_id_rows = missing_rows,
+    participant_filter_rows = participant_filter_rows,
+    connect_exclusion_rows = count_metrics$connect_exclusion,
+    identifier_not_in_connect_rows = count_metrics$identifier_not_in_connect,
     referential_integrity_violations = referential_integrity_violations,
     harmonization = harmonization,
     transitions_in = transitions_in,
@@ -936,6 +892,8 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     initial_rows_formatted = format_number(table_metrics$initial_rows),
     quality_issues_display = table_metrics$quality_issues_display,
     quality_issues_class = table_metrics$quality_issues_class,
+    participant_filter_display = table_metrics$participant_filter_display,
+    participant_filter_class = table_metrics$participant_filter_class,
     harmonization_display = table_metrics$harmonization$display$text,
     harmonization_class = table_metrics$harmonization$display$class,
     final_rows_formatted = format_number(table_metrics$final_rows),

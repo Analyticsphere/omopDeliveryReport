@@ -17,11 +17,12 @@ test_that("parse_delivery_metrics extracts Connect participant filtering metrics
       "Connect participant breakdown: Study status (Not Yet Verified)",
       "Connect participant breakdown: Study status (Duplicate)",
       "Number of rows removed due to Connect exclusion rules: person",
+      "Number of rows removed due to identifier not in Connect database: person",
       "Number of Connect patients not in delivery",
       "Number of delivery patients not in Connect data"
     ),
-    value_as_string = rep("", 12),
-    value_as_number = c(93, 15, 98, 10, 92, 16, 79, 26, 3, 44, 561, 2),
+    value_as_string = rep("", 13),
+    value_as_number = c(93, 15, 98, 10, 92, 16, 79, 26, 3, 44, 1, 561, 2),
     stringsAsFactors = FALSE
   )
 
@@ -29,6 +30,7 @@ test_that("parse_delivery_metrics extracts Connect participant filtering metrics
 
   expect_equal(nrow(metrics$connect_participant_breakdowns), 9)
   expect_equal(get_table_count(metrics$connect_exclusion_rule_rows, "person"), 44)
+  expect_equal(get_table_count(metrics$identifier_not_in_connect_rows, "person"), 1)
   expect_equal(metrics$excluded_participants_count, 44)
   expect_equal(
     unique(metrics$connect_participant_breakdowns$breakdown_type),

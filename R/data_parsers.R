@@ -153,6 +153,13 @@
     regex = "^Number of rows removed due to Connect exclusion rules: (\\w+)$",
     fields = c("table_name"),
     value_field = "count"
+  ),
+
+  identifier_not_in_connect_rows = list(
+    pattern = "^Number of rows removed due to identifier not in Connect database:",
+    regex = "^Number of rows removed due to identifier not in Connect database: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
   )
 )
 
@@ -432,7 +439,14 @@ create_empty_metrics <- function() {
     referential_integrity_violations = data.frame(table_name = character(), count = integer()),
     invalid_columns = data.frame(table_name = character(), column_name = character()),
     missing_columns = data.frame(table_name = character(), column_name = character()),
-    same_table_mappings = data.frame(table_name = character(), total_rows = integer()),
+    same_table_mappings = data.frame(
+      table_name = character(),
+      mapping = character(),
+      source_multiplier = numeric(),
+      target_multiplier = numeric(),
+      total_rows = numeric(),
+      rows_added = numeric()
+    ),
     table_transitions = data.frame(source_table = character(), target_table = character(), count = integer()),
     source_vocabularies = data.frame(table_name = character(), vocabulary = character(), count = integer()),
     target_vocabularies = data.frame(table_name = character(), vocabulary = character(), count = integer()),
@@ -447,6 +461,10 @@ create_empty_metrics <- function() {
       count = integer()
     ),
     connect_exclusion_rule_rows = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    identifier_not_in_connect_rows = data.frame(
       table_name = character(),
       count = integer()
     ),

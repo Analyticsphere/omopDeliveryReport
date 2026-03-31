@@ -4,7 +4,7 @@
 \alias{calculate_quality_issues}
 \title{Calculate quality issues count}
 \usage{
-calculate_quality_issues(invalid_rows, missing_rows)
+calculate_quality_issues(invalid_rows, missing_rows = 0)
 }
 \arguments{
 \item{invalid_rows}{Integer count of invalid rows}
@@ -15,5 +15,6 @@ calculate_quality_issues(invalid_rows, missing_rows)
 Integer total quality issues
 }
 \description{
-Sums invalid rows and rows with missing person_id.
+Counts only rows that fail OMOP data type/specification checks.
+Rows removed for missing person_id are tracked separately.
 }

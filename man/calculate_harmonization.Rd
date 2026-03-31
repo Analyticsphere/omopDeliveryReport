@@ -9,7 +9,7 @@ calculate_harmonization(same_table_rows, valid_rows, transitions_in)
 \arguments{
 \item{same_table_rows}{Integer rows after same-table mappings}
 
-\item{valid_rows}{Integer valid input rows}
+\item{valid_rows}{Integer baseline rows entering harmonization}
 
 \item{transitions_in}{Integer rows received from other tables}
 }
@@ -18,10 +18,10 @@ Integer harmonization impact (negative = rows lost, positive = rows gained)
 }
 \description{
 Determines the net row change due to vocabulary harmonization.
-Formula: (same_table_result_rows - valid_rows) + transitions_in
+Formula: (same_table_result_rows - rows_available_for_harmonization) + transitions_in
 }
 \details{
 - same_table_result_rows: Rows remaining after same-table vocab mappings (includes 1:N expansion)
-- valid_rows: Valid input rows (baseline, excludes quality issues)
+- rows_available_for_harmonization: Rows entering harmonization after participant filtering
 - transitions_in: Rows received from other tables via cross-table mappings
 }
