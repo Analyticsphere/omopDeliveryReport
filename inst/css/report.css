@@ -327,32 +327,26 @@ body {
   }
 }
 
-/* Quality cards grid - 3-2 layout for 5 cards */
+/* Quality cards grid */
 .quality-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: clamp(12px, 1vw, 20px);
   margin-bottom: clamp(16px, 1.5vw, 24px);
 }
 
-/* Make the last 2 cards span properly on row 2 */
-.quality-cards-grid > .metric-card:nth-child(4) {
-  grid-column: 1 / 2;
+.quality-cards-grid-four {
+  grid-template-columns: repeat(4, 1fr);
 }
 
-.quality-cards-grid > .metric-card:nth-child(5) {
-  grid-column: 2 / 3;
+.quality-cards-grid-three {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* Responsive: Stack on smaller screens - LAPTOP TO DESKTOP ONLY */
 @media (max-width: 1024px) {
-  .quality-cards-grid {
+  .quality-cards-grid-four,
+  .quality-cards-grid-three {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .quality-cards-grid > .metric-card:nth-child(4),
-  .quality-cards-grid > .metric-card:nth-child(5) {
-    grid-column: auto;
   }
 }
 

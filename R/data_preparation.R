@@ -872,6 +872,10 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Missing Connect ID">👤</span>')
   }
 
+  if (table_metrics$identifier_not_in_connect_rows > 0 && table_metrics$final_rows > 0) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Not a Connect participant">🔎</span>')
+  }
+
   if (table_metrics$ref_integrity$rows > 0 && table_metrics$final_rows > 0) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Referential integrity violations">🧑‍🧒</span>')
   }

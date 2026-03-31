@@ -170,3 +170,22 @@ test_that("prepare_overview_data no longer exposes overview filtering cards", {
   expect_false("missing_person_display" %in% names(result))
   expect_false("delivery_not_in_connect_display" %in% names(result))
 })
+
+test_that("table drilldown data quality control includes Connect filtering cards", {
+  output_path <- tempfile(fileext = ".html")
+
+  generate_omop_report(
+    delivery_report_path = "../../example_raw_delivery_report.csv",
+    dqd_results_path = "../../inst/ref/dqd_results.csv",
+    pass_results_path = "../../inst/ref/example_pass",
+    output_path = output_path
+  )
+
+  html <- paste(readLines(output_path, warn = FALSE), collapse = "\n")
+
+  expect_match(html, "Rows Not in Connect Data", fixed = TRUE)
+  expect_match(html, "Rows Matching Exclusion Rules", fixed = TRUE)
+  expect_match(html, "\"identifier_not_in_connect_rows\":23", fixed = TRUE)
+  expect_match(html, "\"connect_exclusion_rows\":5791", fixed = TRUE)
+  expect_false(grepl("Connect exclusion-rule criteria and", html, fixed = TRUE))
+})

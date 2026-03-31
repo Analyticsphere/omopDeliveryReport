@@ -744,6 +744,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     default_dates$has_alert ||
     invalid_concepts$has_alert ||
     missing_person$has_alert ||
+    (counts$identifier_not_in_connect > 0 && counts$final > 0) ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
     (counts$has_mismatch_alert && should_show_mismatch)

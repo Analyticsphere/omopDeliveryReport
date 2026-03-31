@@ -324,6 +324,13 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`👤 <strong>` + formatNumber(tableData.missing_person_id_rows) + `</strong> ` + missingRowWord + ` not have a Connect ID value and ` + missingRemovedWord);
   }
 
+  // Identifier not in Connect warning (>0)
+  if (tableData.identifier_not_in_connect_rows > 0 && tableData.final_rows > 0) {
+    var notInConnectRowWord = tableData.identifier_not_in_connect_rows === 1 ? "row does" : "rows do";
+    var notInConnectRemovedWord = tableData.identifier_not_in_connect_rows === 1 ? "was removed" : "were removed";
+    qualityWarnings.push(`🔎 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
+  }
+
   // Referential integrity violations warning (>0)
   if (tableData.referential_integrity_violations > 0 && tableData.final_rows > 0) {
     var violationWord = tableData.referential_integrity_violations === 1 ? "row has a person_id" : "rows have person_ids";
@@ -415,12 +422,9 @@ function buildTableDrilldownContent(tableData) {
   // Data Quality Control Section - Always show, highlight issues
   html += `<div class="subsection"><h4>Data Quality Control</h4>`;
 
-  // Cards container for 5 cards in 3-2 layout
-  // Top row: 3 cards (Rows Without Connect ID, Referential Integrity, Invalid Rows)
-  // Bottom row: 2 cards (Invalid Concepts, Default Dates)
-  html += `<div class="quality-cards-grid">`;
+  // Row 1: participant filtering and integrity checks
+  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
 
-  // Row 1: Rows Without Connect ID | Referential Integrity Violations | Invalid Rows
   // Rows Without Connect ID Card
   var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
   var missingPercent = (tableData.missing_person_id_percent || 0).toFixed(1);
@@ -429,7 +433,33 @@ function buildTableDrilldownContent(tableData) {
     <div class="metric-card ` + missingClass + `">
       <div class="metric-label">Rows Without Connect ID</div>
       <div class="metric-value">` + missingDisplay + `</div>
-      <div class="metric-sublabel">Missing person_id, removed from delivery</div>
+      <div class="metric-sublabel">Missing Connect ID</div>
+    </div>
+  `;
+
+  // Rows Not in Connect Data Card
+  var notInConnectRows = tableData.identifier_not_in_connect_rows || 0;
+  var notInConnectClass = tableData.final_rows === 0 ? "neutral" : (notInConnectRows > 0 ? "warning" : "success");
+  var notInConnectPercent = tableData.initial_rows > 0 ? ((notInConnectRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var notInConnectDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(notInConnectRows) + ` <span class="percentage-display">(` + notInConnectPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + notInConnectClass + `">
+      <div class="metric-label">Rows Not in Connect</div>
+      <div class="metric-value">` + notInConnectDisplay + `</div>
+      <div class="metric-sublabel">Connect ID not found in Connect database</div>
+    </div>
+  `;
+
+  // Rows Matching Exclusion Rules Card
+  var connectExclusionRows = tableData.connect_exclusion_rows || 0;
+  var connectExclusionClass = tableData.final_rows === 0 ? "neutral" : (connectExclusionRows > 0 ? "warning" : "success");
+  var connectExclusionPercent = tableData.initial_rows > 0 ? ((connectExclusionRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var connectExclusionDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(connectExclusionRows) + ` <span class="percentage-display">(` + connectExclusionPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + connectExclusionClass + `">
+      <div class="metric-label">Rows Matching Exclusion Rules</div>
+      <div class="metric-value">` + connectExclusionDisplay + `</div>
+      <div class="metric-sublabel">Matched an exclusion rule criteria</div>
     </div>
   `;
 
@@ -445,6 +475,11 @@ function buildTableDrilldownContent(tableData) {
       <div class="metric-sublabel">Rows with person_id not in person table</div>
     </div>
   `;
+
+  html += `</div>`;
+
+  // Row 2: OMOP row-quality checks
+  html += `<div class="quality-cards-grid quality-cards-grid-three">`;
 
   // Invalid Rows Card
   var invalidClass = tableData.final_rows === 0 ? "neutral" : (tableData.invalid_rows > 0 ? "warning" : "success");
@@ -488,11 +523,11 @@ function buildTableDrilldownContent(tableData) {
     <div class="metric-card ` + defaultDateClass + `">
       <div class="metric-label">Rows with Default Dates</div>
       <div class="metric-value">` + defaultDateDisplay + `</div>
-      <div class="metric-sublabel">Placeholder date values (e.g., 1900-01-01)</div>
+      <div class="metric-sublabel">Placeholder date values (e.g., 1970-01-01)</div>
     </div>
   `;
 
-  html += `</div>`;  // End cards grid
+  html += `</div>`;  // End cards grids
 
   // Extra Columns Removed - Always show for delivered tables
   if (tableData.delivered) {

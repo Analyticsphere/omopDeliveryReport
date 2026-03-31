@@ -318,6 +318,25 @@ test_that("prepare_delivery_table_row shows participant filter and adjusted harm
   expect_equal(procedure_metrics$harmonization$rows_added_from_mappings, 0)
 })
 
+test_that("prepare_delivery_table_row shows Connect participant warning icon when identifier is not in Connect", {
+  metrics <- create_empty_metrics()
+  metrics$valid_tables <- data.frame(table_name = "person", stringsAsFactors = FALSE)
+  metrics$valid_row_counts <- data.frame(table_name = "person", count = 10, stringsAsFactors = FALSE)
+  metrics$invalid_row_counts <- data.frame(table_name = "person", count = 0, stringsAsFactors = FALSE)
+  metrics$final_row_counts <- data.frame(table_name = "person", count = 9, stringsAsFactors = FALSE)
+  metrics$missing_person_id_count <- 0
+  metrics$identifier_not_in_connect_rows <- data.frame(
+    table_name = "person",
+    count = 1,
+    stringsAsFactors = FALSE
+  )
+
+  row <- prepare_delivery_table_row("person", metrics, num_participants = 10)
+
+  expect_equal(row$row_class, "row-warning")
+  expect_match(row$all_warnings, "🔎", fixed = TRUE)
+})
+
 # ==============================================================================
 # calculate_row_per_patient()
 # ==============================================================================
