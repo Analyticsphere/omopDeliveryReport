@@ -113,6 +113,34 @@ test_that("prepare_connect_filtering_data formats summary counts and orders rows
   )
 })
 
+test_that("prepare_connect_filtering_data shows zero for missing connect-not-in-delivery metric when Connect context exists", {
+  metrics <- list(
+    missing_person_id_count = 0,
+    excluded_participants_count = 44,
+    connect_participant_breakdowns = data.frame(
+      breakdown_type = "Study status",
+      status = "Verified",
+      count = 79,
+      stringsAsFactors = FALSE
+    ),
+    connect_exclusion_rule_rows = data.frame(
+      table_name = "person",
+      count = 44,
+      stringsAsFactors = FALSE
+    ),
+    connect_patient_counts = list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = 2
+    )
+  )
+
+  result <- prepare_connect_filtering_data(metrics)
+
+  expect_true(result$has_data)
+  expect_equal(result$connect_not_in_delivery_display, "0")
+  expect_equal(result$connect_not_in_delivery_class, " success")
+})
+
 test_that("prepare_connect_filtering_data reports no data when metrics are absent", {
   metrics <- list(
     missing_person_id_count = NA_real_,
@@ -206,8 +234,9 @@ test_that("table drilldown vocabulary harmonization flow distinguishes copied ro
 
   expect_match(html, "Rows generated for other tables", fixed = TRUE)
   expect_match(html, "Rows generated for other tables are additional rows created during 1:N mappings", fixed = TRUE)
-  expect_match(html, "do not reduce the source table's row count", fixed = TRUE)
+  expect_match(html, "do not affect the source table's row count", fixed = TRUE)
   expect_match(html, "\"rows_moved_out\":0", fixed = TRUE)
   expect_match(html, "\"rows_copied_out\":1", fixed = TRUE)
+  expect_match(html, "\"rows_copied_out\":0", fixed = TRUE)
   expect_match(html, "\"rows_moved_out\":375", fixed = TRUE)
 })

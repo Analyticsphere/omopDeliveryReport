@@ -729,15 +729,7 @@ function buildTableDrilldownContent(tableData) {
         <div class="info-box">
           <ul style="margin: 0; padding-left: 20px;">
             <li>Rows moved to other tables: ` + rowsOutFormatted + `</li>
-    `;
-
-    if (rowsCopiedOut > 0) {
-      html += `
             <li>Rows generated for other tables: ` + rowsCopiedFormatted + `</li>
-      `;
-    }
-
-    html += `
             <li>Rows received from other tables: ` + rowsInFormatted + `</li>
             <li>Rows added from 1:N mappings: ` + rowsAddedFormatted + `</li>
           </ul>
@@ -748,15 +740,7 @@ function buildTableDrilldownContent(tableData) {
 
     html += `
           <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + netClass + `">` + netSign + formatNumber(harmonizationNet) + ` rows</span></p>
-    `;
-
-    if (rowsCopiedOut > 0) {
-      html += `
           <p style="margin-top: 10px; margin-bottom: 0; color: #6b7280; font-size: 0.95em;">Rows generated for other tables are additional rows created during 1:N mappings and routed elsewhere, so they do not affect the source table's row count.</p>
-      `;
-    }
-
-    html += `
         </div>
       </div>
     `;

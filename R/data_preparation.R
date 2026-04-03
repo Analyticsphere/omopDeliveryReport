@@ -535,9 +535,26 @@ prepare_connect_filtering_data <- function(metrics) {
     )
   }
 
+  resolve_breakdown_names <- function(category_name) {
+    aliases <- list(
+      "Consent withdrawn" = c("Consent withdrawn", "Consent withdrawn status"),
+      "Data destruction requested" = c("Data destruction requested", "Data destruction status"),
+      "HIPAA revoked" = c("HIPAA revoked", "HIPAA revoked status"),
+      "Study status" = c("Study status")
+    )
+
+    matched_aliases <- aliases[[category_name]]
+    if (!is.null(matched_aliases)) {
+      return(matched_aliases)
+    }
+
+    c(category_name)
+  }
+
   build_breakdown_rows <- function(category_name) {
+    category_names <- resolve_breakdown_names(category_name)
     category_data <- breakdowns |>
-      dplyr::filter(breakdown_type == category_name) |>
+      dplyr::filter(breakdown_type %in% category_names) |>
       dplyr::mutate(count = as.numeric(count))
 
     if (nrow(category_data) == 0) {
@@ -585,8 +602,19 @@ prepare_connect_filtering_data <- function(metrics) {
     excluded_participants_count <- NA_real_
   }
 
+  has_connect_filtering_context <- (
+    nrow(breakdowns) > 0 ||
+      !is.na(excluded_participants_count) ||
+      !is.na(connect_patient_counts$delivery_not_in_connect)
+  )
+
+  connect_not_in_delivery_value <- connect_patient_counts$connect_not_in_delivery
+  if (is.na(connect_not_in_delivery_value) && has_connect_filtering_context) {
+    connect_not_in_delivery_value <- 0
+  }
+
   missing_connect_id <- build_summary_card(metrics$missing_person_id_count)
-  connect_not_in_delivery <- build_summary_card(connect_patient_counts$connect_not_in_delivery)
+  connect_not_in_delivery <- build_summary_card(connect_not_in_delivery_value)
   delivery_not_in_connect <- build_summary_card(connect_patient_counts$delivery_not_in_connect)
   excluded_participants <- build_summary_card(excluded_participants_count)
 
@@ -608,9 +636,9 @@ prepare_connect_filtering_data <- function(metrics) {
     connect_not_in_delivery_class = connect_not_in_delivery$card_class,
     delivery_not_in_connect_display = delivery_not_in_connect$display,
     delivery_not_in_connect_class = delivery_not_in_connect$card_class,
-    consent_rows_data = build_breakdown_rows("Consent withdrawn status"),
-    data_destruction_rows_data = build_breakdown_rows("Data destruction status"),
-    hipaa_rows_data = build_breakdown_rows("HIPAA revoked status"),
+    consent_rows_data = build_breakdown_rows("Consent withdrawn"),
+    data_destruction_rows_data = build_breakdown_rows("Data destruction requested"),
+    hipaa_rows_data = build_breakdown_rows("HIPAA revoked"),
     study_status_rows_data = build_breakdown_rows("Study status")
   )
 }
