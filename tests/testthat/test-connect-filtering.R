@@ -113,7 +113,7 @@ test_that("prepare_connect_filtering_data formats summary counts and orders rows
   )
 })
 
-test_that("prepare_connect_filtering_data shows zero for missing connect-not-in-delivery metric when Connect context exists", {
+test_that("prepare_connect_filtering_data shows N/A for missing connect-not-in-delivery metric", {
   metrics <- list(
     missing_person_id_count = 0,
     excluded_participants_count = 44,
@@ -137,8 +137,8 @@ test_that("prepare_connect_filtering_data shows zero for missing connect-not-in-
   result <- prepare_connect_filtering_data(metrics)
 
   expect_true(result$has_data)
-  expect_equal(result$connect_not_in_delivery_display, "0")
-  expect_equal(result$connect_not_in_delivery_class, " success")
+  expect_equal(result$connect_not_in_delivery_display, "N/A")
+  expect_equal(result$connect_not_in_delivery_class, " neutral")
 })
 
 test_that("prepare_connect_filtering_data reports no data when metrics are absent", {

@@ -602,19 +602,8 @@ prepare_connect_filtering_data <- function(metrics) {
     excluded_participants_count <- NA_real_
   }
 
-  has_connect_filtering_context <- (
-    nrow(breakdowns) > 0 ||
-      !is.na(excluded_participants_count) ||
-      !is.na(connect_patient_counts$delivery_not_in_connect)
-  )
-
-  connect_not_in_delivery_value <- connect_patient_counts$connect_not_in_delivery
-  if (is.na(connect_not_in_delivery_value) && has_connect_filtering_context) {
-    connect_not_in_delivery_value <- 0
-  }
-
   missing_connect_id <- build_summary_card(metrics$missing_person_id_count)
-  connect_not_in_delivery <- build_summary_card(connect_not_in_delivery_value)
+  connect_not_in_delivery <- build_summary_card(connect_patient_counts$connect_not_in_delivery)
   delivery_not_in_connect <- build_summary_card(connect_patient_counts$delivery_not_in_connect)
   excluded_participants <- build_summary_card(excluded_participants_count)
 
