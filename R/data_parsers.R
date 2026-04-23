@@ -652,15 +652,21 @@ create_dqd_grid <- function(dqd_data) {
     ))
   }
 
-  # Extract category and context from checkName
+  # Use the category column from DQD output if available; fall back to regex
+  if (!"category" %in% colnames(dqd_data) || all(is.na(dqd_data$category))) {
+    dqd_data <- dqd_data |>
+      dplyr::mutate(
+        category = dplyr::case_when(
+          grepl("plausible", checkName, ignore.case = TRUE) ~ "Plausibility",
+          grepl("^is|^cdm|^fk|^standardConcept", checkName) ~ "Conformance",
+          grepl("measure", checkName, ignore.case = TRUE) ~ "Completeness",
+          TRUE ~ "Other"
+        )
+      )
+  }
+
   dqd_data <- dqd_data |>
     dplyr::mutate(
-      category = dplyr::case_when(
-        grepl("plausible", checkName, ignore.case = TRUE) ~ "Plausibility",
-        grepl("is", checkName, ignore.case = TRUE) ~ "Conformance",
-        grepl("measure", checkName, ignore.case = TRUE) ~ "Completeness",
-        TRUE ~ "Other"
-      ),
       context = dplyr::case_when(
         grepl("Verification", context, ignore.case = TRUE) ~ "Verification",
         grepl("Validation", context, ignore.case = TRUE) ~ "Validation",
