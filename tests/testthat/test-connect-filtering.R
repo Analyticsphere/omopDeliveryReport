@@ -261,7 +261,7 @@ test_that("table drilldown separates participant filtering from data quality con
   output_path <- tempfile(fileext = ".html")
 
   generate_omop_report(
-    delivery_report_path = "../../example_raw_delivery_report.csv",
+    delivery_report_path = "../../inst/ref/delivery_report.csv",
     dqd_results_path = "../../inst/ref/dqd_results.csv",
     pass_results_path = "../../inst/ref/example_pass",
     output_path = output_path
@@ -284,7 +284,7 @@ test_that("table drilldown vocabulary harmonization flow distinguishes copied ro
   output_path <- tempfile(fileext = ".html")
 
   generate_omop_report(
-    delivery_report_path = "../../example_raw_delivery_report.csv",
+    delivery_report_path = "../../inst/ref/delivery_report.csv",
     dqd_results_path = "../../inst/ref/dqd_results.csv",
     pass_results_path = "../../inst/ref/example_pass",
     output_path = output_path

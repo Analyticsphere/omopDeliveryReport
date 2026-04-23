@@ -302,7 +302,7 @@ test_that("calculate_harmonization_metric uses parsed 1:N mapping counts as sour
 })
 
 test_that("prepare_delivery_table_row shows participant filter and adjusted harmonization counts", {
-  delivery_data <- read.csv("../../example_raw_delivery_report.csv", stringsAsFactors = FALSE)
+  delivery_data <- read.csv("../../inst/ref/delivery_report.csv", stringsAsFactors = FALSE)
   metrics <- parse_delivery_metrics(delivery_data)
   num_participants <- calculate_num_participants(metrics)
 
