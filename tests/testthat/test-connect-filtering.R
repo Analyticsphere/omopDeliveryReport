@@ -271,9 +271,9 @@ test_that("table drilldown separates participant filtering from data quality con
 
   expect_match(html, "Participant Filtering", fixed = TRUE)
   expect_match(html, "Data Quality Control", fixed = TRUE)
-  expect_match(html, "Rows Not in Connect", fixed = TRUE)
   expect_match(html, "Rows Matching Exclusion Rules", fixed = TRUE)
   expect_match(html, "IDs Not Found in Connect", fixed = TRUE)
+  expect_match(html, "Rows Without Connect ID", fixed = TRUE)
   expect_match(html, "\"identifier_not_in_connect_rows\":23", fixed = TRUE)
   expect_match(html, "\"connect_exclusion_rows\":5791", fixed = TRUE)
   expect_match(html, "\"delivered_connect_ids_not_found\":", fixed = TRUE)
