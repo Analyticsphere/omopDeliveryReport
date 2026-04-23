@@ -217,19 +217,19 @@ test_that("calculate_dqd_scores_by_table handles NULL data", {
 test_that("create_dqd_grid creates correct structure", {
   dqd_data <- data.frame(
     checkName = c(
-      "isPlausibleValueLow",           # Conformance
-      "isPlausibleTemporalAfter",      # Plausibility
-      "measurePersonCompleteness"      # Completeness
+      "plausibleValueLow",
+      "isRequired",
+      "measurePersonCompleteness"
     ),
     cdmTableName = c("PERSON", "PERSON", "PERSON"),
-    failed = c(0, 1, 0),  # 2 pass, 1 fail
+    failed = c(0, 1, 0),
     context = c("Validation", "Validation", "Verification"),
+    category = c("Plausibility", "Conformance", "Completeness"),
     stringsAsFactors = FALSE
   )
 
   result <- create_dqd_grid(dqd_data)
 
-  # Should have category and context columns
   expect_true("category" %in% colnames(result))
   expect_true("context" %in% colnames(result))
   expect_true("Pass" %in% colnames(result))
@@ -238,25 +238,93 @@ test_that("create_dqd_grid creates correct structure", {
   expect_true("% Pass" %in% colnames(result))
 })
 
-test_that("create_dqd_grid categorizes checks correctly", {
+test_that("create_dqd_grid uses category column from DQD data", {
   dqd_data <- data.frame(
     checkName = c(
-      "isPlausibleValueLow",           # Contains "plausible" -> Plausibility
-      "isStandardValidConcept",        # Contains "is" -> Conformance
-      "measurePersonCompleteness"      # Contains "measure" -> Completeness
+      "cdmField",
+      "cdmDatatype",
+      "fkDomain",
+      "isRequired",
+      "measurePersonCompleteness",
+      "plausibleValueLow"
     ),
-    cdmTableName = c("PERSON", "PERSON", "PERSON"),
-    failed = c(0, 0, 0),
-    context = c("Validation", "Validation", "Verification"),
+    cdmTableName = rep("PERSON", 6),
+    failed = c(0, 1, 0, 0, 0, 1),
+    context = rep("Verification", 6),
+    category = c(
+      "Conformance", "Conformance", "Conformance", "Conformance",
+      "Completeness", "Plausibility"
+    ),
     stringsAsFactors = FALSE
   )
 
   result <- create_dqd_grid(dqd_data)
 
-  # Should have all three categories
-  expect_true("Plausibility" %in% result$category)
-  expect_true("Conformance" %in% result$category)
-  expect_true("Completeness" %in% result$category)
+  # Filter to Verification rows (not category totals or grand totals)
+  verification_rows <- result |>
+    dplyr::filter(context == "Verification", category != "Total")
+
+  conformance <- verification_rows |> dplyr::filter(category == "Conformance")
+  completeness <- verification_rows |> dplyr::filter(category == "Completeness")
+  plausibility <- verification_rows |> dplyr::filter(category == "Plausibility")
+
+  expect_equal(conformance$Total, 4)
+  expect_equal(conformance$Pass, 3)
+  expect_equal(conformance$Fail, 1)
+  expect_equal(completeness$Total, 1)
+  expect_equal(plausibility$Total, 1)
+})
+
+test_that("create_dqd_grid falls back to regex when category column is absent", {
+  dqd_data <- data.frame(
+    checkName = c(
+      "isRequired",
+      "cdmField",
+      "measurePersonCompleteness",
+      "plausibleValueLow"
+    ),
+    cdmTableName = rep("PERSON", 4),
+    failed = c(0, 0, 0, 1),
+    context = rep("Verification", 4),
+    stringsAsFactors = FALSE
+  )
+
+  result <- create_dqd_grid(dqd_data)
+
+  verification_rows <- result |>
+    dplyr::filter(context == "Verification", category != "Total")
+
+  # isRequired and cdmField should both be Conformance via regex fallback
+  conformance <- verification_rows |> dplyr::filter(category == "Conformance")
+  expect_equal(conformance$Total, 2)
+
+  completeness <- verification_rows |> dplyr::filter(category == "Completeness")
+  expect_equal(completeness$Total, 1)
+
+  plausibility <- verification_rows |> dplyr::filter(category == "Plausibility")
+  expect_equal(plausibility$Total, 1)
+})
+
+test_that("create_dqd_grid matches reference totals from real DQD data", {
+  dqd_data <- read.csv("../../inst/ref/dqd_results.csv", stringsAsFactors = FALSE)
+
+  result <- create_dqd_grid(dqd_data)
+
+  # Category totals should match the DQD reference
+  totals <- result |>
+    dplyr::filter(context == "Total", category != "Total")
+
+  plausibility <- totals |> dplyr::filter(category == "Plausibility")
+  conformance <- totals |> dplyr::filter(category == "Conformance")
+  completeness <- totals |> dplyr::filter(category == "Completeness")
+
+  expect_equal(plausibility$Total, 817)
+  expect_equal(conformance$Total, 1175)
+  expect_equal(completeness$Total, 541)
+
+  # Grand total should be the total number of checks
+  grand_total <- result |> dplyr::filter(category == "Total", context == "Total")
+  expect_equal(grand_total$Total, nrow(dqd_data))
 })
 
 test_that("create_dqd_grid handles NULL or empty data", {
@@ -269,16 +337,16 @@ test_that("create_dqd_grid handles NULL or empty data", {
 
 test_that("create_dqd_grid includes totals", {
   dqd_data <- data.frame(
-    checkName = c("check1", "check2", "check3", "check4"),
+    checkName = c("plausibleValueLow", "plausibleValueHigh", "isRequired", "cdmField"),
     cdmTableName = c("PERSON", "PERSON", "PERSON", "PERSON"),
-    failed = c(0, 0, 1, 1),  # 2 pass, 2 fail
+    failed = c(0, 0, 1, 1),
     context = c("Validation", "Validation", "Verification", "Verification"),
+    category = c("Plausibility", "Plausibility", "Conformance", "Conformance"),
     stringsAsFactors = FALSE
   )
 
   result <- create_dqd_grid(dqd_data)
 
-  # Should include "Total" rows
   expect_true("Total" %in% result$category)
   expect_true("Total" %in% result$context)
 })
