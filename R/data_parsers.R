@@ -139,6 +139,34 @@
         dplyr::mutate(year = as.integer(year)) |>
         dplyr::arrange(table_name, year)
     }
+  ),
+
+  connect_participant_breakdowns = list(
+    pattern = "^Connect participant breakdown:",
+    regex = "^Connect participant breakdown: (.+) \\((.+)\\)$",
+    fields = c("breakdown_type", "status"),
+    value_field = "count"
+  ),
+
+  connect_exclusion_rule_rows = list(
+    pattern = "^Number of rows removed due to Connect exclusion rules:",
+    regex = "^Number of rows removed due to Connect exclusion rules: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
+  ),
+
+  identifier_not_in_connect_rows = list(
+    pattern = "^Number of rows removed due to identifier not in Connect database:",
+    regex = "^Number of rows removed due to identifier not in Connect database: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
+  ),
+
+  delivered_connect_ids_not_found = list(
+    pattern = "^Delivered Connect ID values not found in Connect database:",
+    regex = "^Delivered Connect ID values not found in Connect database: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
   )
 )
 
@@ -294,6 +322,51 @@ parse_delivery_metrics <- function(delivery_data) {
     metrics$missing_person_id_count <- 0
   }
 
+  # Connect participant filtering metrics
+  get_single_metric_value <- function(metric_names) {
+    values <- delivery_data |>
+      dplyr::filter(name %in% metric_names) |>
+      dplyr::pull(value_as_number)
+
+    values <- values[!is.na(values)]
+
+    if (length(values) == 0) {
+      return(NA_real_)
+    }
+
+    values[1]
+  }
+
+  metrics$connect_patient_counts <- list(
+    connect_not_in_delivery = get_single_metric_value(c(
+      "Number of Connect patients not in delivery",
+      "Number of eligible Connect patients not in delivery"
+    )),
+    delivery_not_in_connect = get_single_metric_value(c(
+      "Number of delivery patients not in Connect data",
+      "Delivery patient IDs not in Connect data"
+    ))
+  )
+
+  # Fallback: if delivery_not_in_connect is NA but the new per-table
+  # "Delivered Connect ID values not found" metric exists, use the person-level
+  # value (one person row = one participant).
+  if (is.na(metrics$connect_patient_counts$delivery_not_in_connect) &&
+      nrow(metrics$delivered_connect_ids_not_found) > 0) {
+    person_level <- metrics$delivered_connect_ids_not_found |>
+      dplyr::filter(table_name == "person") |>
+      dplyr::pull(count)
+    if (length(person_level) > 0 && !is.na(person_level[1])) {
+      metrics$connect_patient_counts$delivery_not_in_connect <- person_level[1]
+    }
+  }
+
+  # For the PERSON table, one OMOP row corresponds to one participant.
+  # This makes the person-level exclusion-rule count the participant count.
+  metrics$excluded_participants_count <- get_single_metric_value(c(
+    "Number of rows removed due to Connect exclusion rules: person"
+  ))
+
   # Perform type concept grouping
   metrics$type_concepts_grouped <- group_type_concepts(metrics$type_concepts)
 
@@ -389,7 +462,14 @@ create_empty_metrics <- function() {
     referential_integrity_violations = data.frame(table_name = character(), count = integer()),
     invalid_columns = data.frame(table_name = character(), column_name = character()),
     missing_columns = data.frame(table_name = character(), column_name = character()),
-    same_table_mappings = data.frame(table_name = character(), total_rows = integer()),
+    same_table_mappings = data.frame(
+      table_name = character(),
+      mapping = character(),
+      source_multiplier = numeric(),
+      target_multiplier = numeric(),
+      total_rows = numeric(),
+      rows_added = numeric()
+    ),
     table_transitions = data.frame(source_table = character(), target_table = character(), count = integer()),
     source_vocabularies = data.frame(table_name = character(), vocabulary = character(), count = integer()),
     target_vocabularies = data.frame(table_name = character(), vocabulary = character(), count = integer()),
@@ -397,7 +477,29 @@ create_empty_metrics <- function() {
     type_concepts_grouped = data.frame(table_name = character(), type_group = character(), count = integer()),
     harmonization_statuses = data.frame(table_name = character(), status = character(), count = integer()),
     row_dispositions = data.frame(table_name = character(), disposition = character(), count = integer()),
-    time_series = data.frame(year = integer(), table_name = character(), count = integer())
+    time_series = data.frame(year = integer(), table_name = character(), count = integer()),
+    connect_participant_breakdowns = data.frame(
+      breakdown_type = character(),
+      status = character(),
+      count = integer()
+    ),
+    connect_exclusion_rule_rows = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    identifier_not_in_connect_rows = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    delivered_connect_ids_not_found = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    excluded_participants_count = NA_real_,
+    connect_patient_counts = list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    )
   )
 }
 

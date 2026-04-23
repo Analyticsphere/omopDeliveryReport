@@ -25,18 +25,16 @@
 #' person_data <- prepare_table_data("person", metrics, dqd_score = 95, pass_score = 0.85)
 #' }
 prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_real_, pass_metrics = NULL) {
+  table_metrics <- calculate_table_metrics(table_name, metrics, dqd_score)
+  count_metrics <- table_metrics$counts
+  harmonization_metrics <- table_metrics$harmonization
 
   # Extract basic counts
-  valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
-  invalid_rows <- get_table_count(metrics$invalid_row_counts, table_name)
-  final_rows <- get_table_count(metrics$final_row_counts, table_name)
-
-  # Special handling for person table missing person_id
-  missing_rows <- if (table_name == "person") {
-    metrics$missing_person_id_count
-  } else {
-    get_table_count(metrics$missing_person_id, table_name)
-  }
+  valid_rows <- count_metrics$valid
+  invalid_rows <- count_metrics$invalid
+  final_rows <- count_metrics$final
+  missing_rows <- count_metrics$missing
+  participant_filter_rows <- count_metrics$participant_filter
 
   # Quality metrics
   referential_integrity_violations <- get_table_count(metrics$referential_integrity_violations, table_name)
@@ -45,47 +43,26 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   invalid_concept_rows <- get_table_count_sum(metrics$invalid_concepts, table_name)
 
   # Calculate derived counts
-  initial_rows <- valid_rows + invalid_rows + missing_rows
-  quality_issues <- calculate_quality_issues(invalid_rows, missing_rows)
+  initial_rows <- count_metrics$initial
+  quality_issues <- count_metrics$quality_issues
 
   # Vocabulary harmonization metrics
-  # Note: same_table_mappings uses 'total_rows' not 'count'
-  same_table_result_rows <- if (is.null(metrics$same_table_mappings) || nrow(metrics$same_table_mappings) == 0) {
-    0
-  } else {
-    total <- metrics$same_table_mappings |>
-      dplyr::filter(table_name == !!table_name) |>
-      dplyr::summarise(total = sum(total_rows, na.rm = TRUE)) |>
-      dplyr::pull(total)
-    ifelse(length(total) > 0, total[1], 0)
-  }
+  same_table_result_rows <- harmonization_metrics$same_table_rows
 
   transitions <- metrics$table_transitions |>
     dplyr::filter(source_table == !!table_name | target_table == !!table_name)
 
-  transitions_in <- transitions |>
-    dplyr::filter(target_table == !!table_name, source_table != !!table_name) |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  transitions_in <- ifelse(length(transitions_in) > 0, transitions_in[1], 0)
-
-  rows_out <- transitions |>
-    dplyr::filter(source_table == !!table_name, target_table != !!table_name) |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  rows_out <- ifelse(length(rows_out) > 0, rows_out[1], 0)
+  transitions_in <- harmonization_metrics$transitions_in
+  rows_out <- harmonization_metrics$rows_out
+  rows_moved_out <- harmonization_metrics$rows_moved_out
+  rows_copied_out <- harmonization_metrics$rows_copied_out
 
   # Calculate harmonization impact
-  is_harmonized <- is_harmonized_table(table_name)
-  harmonization <- if (is_harmonized) {
-    calculate_harmonization(same_table_result_rows, valid_rows, transitions_in)
-  } else {
-    0
-  }
+  is_harmonized <- harmonization_metrics$is_harmonized
+  harmonization <- harmonization_metrics$value
 
   # Calculate rows added from 1:N same-table mappings
-  # This represents the net expansion from 1:N mappings, separate from rows moved out
-  rows_added_from_mappings <- (same_table_result_rows - valid_rows) + rows_out
+  rows_added_from_mappings <- harmonization_metrics$rows_added_from_mappings
 
   # Calculate percentages
   default_date_percent <- calculate_percentage(default_date_rows, final_rows)
@@ -141,30 +118,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   # Delivery status
   delivered <- table_name %in% metrics$valid_tables$table_name
 
-  # Validation: check if type concepts sum to final rows
-  type_concept_total <- type_concepts |>
-    dplyr::summarise(total = sum(count, na.rm = TRUE)) |>
-    dplyr::pull(total)
-  type_concept_total <- ifelse(length(type_concept_total) > 0, type_concept_total[1], 0)
-
-  has_transitions <- (transitions_in > 0 || same_table_result_rows > 0)
-
-  # Determine expected final count and validation status
-  if (type_concept_total > 0) {
-    expected_final <- type_concept_total
-    counts_valid <- (type_concept_total == final_rows)
-  } else if (valid_rows == 0 && !has_transitions) {
-    expected_final <- 0
-    counts_valid <- (final_rows == 0)
-  } else {
-    expected_final <- final_rows
-    counts_valid <- TRUE
-  }
-
-  # Skip validation warnings for non-harmonized tables
-  if (!is_harmonized) {
-    counts_valid <- TRUE
-  }
+  counts_valid <- table_metrics$counts_valid
+  expected_final <- table_metrics$expected_final
 
   # Return comprehensive table data
   list(
@@ -175,10 +130,16 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     initial_rows = initial_rows,
     final_rows = final_rows,
     missing_person_id_rows = missing_rows,
+    participant_filter_rows = participant_filter_rows,
+    connect_exclusion_rows = count_metrics$connect_exclusion,
+    identifier_not_in_connect_rows = count_metrics$identifier_not_in_connect,
+    delivered_connect_ids_not_found = count_metrics$delivered_connect_ids_not_found,
     referential_integrity_violations = referential_integrity_violations,
     harmonization = harmonization,
     transitions_in = transitions_in,
     rows_out = rows_out,
+    rows_moved_out = rows_moved_out,
+    rows_copied_out = rows_copied_out,
     same_table_result_rows = same_table_result_rows,
     rows_added_from_mappings = rows_added_from_mappings,
     total_harmonization_status_rows = total_harmonization_status_rows,
@@ -507,23 +468,6 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
   # Format displays
   tables_delivered <- if (has_delivery_data) as.character(nrow(metrics$valid_tables)) else "N/A"
   participants_display <- if (has_delivery_data) format_number(num_participants) else "N/A"
-  missing_person_display <- if (has_delivery_data) as.character(metrics$missing_person_id_count) else "N/A"
-  rows_removed_display <- if (has_delivery_data) format_number(total_rows_removed) else "N/A"
-
-  # Warning classes and icons
-  if (has_delivery_data) {
-    missing_warning <- if (metrics$missing_person_id_count > 0) " warning" else " success"
-    missing_icon <- if (metrics$missing_person_id_count > 0) '<span class="warning-icon">⚠️</span>' else '<span class="success-icon">✓</span>'
-    rows_warning <- if (total_rows_removed > 0) " warning" else " success"
-    rows_icon <- if (total_rows_removed > 0) '<span class="warning-icon">⚠️</span>' else '<span class="success-icon">✓</span>'
-    person_word <- if (metrics$missing_person_id_count == 1) "Person" else "Persons"
-  } else {
-    missing_warning <- " neutral"
-    missing_icon <- ""
-    rows_warning <- " neutral"
-    rows_icon <- ""
-    person_word <- "Persons"
-  }
 
   # DQD score
   dqd_class <- get_dqd_score_class(dqd_scores$overall)
@@ -545,14 +489,147 @@ prepare_overview_data <- function(metrics, dqd_scores, pass_scores, num_particip
     dqd_score_display = dqd_score_display,
     pass_class = pass_class,
     pass_score_display = pass_score_display,
-    pass_ci_display = pass_ci_display,
-    missing_warning = missing_warning,
-    missing_icon = missing_icon,
-    missing_person_display = missing_person_display,
-    person_word = person_word,
-    rows_warning = rows_warning,
-    rows_icon = rows_icon,
-    rows_removed_display = rows_removed_display
+    pass_ci_display = pass_ci_display
+  )
+}
+
+#' Prepare data for Connect participant filtering section
+#'
+#' Builds summary cards and status breakdown tables from Connect participant
+#' filtering metrics found in the raw delivery report.
+#'
+#' @param metrics List of parsed metrics from parse_delivery_metrics()
+#' @return List with formatted values and row data for the section template
+prepare_connect_filtering_data <- function(metrics) {
+  empty_breakdowns <- tibble::tibble(
+    breakdown_type = character(),
+    status = character(),
+    count = numeric()
+  )
+
+  breakdowns <- metrics$connect_participant_breakdowns
+  if (is.null(breakdowns)) {
+    breakdowns <- empty_breakdowns
+  }
+
+  connect_patient_counts <- metrics$connect_patient_counts
+  if (is.null(connect_patient_counts)) {
+    connect_patient_counts <- list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    )
+  }
+
+  build_summary_card <- function(value) {
+    if (is.null(value) || is.na(value)) {
+      return(list(
+        display = "N/A",
+        card_class = " neutral"
+      ))
+    }
+
+    rounded_value <- round(value)
+
+    list(
+      display = format_number(rounded_value),
+      card_class = if (rounded_value > 0) " warning" else " success"
+    )
+  }
+
+  resolve_breakdown_names <- function(category_name) {
+    aliases <- list(
+      "Consent withdrawn" = c("Consent withdrawn", "Consent withdrawn status"),
+      "Data destruction requested" = c("Data destruction requested", "Data destruction status"),
+      "HIPAA revoked" = c("HIPAA revoked", "HIPAA revoked status"),
+      "Study status" = c("Study status")
+    )
+
+    matched_aliases <- aliases[[category_name]]
+    if (!is.null(matched_aliases)) {
+      return(matched_aliases)
+    }
+
+    c(category_name)
+  }
+
+  build_breakdown_rows <- function(category_name) {
+    category_names <- resolve_breakdown_names(category_name)
+    category_data <- breakdowns |>
+      dplyr::filter(breakdown_type %in% category_names) |>
+      dplyr::mutate(count = as.numeric(count))
+
+    if (nrow(category_data) == 0) {
+      return(list())
+    }
+
+    ordered_statuses <- if (category_name == "Study status") {
+      known_statuses <- c("Verified", "Not Yet Verified", "Duplicate")
+      c(
+        known_statuses[known_statuses %in% category_data$status],
+        sort(setdiff(category_data$status, known_statuses))
+      )
+    } else {
+      c(
+        c("No", "Yes")[c("No", "Yes") %in% category_data$status],
+        sort(setdiff(category_data$status, c("No", "Yes")))
+      )
+    }
+
+    category_data <- category_data |>
+      dplyr::mutate(status = factor(status, levels = ordered_statuses)) |>
+      dplyr::arrange(status) |>
+      dplyr::mutate(status = as.character(status))
+
+    total_count <- sum(category_data$count, na.rm = TRUE)
+
+    lapply(seq_len(nrow(category_data)), function(i) {
+      count_value <- round(category_data$count[i])
+      percent_value <- if (total_count > 0) {
+        paste0(format(round((count_value / total_count) * 100, 1), nsmall = 1), "%")
+      } else {
+        "0.0%"
+      }
+
+      list(
+        status = category_data$status[i],
+        count_display = format_number(count_value),
+        percent_display = percent_value
+      )
+    })
+  }
+
+  excluded_participants_count <- metrics$excluded_participants_count
+  if (is.null(excluded_participants_count)) {
+    excluded_participants_count <- NA_real_
+  }
+
+  missing_connect_id <- build_summary_card(metrics$missing_person_id_count)
+  connect_not_in_delivery <- build_summary_card(connect_patient_counts$connect_not_in_delivery)
+  delivery_not_in_connect <- build_summary_card(connect_patient_counts$delivery_not_in_connect)
+  excluded_participants <- build_summary_card(excluded_participants_count)
+
+  has_data <- (
+    !is.na(metrics$missing_person_id_count) ||
+    nrow(breakdowns) > 0 ||
+      !is.na(excluded_participants_count) ||
+      !is.na(connect_patient_counts$connect_not_in_delivery) ||
+      !is.na(connect_patient_counts$delivery_not_in_connect)
+  )
+
+  list(
+    has_data = has_data,
+    missing_connect_id_display = missing_connect_id$display,
+    missing_connect_id_class = missing_connect_id$card_class,
+    excluded_participants_display = excluded_participants$display,
+    excluded_participants_class = excluded_participants$card_class,
+    connect_not_in_delivery_display = connect_not_in_delivery$display,
+    connect_not_in_delivery_class = connect_not_in_delivery$card_class,
+    delivery_not_in_connect_display = delivery_not_in_connect$display,
+    delivery_not_in_connect_class = delivery_not_in_connect$card_class,
+    consent_rows_data = build_breakdown_rows("Consent withdrawn"),
+    data_destruction_rows_data = build_breakdown_rows("Data destruction requested"),
+    hipaa_rows_data = build_breakdown_rows("HIPAA revoked"),
+    study_status_rows_data = build_breakdown_rows("Study status")
   )
 }
 
@@ -817,6 +894,14 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Missing Connect ID">👤</span>')
   }
 
+  if (table_metrics$identifier_not_in_connect_rows > 0 && table_metrics$final_rows > 0) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Not a Connect participant">🔎</span>')
+  }
+
+  if (table_metrics$delivered_connect_ids_not_found > 0 && table_metrics$final_rows > 0) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Delivered IDs not found in Connect">🔍</span>')
+  }
+
   if (table_metrics$ref_integrity$rows > 0 && table_metrics$final_rows > 0) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Referential integrity violations">🧑‍🧒</span>')
   }
@@ -837,6 +922,8 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     initial_rows_formatted = format_number(table_metrics$initial_rows),
     quality_issues_display = table_metrics$quality_issues_display,
     quality_issues_class = table_metrics$quality_issues_class,
+    participant_filter_display = table_metrics$participant_filter_display,
+    participant_filter_class = table_metrics$participant_filter_class,
     harmonization_display = table_metrics$harmonization$display$text,
     harmonization_class = table_metrics$harmonization$display$class,
     final_rows_formatted = format_number(table_metrics$final_rows),

@@ -105,14 +105,14 @@ calculate_percentage <- function(numerator, denominator) {
 #' Calculate vocabulary harmonization impact
 #'
 #' Determines the net row change due to vocabulary harmonization.
-#' Formula: (same_table_result_rows - valid_rows) + transitions_in
+#' Formula: (same_table_result_rows - rows_available_for_harmonization) + transitions_in
 #'
 #' - same_table_result_rows: Rows remaining after same-table vocab mappings (includes 1:N expansion)
-#' - valid_rows: Valid input rows (baseline, excludes quality issues)
+#' - rows_available_for_harmonization: Rows entering harmonization after participant filtering
 #' - transitions_in: Rows received from other tables via cross-table mappings
 #'
 #' @param same_table_rows Integer rows after same-table mappings
-#' @param valid_rows Integer valid input rows
+#' @param valid_rows Integer baseline rows entering harmonization
 #' @param transitions_in Integer rows received from other tables
 #' @return Integer harmonization impact (negative = rows lost, positive = rows gained)
 #' @export
@@ -122,29 +122,30 @@ calculate_harmonization <- function(same_table_rows, valid_rows, transitions_in)
 
 #' Calculate quality issues count
 #'
-#' Sums invalid rows and rows with missing person_id.
+#' Counts only rows that fail OMOP data type/specification checks.
+#' Rows removed for missing person_id are tracked separately.
 #'
 #' @param invalid_rows Integer count of invalid rows
 #' @param missing_rows Integer count of rows with missing person_id
 #' @return Integer total quality issues
 #' @export
-calculate_quality_issues <- function(invalid_rows, missing_rows) {
-  invalid_rows + missing_rows
+calculate_quality_issues <- function(invalid_rows, missing_rows = 0) {
+  invalid_rows
 }
 
 #' Calculate expected final row count
 #'
-#' Determines expected final row count after quality filtering and harmonization.
-#' Formula: initial_rows - quality_issues + harmonization
+#' Determines expected final row count after row removals and harmonization.
+#' Formula: initial_rows - rows_removed + harmonization
 #' For non-harmonized tables, harmonization is 0.
 #'
 #' @param initial_rows Integer initial row count
-#' @param quality_issues Integer quality issues to subtract
+#' @param rows_removed Integer count of rows removed before harmonization
 #' @param harmonization Integer harmonization impact
 #' @return Integer expected final rows
 #' @export
-calculate_expected_final_rows <- function(initial_rows, quality_issues, harmonization) {
-  initial_rows - quality_issues + harmonization
+calculate_expected_final_rows <- function(initial_rows, rows_removed, harmonization) {
+  initial_rows - rows_removed + harmonization
 }
 
 #' Calculate row-per-patient metric
@@ -158,6 +159,94 @@ calculate_expected_final_rows <- function(initial_rows, quality_issues, harmoniz
 calculate_row_per_patient <- function(row_count, patient_count) {
   if (patient_count == 0 || is.na(patient_count) || is.na(row_count)) return(0)
   round(row_count / patient_count, 2)
+}
+
+get_missing_person_rows <- function(table_name, metrics) {
+  table_level_rows <- get_table_count(metrics$missing_person_id, table_name)
+
+  if (table_name != "person" || table_level_rows > 0) {
+    return(table_level_rows)
+  }
+
+  if (is.null(metrics$missing_person_id_count) || is.na(metrics$missing_person_id_count)) {
+    return(0)
+  }
+
+  metrics$missing_person_id_count
+}
+
+get_connect_exclusion_rows <- function(table_name, metrics) {
+  get_table_count(metrics$connect_exclusion_rule_rows, table_name)
+}
+
+get_identifier_not_in_connect_rows <- function(table_name, metrics) {
+  get_table_count(metrics$identifier_not_in_connect_rows, table_name)
+}
+
+get_delivered_connect_ids_not_found <- function(table_name, metrics) {
+  get_table_count(metrics$delivered_connect_ids_not_found, table_name)
+}
+
+calculate_participant_filter_rows <- function(table_name, metrics) {
+  get_missing_person_rows(table_name, metrics) +
+    get_connect_exclusion_rows(table_name, metrics) +
+    get_identifier_not_in_connect_rows(table_name, metrics)
+}
+
+calculate_rows_available_for_harmonization <- function(table_name, metrics) {
+  valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
+  participant_filtered_rows <- calculate_participant_filter_rows(table_name, metrics)
+
+  max(valid_rows - participant_filtered_rows, 0)
+}
+
+get_rows_added_from_mappings <- function(table_name, metrics) {
+  if (is.null(metrics$same_table_mappings) || nrow(metrics$same_table_mappings) == 0) {
+    return(0)
+  }
+
+  table_mappings <- metrics$same_table_mappings |>
+    dplyr::filter(table_name == !!table_name)
+
+  if (nrow(table_mappings) == 0) {
+    return(0)
+  }
+
+  if ("rows_added" %in% names(table_mappings)) {
+    total_rows_added <- table_mappings |>
+      dplyr::summarise(total = sum(rows_added, na.rm = TRUE)) |>
+      dplyr::pull(total)
+
+    return(ifelse(length(total_rows_added) > 0, total_rows_added[1], 0))
+  }
+
+  if (!all(c("source_multiplier", "target_multiplier", "total_rows") %in% names(table_mappings))) {
+    return(0)
+  }
+
+  total_rows_added <- table_mappings |>
+    dplyr::mutate(
+      rows_added = total_rows * ((target_multiplier - source_multiplier) / target_multiplier)
+    ) |>
+    dplyr::summarise(total = sum(rows_added, na.rm = TRUE)) |>
+    dplyr::pull(total)
+
+  ifelse(length(total_rows_added) > 0, total_rows_added[1], 0)
+}
+
+calculate_rows_moved_out <- function(rows_available_for_harmonization,
+                                     same_table_rows,
+                                     rows_added_from_mappings,
+                                     total_rows_out) {
+  rows_moved_out <- rows_available_for_harmonization + rows_added_from_mappings - same_table_rows
+  rows_moved_out <- max(rows_moved_out, 0)
+  rows_moved_out <- min(rows_moved_out, total_rows_out)
+
+  rows_moved_out
+}
+
+calculate_rows_copied_out <- function(total_rows_out, rows_moved_out) {
+  max(total_rows_out - rows_moved_out, 0)
 }
 
 #' Calculate total number of participants
@@ -458,16 +547,11 @@ calculate_invalid_concepts_metric <- function(table_name, metrics) {
 #' @return List with rows, percent, and has_alert
 #' @export
 calculate_missing_person_metric <- function(table_name, metrics) {
-  # Special handling for person table
-  rows <- if (table_name == "person") {
-    metrics$missing_person_id_count
-  } else {
-    get_table_count(metrics$missing_person_id, table_name)
-  }
+  rows <- get_missing_person_rows(table_name, metrics)
 
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
   invalid_rows <- get_table_count(metrics$invalid_row_counts, table_name)
-  initial_rows <- valid_rows + invalid_rows + rows
+  initial_rows <- valid_rows + invalid_rows
 
   percent <- calculate_percentage(rows, initial_rows)
 
@@ -490,12 +574,7 @@ calculate_missing_person_metric <- function(table_name, metrics) {
 calculate_invalid_rows_metric <- function(table_name, metrics) {
   rows <- get_table_count(metrics$invalid_row_counts, table_name)
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
-  missing_person <- if (table_name == "person") {
-    metrics$missing_person_id_count
-  } else {
-    get_table_count(metrics$missing_person_id, table_name)
-  }
-  initial_rows <- valid_rows + rows + missing_person
+  initial_rows <- valid_rows + rows
 
   percent <- calculate_percentage(rows, initial_rows)
 
@@ -541,19 +620,19 @@ calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
   invalid_rows <- get_table_count(metrics$invalid_row_counts, table_name)
   final_rows <- get_table_count(metrics$final_row_counts, table_name)
+  missing_rows <- get_missing_person_rows(table_name, metrics)
+  connect_exclusion_rows <- get_connect_exclusion_rows(table_name, metrics)
+  identifier_not_in_connect_rows <- get_identifier_not_in_connect_rows(table_name, metrics)
+  delivered_connect_ids_not_found <- get_delivered_connect_ids_not_found(table_name, metrics)
+  participant_filter_rows <- calculate_participant_filter_rows(table_name, metrics)
 
-  missing_rows <- if (table_name == "person") {
-    metrics$missing_person_id_count
-  } else {
-    get_table_count(metrics$missing_person_id, table_name)
-  }
-
-  initial_rows <- valid_rows + invalid_rows + missing_rows
+  initial_rows <- valid_rows + invalid_rows
   quality_issues <- calculate_quality_issues(invalid_rows, missing_rows)
+  rows_removed_before_harmonization <- quality_issues + participant_filter_rows
 
   # Check if counts are valid (for harmonized tables)
   # This compares expected vs actual final row counts
-  expected_final <- calculate_expected_final_rows(initial_rows, quality_issues, harmonization)
+  expected_final <- calculate_expected_final_rows(initial_rows, rows_removed_before_harmonization, harmonization)
 
   # Validate: expected should match actual final row count
   is_valid <- (expected_final == final_rows)
@@ -563,6 +642,10 @@ calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
     valid = valid_rows,
     invalid = invalid_rows,
     missing = missing_rows,
+    connect_exclusion = connect_exclusion_rows,
+    identifier_not_in_connect = identifier_not_in_connect_rows,
+    delivered_connect_ids_not_found = delivered_connect_ids_not_found,
+    participant_filter = participant_filter_rows,
     initial = initial_rows,
     final = final_rows,
     quality_issues = quality_issues,
@@ -585,14 +668,20 @@ calculate_harmonization_metric <- function(table_name, metrics) {
     return(list(
       value = 0,
       is_harmonized = FALSE,
+      valid_rows = get_table_count(metrics$valid_row_counts, table_name),
+      rows_available_for_harmonization = 0,
       same_table_rows = 0,
       transitions_in = 0,
       rows_out = 0,
+      rows_moved_out = 0,
+      rows_copied_out = 0,
+      rows_added_from_mappings = 0,
       display = list(text = "--", class = "harmonization-neutral")
     ))
   }
 
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
+  rows_available_for_harmonization <- calculate_rows_available_for_harmonization(table_name, metrics)
 
   # Get same-table mapping results (uses total_rows column)
   same_table_rows <- if (is.null(metrics$same_table_mappings) || nrow(metrics$same_table_mappings) == 0) {
@@ -621,16 +710,30 @@ calculate_harmonization_metric <- function(table_name, metrics) {
     dplyr::pull(total)
   rows_out <- ifelse(length(rows_out) > 0, rows_out[1], 0)
 
+  rows_added_from_mappings <- get_rows_added_from_mappings(table_name, metrics)
+  rows_moved_out <- calculate_rows_moved_out(
+    rows_available_for_harmonization = rows_available_for_harmonization,
+    same_table_rows = same_table_rows,
+    rows_added_from_mappings = rows_added_from_mappings,
+    total_rows_out = rows_out
+  )
+  rows_copied_out <- calculate_rows_copied_out(rows_out, rows_moved_out)
+
   # Calculate harmonization impact
-  value <- calculate_harmonization(same_table_rows, valid_rows, transitions_in)
+  value <- calculate_harmonization(same_table_rows, rows_available_for_harmonization, transitions_in)
   display <- format_harmonization_display(value, TRUE)
 
   list(
     value = value,
     is_harmonized = TRUE,
+    valid_rows = valid_rows,
+    rows_available_for_harmonization = rows_available_for_harmonization,
     same_table_rows = same_table_rows,
     transitions_in = transitions_in,
     rows_out = rows_out,
+    rows_moved_out = rows_moved_out,
+    rows_copied_out = rows_copied_out,
+    rows_added_from_mappings = rows_added_from_mappings,
     display = display
   )
 }
@@ -674,6 +777,8 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     default_dates$has_alert ||
     invalid_concepts$has_alert ||
     missing_person$has_alert ||
+    (counts$identifier_not_in_connect > 0 && counts$final > 0) ||
+    (counts$delivered_connect_ids_not_found > 0 && counts$final > 0) ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
     (counts$has_mismatch_alert && should_show_mismatch)
@@ -684,6 +789,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
 
   # Format displays
   quality_issues_display <- format_quality_issues_display(counts$quality_issues)
+  participant_filter_display <- format_quality_issues_display(counts$participant_filter)
 
   # Return comprehensive structure
   list(
@@ -696,6 +802,10 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     valid_rows = counts$valid,
     invalid_rows = counts$invalid,
     missing_person_id_rows = counts$missing,
+    connect_exclusion_rows = counts$connect_exclusion,
+    identifier_not_in_connect_rows = counts$identifier_not_in_connect,
+    delivered_connect_ids_not_found = counts$delivered_connect_ids_not_found,
+    participant_filter_rows = counts$participant_filter,
     final_rows = counts$final,
     quality_issues = counts$quality_issues,
     expected_final = counts$expected_final,
@@ -721,6 +831,8 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
 
     # Formatted displays
     quality_issues_display = quality_issues_display$text,
-    quality_issues_class = quality_issues_display$class
+    quality_issues_class = quality_issues_display$class,
+    participant_filter_display = participant_filter_display$text,
+    participant_filter_class = participant_filter_display$class
   )
 }

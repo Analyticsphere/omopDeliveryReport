@@ -177,7 +177,7 @@ function showTableDrilldown(tableName) {
   }
 
   // Hide all other sections
-  const sectionsToHide = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToHide = ["overview", "connect-filtering", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToHide.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -219,7 +219,7 @@ function hideTableDrilldown() {
   }
 
   // Show all other sections
-  const sectionsToShow = ["overview", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
+  const sectionsToShow = ["overview", "connect-filtering", "dqd-grid", "pass-breakdown", "delivery-report", "time-series", "vocab-harmonization", "technical-summary"];
   sectionsToShow.forEach(function(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -324,6 +324,19 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`👤 <strong>` + formatNumber(tableData.missing_person_id_rows) + `</strong> ` + missingRowWord + ` not have a Connect ID value and ` + missingRemovedWord);
   }
 
+  // Identifier not in Connect warning (>0)
+  if (tableData.identifier_not_in_connect_rows > 0 && tableData.final_rows > 0) {
+    var notInConnectRowWord = tableData.identifier_not_in_connect_rows === 1 ? "row does" : "rows do";
+    var notInConnectRemovedWord = tableData.identifier_not_in_connect_rows === 1 ? "was removed" : "were removed";
+    qualityWarnings.push(`🔎 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
+  }
+
+  // Delivered Connect IDs not found warning (>0)
+  if (tableData.delivered_connect_ids_not_found > 0 && tableData.final_rows > 0) {
+    var notFoundWord = tableData.delivered_connect_ids_not_found === 1 ? "delivered Connect ID was" : "delivered Connect IDs were";
+    qualityWarnings.push(`🔍 <strong>` + formatNumber(tableData.delivered_connect_ids_not_found) + `</strong> ` + notFoundWord + ` not found in the Connect database`);
+  }
+
   // Referential integrity violations warning (>0)
   if (tableData.referential_integrity_violations > 0 && tableData.final_rows > 0) {
     var violationWord = tableData.referential_integrity_violations === 1 ? "row has a person_id" : "rows have person_ids";
@@ -412,15 +425,11 @@ function buildTableDrilldownContent(tableData) {
     </div>
   `;
 
-  // Data Quality Control Section - Always show, highlight issues
-  html += `<div class="subsection"><h4>Data Quality Control</h4>`;
+  // Participant Filtering Section
+  html += `<div class="subsection"><h4>Participant Filtering</h4>`;
 
-  // Cards container for 5 cards in 3-2 layout
-  // Top row: 3 cards (Rows Without Connect ID, Referential Integrity, Invalid Rows)
-  // Bottom row: 2 cards (Invalid Concepts, Default Dates)
-  html += `<div class="quality-cards-grid">`;
+  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
 
-  // Row 1: Rows Without Connect ID | Referential Integrity Violations | Invalid Rows
   // Rows Without Connect ID Card
   var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
   var missingPercent = (tableData.missing_person_id_percent || 0).toFixed(1);
@@ -429,9 +438,56 @@ function buildTableDrilldownContent(tableData) {
     <div class="metric-card ` + missingClass + `">
       <div class="metric-label">Rows Without Connect ID</div>
       <div class="metric-value">` + missingDisplay + `</div>
-      <div class="metric-sublabel">Missing person_id, removed from delivery</div>
+      <div class="metric-sublabel">Missing Connect ID</div>
     </div>
   `;
+
+  // Rows Not in Connect Data Card
+  var notInConnectRows = tableData.identifier_not_in_connect_rows || 0;
+  var notInConnectClass = tableData.final_rows === 0 ? "neutral" : (notInConnectRows > 0 ? "warning" : "success");
+  var notInConnectPercent = tableData.initial_rows > 0 ? ((notInConnectRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var notInConnectDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(notInConnectRows) + ` <span class="percentage-display">(` + notInConnectPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + notInConnectClass + `">
+      <div class="metric-label">Rows Not in Connect</div>
+      <div class="metric-value">` + notInConnectDisplay + `</div>
+      <div class="metric-sublabel">Connect ID not found in Connect database</div>
+    </div>
+  `;
+
+  // Rows Matching Exclusion Rules Card
+  var connectExclusionRows = tableData.connect_exclusion_rows || 0;
+  var connectExclusionClass = tableData.final_rows === 0 ? "neutral" : (connectExclusionRows > 0 ? "warning" : "success");
+  var connectExclusionPercent = tableData.initial_rows > 0 ? ((connectExclusionRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var connectExclusionDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(connectExclusionRows) + ` <span class="percentage-display">(` + connectExclusionPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + connectExclusionClass + `">
+      <div class="metric-label">Rows Matching Exclusion Rules</div>
+      <div class="metric-value">` + connectExclusionDisplay + `</div>
+      <div class="metric-sublabel">Matched an exclusion rule criteria</div>
+    </div>
+  `;
+
+  // Delivered Connect IDs Not Found Card
+  var deliveredNotFoundRows = tableData.delivered_connect_ids_not_found || 0;
+  var deliveredNotFoundClass = tableData.final_rows === 0 ? "neutral" : (deliveredNotFoundRows > 0 ? "warning" : "success");
+  var deliveredNotFoundPercent = tableData.initial_rows > 0 ? ((deliveredNotFoundRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var deliveredNotFoundDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(deliveredNotFoundRows) + ` <span class="percentage-display">(` + deliveredNotFoundPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + deliveredNotFoundClass + `">
+      <div class="metric-label">IDs Not Found in Connect</div>
+      <div class="metric-value">` + deliveredNotFoundDisplay + `</div>
+      <div class="metric-sublabel">Delivered Connect IDs not in Connect database</div>
+    </div>
+  `;
+
+  html += `</div>`;
+  html += `</div>`;  // End Participant Filtering subsection
+
+  // Data Quality Control Section - quality and integrity checks
+  html += `<div class="subsection"><h4>Data Quality Control</h4>`;
+
+  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
 
   // Referential Integrity Violations Card
   var refIntegrityViolations = tableData.referential_integrity_violations || 0;
@@ -488,11 +544,11 @@ function buildTableDrilldownContent(tableData) {
     <div class="metric-card ` + defaultDateClass + `">
       <div class="metric-label">Rows with Default Dates</div>
       <div class="metric-value">` + defaultDateDisplay + `</div>
-      <div class="metric-sublabel">Placeholder date values (e.g., 1900-01-01)</div>
+      <div class="metric-sublabel">Placeholder date values (e.g., 1970-01-01)</div>
     </div>
   `;
 
-  html += `</div>`;  // End cards grid
+  html += `</div>`;  // End Data Quality Control cards grid
 
   // Extra Columns Removed - Always show for delivered tables
   if (tableData.delivered) {
@@ -664,16 +720,18 @@ function buildTableDrilldownContent(tableData) {
 
   // Use pre-computed harmonization data from R
   var rowsIn = tableData.transitions_in || 0;
-  var rowsOut = tableData.rows_out || 0;
+  var rowsMovedOut = tableData.rows_moved_out || 0;
+  var rowsCopiedOut = tableData.rows_copied_out || 0;
   var harmonizationNet = tableData.harmonization || 0;
 
   // Use pre-calculated rows added from mappings (calculated in R)
   var rowsAddedFromMappings = tableData.rows_added_from_mappings || 0;
+  var hasHarmonizationFlow = harmonizationNet !== 0 || rowsMovedOut !== 0 || rowsCopiedOut !== 0 || rowsIn !== 0 || rowsAddedFromMappings !== 0;
 
   // Only show harmonization flow if there was actual harmonization activity
-  if (harmonizationNet !== 0) {
+  if (hasHarmonizationFlow) {
     // Format rows out (red with minus sign if > 0)
-    var rowsOutFormatted = rowsOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsOut) + '</span>' : formatNumber(rowsOut);
+    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
 
     // Format rows in (green with plus sign if > 0)
     var rowsInFormatted = rowsIn > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
@@ -681,12 +739,16 @@ function buildTableDrilldownContent(tableData) {
     // Format rows added from mappings (green with plus sign if > 0)
     var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
 
+    // Generated rows are additional rows created during mapping and sent elsewhere
+    var rowsCopiedFormatted = rowsCopiedOut > 0 ? '<span style="color: #6b7280;">' + formatNumber(rowsCopiedOut) + '</span>' : formatNumber(rowsCopiedOut);
+
     html += `
       <div class="subsection">
         <h4>Vocabulary Harmonization Flow</h4>
         <div class="info-box">
           <ul style="margin: 0; padding-left: 20px;">
             <li>Rows moved to other tables: ` + rowsOutFormatted + `</li>
+            <li>Rows generated for other tables: ` + rowsCopiedFormatted + `</li>
             <li>Rows received from other tables: ` + rowsInFormatted + `</li>
             <li>Rows added from 1:N mappings: ` + rowsAddedFormatted + `</li>
           </ul>
@@ -697,6 +759,7 @@ function buildTableDrilldownContent(tableData) {
 
     html += `
           <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + netClass + `">` + netSign + formatNumber(harmonizationNet) + ` rows</span></p>
+          <p style="margin-top: 10px; margin-bottom: 0; color: #6b7280; font-size: 0.95em;">Rows generated for other tables are additional rows created during 1:N mappings and routed elsewhere, so they do not affect the source table's row count.</p>
         </div>
       </div>
     `;

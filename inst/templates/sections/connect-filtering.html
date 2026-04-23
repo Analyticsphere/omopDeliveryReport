@@ -1,0 +1,110 @@
+<div class="section" id="connect-filtering">
+    <div class="section-header">
+        <span class="section-icon"></span>
+        <h2>Connect Participant Filtering</h2>
+    </div>
+
+    <div class="info-box connect-filtering-intro">
+        <p>This section summarizes Connect participant filtering metadata. Counts only are shown here; no individual Connect identifiers are displayed in this report.</p>
+    </div>
+
+    <div class="overview-metrics-grid connect-filtering-summary-grid">
+        <div class="metric-card{{missing_connect_id_class}}">
+            <div class="metric-label">Missing Connect ID</div>
+            <div class="metric-value">{{missing_connect_id_display}}</div>
+            <div class="metric-sublabel">Patients with missing Connect ID</div>
+        </div>
+
+        <div class="metric-card{{delivery_not_in_connect_class}}">
+            <div class="metric-label">Unmatched Patients</div>
+            <div class="metric-value">{{delivery_not_in_connect_display}}</div>
+            <div class="metric-sublabel">Patients who cannot be identified as Connect participants</div>
+        </div>
+
+        <div class="metric-card{{excluded_participants_class}}">
+            <div class="metric-label">Excluded Participants</div>
+            <div class="metric-value">{{excluded_participants_display}}</div>
+            <div class="metric-sublabel">Participants excluded by Connect filtering criteria</div>
+        </div>
+
+        <div class="metric-card{{connect_not_in_delivery_class}}">
+            <div class="metric-label">Missing Participants</div>
+            <div class="metric-value">{{connect_not_in_delivery_display}}</div>
+            <div class="metric-sublabel">Eligible Connect participants absent from the delivery</div>
+        </div>
+    </div>
+
+    <div class="connect-filter-table-grid">
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Consent Withdrawn</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{consent_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Data Destruction Requested</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{data_destruction_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">HIPAA Revoked</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{hipaa_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="connect-filter-table-card">
+            <h4 class="connect-filter-table-title">Study Status</h4>
+            <div class="table-container">
+                <table class="connect-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{study_status_rows}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

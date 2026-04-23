@@ -65,18 +65,18 @@ test_that("calculate_harmonization handles edge cases", {
 # ==============================================================================
 
 test_that("calculate_quality_issues sums correctly", {
-  expect_equal(calculate_quality_issues(10, 5), 15)
+  expect_equal(calculate_quality_issues(10, 5), 10)
   expect_equal(calculate_quality_issues(0, 0), 0)
   expect_equal(calculate_quality_issues(100, 0), 100)
-  expect_equal(calculate_quality_issues(0, 50), 50)
+  expect_equal(calculate_quality_issues(0, 50), 0)
 })
 
 test_that("calculate_quality_issues handles edge cases", {
-  # Large numbers
-  expect_equal(calculate_quality_issues(1000000, 500000), 1500000)
+  # Large missing-person counts should not affect quality issues
+  expect_equal(calculate_quality_issues(1000000, 500000), 1000000)
 
-  # One negative (shouldn't happen in practice, but test anyway)
-  expect_equal(calculate_quality_issues(-5, 10), 5)
+  # Missing rows are ignored even when invalid rows are zero
+  expect_equal(calculate_quality_issues(0, 10), 0)
 })
 
 # ==============================================================================
@@ -106,6 +106,242 @@ test_that("calculate_expected_final_rows handles edge cases", {
 
   # Result could be negative (data quality catastrophe)
   expect_equal(calculate_expected_final_rows(100, 150, -50), -100)
+})
+
+test_that("calculate_count_metrics uses valid plus invalid rows as initial source of truth", {
+  metrics <- list(
+    valid_row_counts = data.frame(
+      table_name = "person",
+      count = 10,
+      stringsAsFactors = FALSE
+    ),
+    invalid_row_counts = data.frame(
+      table_name = "person",
+      count = 2,
+      stringsAsFactors = FALSE
+    ),
+    final_row_counts = data.frame(
+      table_name = "person",
+      count = 7,
+      stringsAsFactors = FALSE
+    ),
+    missing_person_id = data.frame(
+      table_name = character(0),
+      count = numeric(0),
+      stringsAsFactors = FALSE
+    ),
+    missing_person_id_count = 3,
+    connect_exclusion_rule_rows = data.frame(
+      table_name = character(0),
+      count = numeric(0),
+      stringsAsFactors = FALSE
+    ),
+    identifier_not_in_connect_rows = data.frame(
+      table_name = character(0),
+      count = numeric(0),
+      stringsAsFactors = FALSE
+    ),
+    connect_patient_counts = list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    )
+  )
+
+  result <- calculate_count_metrics("person", metrics, harmonization = 0)
+
+  expect_equal(result$initial, 12)
+  expect_equal(result$invalid, 2)
+  expect_equal(result$missing, 3)
+  expect_equal(result$quality_issues, 2)
+  expect_equal(result$participant_filter, 3)
+  expect_equal(result$expected_final, 7)
+  expect_true(result$is_valid)
+})
+
+test_that("calculate_count_metrics includes participant filtering separately from quality issues", {
+  metrics <- list(
+    valid_row_counts = data.frame(
+      table_name = "person",
+      count = 110,
+      stringsAsFactors = FALSE
+    ),
+    invalid_row_counts = data.frame(
+      table_name = "person",
+      count = 0,
+      stringsAsFactors = FALSE
+    ),
+    final_row_counts = data.frame(
+      table_name = "person",
+      count = 64,
+      stringsAsFactors = FALSE
+    ),
+    missing_person_id = data.frame(
+      table_name = "person",
+      count = 1,
+      stringsAsFactors = FALSE
+    ),
+    missing_person_id_count = 1,
+    connect_exclusion_rule_rows = data.frame(
+      table_name = "person",
+      count = 44,
+      stringsAsFactors = FALSE
+    ),
+    identifier_not_in_connect_rows = data.frame(
+      table_name = "person",
+      count = 1,
+      stringsAsFactors = FALSE
+    ),
+    connect_patient_counts = list(
+      connect_not_in_delivery = 561,
+      delivery_not_in_connect = 2
+    )
+  )
+
+  result <- calculate_count_metrics("person", metrics, harmonization = 0)
+
+  expect_equal(result$quality_issues, 0)
+  expect_equal(result$participant_filter, 46)
+  expect_equal(result$expected_final, 64)
+  expect_true(result$is_valid)
+})
+
+test_that("calculate_harmonization_metric excludes participant filtering from harmonization", {
+  metrics <- list(
+    valid_row_counts = data.frame(
+      table_name = "drug_exposure",
+      count = 1000,
+      stringsAsFactors = FALSE
+    ),
+    connect_exclusion_rule_rows = data.frame(
+      table_name = "drug_exposure",
+      count = 100,
+      stringsAsFactors = FALSE
+    ),
+    identifier_not_in_connect_rows = data.frame(
+      table_name = "drug_exposure",
+      count = 20,
+      stringsAsFactors = FALSE
+    ),
+    connect_patient_counts = list(
+      connect_not_in_delivery = NA_real_,
+      delivery_not_in_connect = NA_real_
+    ),
+    same_table_mappings = data.frame(
+      table_name = "drug_exposure",
+      mapping = "Vocab harmonization same-table mapping: drug_exposure - 1:1",
+      source_multiplier = 1,
+      target_multiplier = 1,
+      total_rows = 880,
+      rows_added = 0,
+      stringsAsFactors = FALSE
+    ),
+    table_transitions = data.frame(
+      source_table = "procedure_occurrence",
+      target_table = "drug_exposure",
+      count = 15,
+      stringsAsFactors = FALSE
+    )
+  )
+
+  result <- calculate_harmonization_metric("drug_exposure", metrics)
+
+  expect_equal(result$rows_available_for_harmonization, 880)
+  expect_equal(result$value, 15)
+  expect_equal(result$rows_added_from_mappings, 0)
+})
+
+test_that("calculate_harmonization_metric uses parsed 1:N mapping counts as source of truth", {
+  metrics <- list(
+    valid_row_counts = data.frame(
+      table_name = "measurement",
+      count = 62073,
+      stringsAsFactors = FALSE
+    ),
+    missing_person_id = data.frame(
+      table_name = "measurement",
+      count = 0,
+      stringsAsFactors = FALSE
+    ),
+    connect_exclusion_rule_rows = data.frame(
+      table_name = "measurement",
+      count = 22471,
+      stringsAsFactors = FALSE
+    ),
+    identifier_not_in_connect_rows = data.frame(
+      table_name = "measurement",
+      count = 91,
+      stringsAsFactors = FALSE
+    ),
+    same_table_mappings = data.frame(
+      table_name = c("measurement", "measurement"),
+      mapping = c(
+        "Vocab harmonization same-table mapping: measurement - 1:1",
+        "Vocab harmonization same-table mapping: measurement - 1:2"
+      ),
+      source_multiplier = c(1, 1),
+      target_multiplier = c(1, 2),
+      total_rows = c(39510, 2),
+      rows_added = c(0, 1),
+      stringsAsFactors = FALSE
+    ),
+    table_transitions = data.frame(
+      source_table = c("procedure_occurrence", "measurement"),
+      target_table = c("measurement", "observation"),
+      count = c(4, 1),
+      stringsAsFactors = FALSE
+    )
+  )
+
+  result <- calculate_harmonization_metric("measurement", metrics)
+
+  expect_equal(result$rows_available_for_harmonization, 39511)
+  expect_equal(result$rows_added_from_mappings, 1)
+  expect_equal(result$rows_moved_out, 0)
+  expect_equal(result$rows_copied_out, 1)
+  expect_equal(result$value, 5)
+})
+
+test_that("prepare_delivery_table_row shows participant filter and adjusted harmonization counts", {
+  delivery_data <- read.csv("../../inst/ref/delivery_report.csv", stringsAsFactors = FALSE)
+  metrics <- parse_delivery_metrics(delivery_data)
+  num_participants <- calculate_num_participants(metrics)
+
+  person_row <- prepare_delivery_table_row("person", metrics, num_participants)
+  procedure_row <- prepare_delivery_table_row("procedure_occurrence", metrics, num_participants)
+  procedure_metrics <- calculate_table_metrics("procedure_occurrence", metrics, NA)
+  measurement_data <- prepare_table_data("measurement", metrics, NA)
+
+  expect_equal(person_row$quality_issues_display, "0")
+  expect_equal(person_row$participant_filter_display, "-46")
+  expect_equal(procedure_row$quality_issues_display, "-2")
+  expect_equal(procedure_row$participant_filter_display, "-5,815")
+  expect_equal(procedure_row$harmonization_display, "-375")
+  expect_true(procedure_metrics$counts_valid)
+  expect_equal(procedure_metrics$expected_final, 9562)
+  expect_equal(procedure_metrics$harmonization$rows_added_from_mappings, 0)
+  expect_equal(procedure_metrics$harmonization$rows_moved_out, 375)
+  expect_equal(procedure_metrics$harmonization$rows_copied_out, 0)
+  expect_equal(measurement_data$rows_moved_out, 0)
+  expect_equal(measurement_data$rows_copied_out, 1)
+})
+
+test_that("prepare_delivery_table_row shows Connect participant warning icon when identifier is not in Connect", {
+  metrics <- create_empty_metrics()
+  metrics$valid_tables <- data.frame(table_name = "person", stringsAsFactors = FALSE)
+  metrics$valid_row_counts <- data.frame(table_name = "person", count = 10, stringsAsFactors = FALSE)
+  metrics$invalid_row_counts <- data.frame(table_name = "person", count = 0, stringsAsFactors = FALSE)
+  metrics$final_row_counts <- data.frame(table_name = "person", count = 9, stringsAsFactors = FALSE)
+  metrics$missing_person_id_count <- 0
+  metrics$identifier_not_in_connect_rows <- data.frame(
+    table_name = "person",
+    count = 1,
+    stringsAsFactors = FALSE
+  )
+
+  row <- prepare_delivery_table_row("person", metrics, num_participants = 10)
+
+  expect_equal(row$row_class, "row-warning")
+  expect_match(row$all_warnings, "🔎", fixed = TRUE)
 })
 
 # ==============================================================================
