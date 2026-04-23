@@ -133,6 +133,7 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     participant_filter_rows = participant_filter_rows,
     connect_exclusion_rows = count_metrics$connect_exclusion,
     identifier_not_in_connect_rows = count_metrics$identifier_not_in_connect,
+    delivered_connect_ids_not_found = count_metrics$delivered_connect_ids_not_found,
     referential_integrity_violations = referential_integrity_violations,
     harmonization = harmonization,
     transitions_in = transitions_in,
@@ -895,6 +896,10 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
 
   if (table_metrics$identifier_not_in_connect_rows > 0 && table_metrics$final_rows > 0) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Not a Connect participant">🔎</span>')
+  }
+
+  if (table_metrics$delivered_connect_ids_not_found > 0 && table_metrics$final_rows > 0) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Delivered IDs not found in Connect">🔍</span>')
   }
 
   if (table_metrics$ref_integrity$rows > 0 && table_metrics$final_rows > 0) {

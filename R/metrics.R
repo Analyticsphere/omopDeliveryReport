@@ -183,6 +183,10 @@ get_identifier_not_in_connect_rows <- function(table_name, metrics) {
   get_table_count(metrics$identifier_not_in_connect_rows, table_name)
 }
 
+get_delivered_connect_ids_not_found <- function(table_name, metrics) {
+  get_table_count(metrics$delivered_connect_ids_not_found, table_name)
+}
+
 calculate_participant_filter_rows <- function(table_name, metrics) {
   get_missing_person_rows(table_name, metrics) +
     get_connect_exclusion_rows(table_name, metrics) +
@@ -619,6 +623,7 @@ calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
   missing_rows <- get_missing_person_rows(table_name, metrics)
   connect_exclusion_rows <- get_connect_exclusion_rows(table_name, metrics)
   identifier_not_in_connect_rows <- get_identifier_not_in_connect_rows(table_name, metrics)
+  delivered_connect_ids_not_found <- get_delivered_connect_ids_not_found(table_name, metrics)
   participant_filter_rows <- calculate_participant_filter_rows(table_name, metrics)
 
   initial_rows <- valid_rows + invalid_rows
@@ -639,6 +644,7 @@ calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
     missing = missing_rows,
     connect_exclusion = connect_exclusion_rows,
     identifier_not_in_connect = identifier_not_in_connect_rows,
+    delivered_connect_ids_not_found = delivered_connect_ids_not_found,
     participant_filter = participant_filter_rows,
     initial = initial_rows,
     final = final_rows,
@@ -772,6 +778,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     invalid_concepts$has_alert ||
     missing_person$has_alert ||
     (counts$identifier_not_in_connect > 0 && counts$final > 0) ||
+    (counts$delivered_connect_ids_not_found > 0 && counts$final > 0) ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
     (counts$has_mismatch_alert && should_show_mismatch)
@@ -797,6 +804,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     missing_person_id_rows = counts$missing,
     connect_exclusion_rows = counts$connect_exclusion,
     identifier_not_in_connect_rows = counts$identifier_not_in_connect,
+    delivered_connect_ids_not_found = counts$delivered_connect_ids_not_found,
     participant_filter_rows = counts$participant_filter,
     final_rows = counts$final,
     quality_issues = counts$quality_issues,

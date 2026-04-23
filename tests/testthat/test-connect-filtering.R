@@ -19,10 +19,12 @@ test_that("parse_delivery_metrics extracts Connect participant filtering metrics
       "Number of rows removed due to Connect exclusion rules: person",
       "Number of rows removed due to identifier not in Connect database: person",
       "Number of Connect patients not in delivery",
-      "Number of delivery patients not in Connect data"
+      "Number of delivery patients not in Connect data",
+      "Delivered Connect ID values not found in Connect database: person",
+      "Delivered Connect ID values not found in Connect database: measurement"
     ),
-    value_as_string = rep("", 13),
-    value_as_number = c(93, 15, 98, 10, 92, 16, 79, 26, 3, 44, 1, 561, 2),
+    value_as_string = rep("", 15),
+    value_as_number = c(93, 15, 98, 10, 92, 16, 79, 26, 3, 44, 1, 561, 2, 7, 12),
     stringsAsFactors = FALSE
   )
 
@@ -42,7 +44,12 @@ test_that("parse_delivery_metrics extracts Connect participant filtering metrics
     )
   )
   expect_equal(metrics$connect_patient_counts$connect_not_in_delivery, 561)
+  # Old single-value metric takes precedence over fallback
   expect_equal(metrics$connect_patient_counts$delivery_not_in_connect, 2)
+  # New per-table metric is also parsed
+  expect_equal(nrow(metrics$delivered_connect_ids_not_found), 2)
+  expect_equal(get_table_count(metrics$delivered_connect_ids_not_found, "person"), 7)
+  expect_equal(get_table_count(metrics$delivered_connect_ids_not_found, "measurement"), 12)
 })
 
 test_that("parse_delivery_metrics supports legacy delivery not in Connect metric name", {
@@ -56,6 +63,57 @@ test_that("parse_delivery_metrics supports legacy delivery not in Connect metric
   metrics <- parse_delivery_metrics(delivery_data)
 
   expect_equal(metrics$connect_patient_counts$delivery_not_in_connect, 4)
+})
+
+test_that("parse_delivery_metrics supports renamed connect_not_in_delivery metric", {
+  delivery_data <- data.frame(
+    name = "Number of eligible Connect patients not in delivery",
+    value_as_string = "",
+    value_as_number = 440,
+    stringsAsFactors = FALSE
+  )
+
+  metrics <- parse_delivery_metrics(delivery_data)
+
+  expect_equal(metrics$connect_patient_counts$connect_not_in_delivery, 440)
+})
+
+test_that("parse_delivery_metrics falls back to person-level for delivery_not_in_connect", {
+  delivery_data <- data.frame(
+    name = c(
+      "Delivered Connect ID values not found in Connect database: person",
+      "Delivered Connect ID values not found in Connect database: measurement"
+    ),
+    value_as_string = rep("", 2),
+    value_as_number = c(5, 12),
+    stringsAsFactors = FALSE
+  )
+
+  metrics <- parse_delivery_metrics(delivery_data)
+
+  # New per-table metric is parsed
+  expect_equal(nrow(metrics$delivered_connect_ids_not_found), 2)
+  expect_equal(get_table_count(metrics$delivered_connect_ids_not_found, "person"), 5)
+  expect_equal(get_table_count(metrics$delivered_connect_ids_not_found, "measurement"), 12)
+  # Person-level value used as fallback for the summary card
+  expect_equal(metrics$connect_patient_counts$delivery_not_in_connect, 5)
+})
+
+test_that("parse_delivery_metrics prefers old delivery_not_in_connect name over fallback", {
+  delivery_data <- data.frame(
+    name = c(
+      "Number of delivery patients not in Connect data",
+      "Delivered Connect ID values not found in Connect database: person"
+    ),
+    value_as_string = rep("", 2),
+    value_as_number = c(2, 99),
+    stringsAsFactors = FALSE
+  )
+
+  metrics <- parse_delivery_metrics(delivery_data)
+
+  # Old single-value metric takes precedence
+  expect_equal(metrics$connect_patient_counts$delivery_not_in_connect, 2)
 })
 
 test_that("prepare_connect_filtering_data formats summary counts and orders rows", {
@@ -215,8 +273,10 @@ test_that("table drilldown separates participant filtering from data quality con
   expect_match(html, "Data Quality Control", fixed = TRUE)
   expect_match(html, "Rows Not in Connect", fixed = TRUE)
   expect_match(html, "Rows Matching Exclusion Rules", fixed = TRUE)
+  expect_match(html, "IDs Not Found in Connect", fixed = TRUE)
   expect_match(html, "\"identifier_not_in_connect_rows\":23", fixed = TRUE)
   expect_match(html, "\"connect_exclusion_rows\":5791", fixed = TRUE)
+  expect_match(html, "\"delivered_connect_ids_not_found\":", fixed = TRUE)
   expect_false(grepl("Connect exclusion-rule criteria and", html, fixed = TRUE))
 })
 

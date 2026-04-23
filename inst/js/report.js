@@ -331,6 +331,12 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`🔎 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
   }
 
+  // Delivered Connect IDs not found warning (>0)
+  if (tableData.delivered_connect_ids_not_found > 0 && tableData.final_rows > 0) {
+    var notFoundWord = tableData.delivered_connect_ids_not_found === 1 ? "delivered Connect ID was" : "delivered Connect IDs were";
+    qualityWarnings.push(`🔍 <strong>` + formatNumber(tableData.delivered_connect_ids_not_found) + `</strong> ` + notFoundWord + ` not found in the Connect database`);
+  }
+
   // Referential integrity violations warning (>0)
   if (tableData.referential_integrity_violations > 0 && tableData.final_rows > 0) {
     var violationWord = tableData.referential_integrity_violations === 1 ? "row has a person_id" : "rows have person_ids";
@@ -422,7 +428,7 @@ function buildTableDrilldownContent(tableData) {
   // Participant Filtering Section
   html += `<div class="subsection"><h4>Participant Filtering</h4>`;
 
-  html += `<div class="quality-cards-grid quality-cards-grid-three">`;
+  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
 
   // Rows Without Connect ID Card
   var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
@@ -459,6 +465,19 @@ function buildTableDrilldownContent(tableData) {
       <div class="metric-label">Rows Matching Exclusion Rules</div>
       <div class="metric-value">` + connectExclusionDisplay + `</div>
       <div class="metric-sublabel">Matched an exclusion rule criteria</div>
+    </div>
+  `;
+
+  // Delivered Connect IDs Not Found Card
+  var deliveredNotFoundRows = tableData.delivered_connect_ids_not_found || 0;
+  var deliveredNotFoundClass = tableData.final_rows === 0 ? "neutral" : (deliveredNotFoundRows > 0 ? "warning" : "success");
+  var deliveredNotFoundPercent = tableData.initial_rows > 0 ? ((deliveredNotFoundRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
+  var deliveredNotFoundDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(deliveredNotFoundRows) + ` <span class="percentage-display">(` + deliveredNotFoundPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + deliveredNotFoundClass + `">
+      <div class="metric-label">IDs Not Found in Connect</div>
+      <div class="metric-value">` + deliveredNotFoundDisplay + `</div>
+      <div class="metric-sublabel">Delivered Connect IDs not in Connect database</div>
     </div>
   `;
 

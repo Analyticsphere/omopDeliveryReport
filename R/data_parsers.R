@@ -160,6 +160,13 @@
     regex = "^Number of rows removed due to identifier not in Connect database: (\\w+)$",
     fields = c("table_name"),
     value_field = "count"
+  ),
+
+  delivered_connect_ids_not_found = list(
+    pattern = "^Delivered Connect ID values not found in Connect database:",
+    regex = "^Delivered Connect ID values not found in Connect database: (\\w+)$",
+    fields = c("table_name"),
+    value_field = "count"
   )
 )
 
@@ -331,12 +338,28 @@ parse_delivery_metrics <- function(delivery_data) {
   }
 
   metrics$connect_patient_counts <- list(
-    connect_not_in_delivery = get_single_metric_value(c("Number of Connect patients not in delivery")),
+    connect_not_in_delivery = get_single_metric_value(c(
+      "Number of Connect patients not in delivery",
+      "Number of eligible Connect patients not in delivery"
+    )),
     delivery_not_in_connect = get_single_metric_value(c(
       "Number of delivery patients not in Connect data",
       "Delivery patient IDs not in Connect data"
     ))
   )
+
+  # Fallback: if delivery_not_in_connect is NA but the new per-table
+  # "Delivered Connect ID values not found" metric exists, use the person-level
+  # value (one person row = one participant).
+  if (is.na(metrics$connect_patient_counts$delivery_not_in_connect) &&
+      nrow(metrics$delivered_connect_ids_not_found) > 0) {
+    person_level <- metrics$delivered_connect_ids_not_found |>
+      dplyr::filter(table_name == "person") |>
+      dplyr::pull(count)
+    if (length(person_level) > 0 && !is.na(person_level[1])) {
+      metrics$connect_patient_counts$delivery_not_in_connect <- person_level[1]
+    }
+  }
 
   # For the PERSON table, one OMOP row corresponds to one participant.
   # This makes the person-level exclusion-rule count the participant count.
@@ -465,6 +488,10 @@ create_empty_metrics <- function() {
       count = integer()
     ),
     identifier_not_in_connect_rows = data.frame(
+      table_name = character(),
+      count = integer()
+    ),
+    delivered_connect_ids_not_found = data.frame(
       table_name = character(),
       count = integer()
     ),
