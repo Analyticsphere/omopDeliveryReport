@@ -141,6 +141,11 @@ test_that("calculate_count_metrics uses valid plus invalid rows as initial sourc
       count = numeric(0),
       stringsAsFactors = FALSE
     ),
+    delivered_connect_ids_not_found = data.frame(
+      table_name = "person",
+      count = 2,
+      stringsAsFactors = FALSE
+    ),
     connect_patient_counts = list(
       connect_not_in_delivery = NA_real_,
       delivery_not_in_connect = NA_real_
@@ -154,6 +159,7 @@ test_that("calculate_count_metrics uses valid plus invalid rows as initial sourc
   expect_equal(result$missing, 3)
   expect_equal(result$quality_issues, 2)
   expect_equal(result$participant_filter, 3)
+  expect_equal(result$delivered_connect_ids_not_found, 2)
   expect_equal(result$expected_final, 7)
   expect_true(result$is_valid)
 })
@@ -191,6 +197,11 @@ test_that("calculate_count_metrics includes participant filtering separately fro
       count = 1,
       stringsAsFactors = FALSE
     ),
+    delivered_connect_ids_not_found = data.frame(
+      table_name = character(0),
+      count = numeric(0),
+      stringsAsFactors = FALSE
+    ),
     connect_patient_counts = list(
       connect_not_in_delivery = 561,
       delivery_not_in_connect = 2
@@ -201,6 +212,7 @@ test_that("calculate_count_metrics includes participant filtering separately fro
 
   expect_equal(result$quality_issues, 0)
   expect_equal(result$participant_filter, 46)
+  expect_equal(result$delivered_connect_ids_not_found, 0)
   expect_equal(result$expected_final, 64)
   expect_true(result$is_valid)
 })

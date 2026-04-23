@@ -452,6 +452,7 @@ create_empty_metrics <- function() {
       pipeline_version = "Unknown"
     ),
     valid_tables = data.frame(table_name = character()),
+    invalid_tables = data.frame(table_name = character()),
     valid_row_counts = data.frame(table_name = character(), count = integer()),
     invalid_row_counts = data.frame(table_name = character(), count = integer()),
     final_row_counts = data.frame(table_name = character(), count = integer()),
@@ -460,6 +461,7 @@ create_empty_metrics <- function() {
     default_date_values = data.frame(table_name = character(), column_name = character(), count = integer()),
     invalid_concepts = data.frame(table_name = character(), column_name = character(), count = integer()),
     referential_integrity_violations = data.frame(table_name = character(), count = integer()),
+    valid_columns = data.frame(table_name = character(), column_name = character()),
     invalid_columns = data.frame(table_name = character(), column_name = character()),
     missing_columns = data.frame(table_name = character(), column_name = character()),
     same_table_mappings = data.frame(

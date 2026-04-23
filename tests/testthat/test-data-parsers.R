@@ -417,13 +417,29 @@ test_that("create_empty_metrics returns complete structure", {
 
   expect_type(result, "list")
 
-  # Check for key components
-  expect_true("metadata" %in% names(result))
-  expect_true("valid_tables" %in% names(result))
-  expect_true("valid_row_counts" %in% names(result))
-  expect_true("final_row_counts" %in% names(result))
-  expect_true("type_concepts" %in% names(result))
-  expect_true("time_series" %in% names(result))
+  # Check for all expected top-level fields
+  expected_fields <- c(
+    "metadata", "valid_tables", "invalid_tables",
+    "valid_row_counts", "invalid_row_counts", "final_row_counts",
+    "missing_person_id", "missing_person_id_count",
+    "referential_integrity_violations",
+    "valid_columns", "invalid_columns", "missing_columns",
+    "default_date_values", "invalid_concepts",
+    "type_concepts", "type_concepts_grouped",
+    "source_vocabularies", "target_vocabularies",
+    "harmonization_statuses", "row_dispositions",
+    "same_table_mappings", "table_transitions",
+    "time_series",
+    "connect_participant_breakdowns",
+    "connect_exclusion_rule_rows",
+    "identifier_not_in_connect_rows",
+    "delivered_connect_ids_not_found",
+    "excluded_participants_count",
+    "connect_patient_counts"
+  )
+  for (field in expected_fields) {
+    expect_true(field %in% names(result), info = paste("Missing field:", field))
+  }
 
   # Metadata should have all fields
   expect_true("site" %in% names(result$metadata))
@@ -432,4 +448,11 @@ test_that("create_empty_metrics returns complete structure", {
   # Data frames should be empty but have correct structure
   expect_equal(nrow(result$valid_tables), 0)
   expect_equal(nrow(result$valid_row_counts), 0)
+  expect_equal(nrow(result$connect_participant_breakdowns), 0)
+  expect_equal(nrow(result$delivered_connect_ids_not_found), 0)
+
+  # Scalar defaults
+  expect_true(is.na(result$excluded_participants_count))
+  expect_true(is.na(result$connect_patient_counts$connect_not_in_delivery))
+  expect_true(is.na(result$connect_patient_counts$delivery_not_in_connect))
 })

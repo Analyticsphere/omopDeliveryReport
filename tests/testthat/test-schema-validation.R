@@ -160,14 +160,16 @@ test_that("validate_schema errors on unknown file type", {
 # check_data_availability()
 # ==============================================================================
 
-test_that("check_data_availability detects both files present", {
+test_that("check_data_availability detects all sources present", {
   delivery_data <- data.frame(name = "Site", value_as_string = "Test", value_as_number = NA)
   dqd_data <- data.frame(checkName = "check1", cdmTableName = "PERSON", failed = 0, context = "Validation")
+  pass_data <- list(overall = data.frame(composite_score = 0.75))
 
-  result <- check_data_availability(delivery_data, dqd_data)
+  result <- check_data_availability(delivery_data, dqd_data, pass_data)
 
   expect_true(result$has_delivery_data)
   expect_true(result$has_dqd_data)
+  expect_true(result$has_pass_data)
 })
 
 test_that("check_data_availability detects delivery data missing", {
@@ -177,6 +179,7 @@ test_that("check_data_availability detects delivery data missing", {
 
   expect_false(result$has_delivery_data)
   expect_true(result$has_dqd_data)
+  expect_false(result$has_pass_data)
 })
 
 test_that("check_data_availability detects DQD data missing", {
@@ -186,13 +189,15 @@ test_that("check_data_availability detects DQD data missing", {
 
   expect_true(result$has_delivery_data)
   expect_false(result$has_dqd_data)
+  expect_false(result$has_pass_data)
 })
 
-test_that("check_data_availability detects both files missing", {
-  result <- check_data_availability(NULL, NULL)
+test_that("check_data_availability detects all sources missing", {
+  result <- check_data_availability(NULL, NULL, NULL)
 
   expect_false(result$has_delivery_data)
   expect_false(result$has_dqd_data)
+  expect_false(result$has_pass_data)
 })
 
 # ==============================================================================
