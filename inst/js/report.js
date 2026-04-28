@@ -328,7 +328,7 @@ function buildTableDrilldownContent(tableData) {
   if (tableData.identifier_not_in_connect_rows > 0 && tableData.final_rows > 0) {
     var notInConnectRowWord = tableData.identifier_not_in_connect_rows === 1 ? "row does" : "rows do";
     var notInConnectRemovedWord = tableData.identifier_not_in_connect_rows === 1 ? "was removed" : "were removed";
-    qualityWarnings.push(`🔎 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
+    qualityWarnings.push(`🔍 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
   }
 
   // Delivered Connect IDs not found warning (>0)
@@ -428,32 +428,7 @@ function buildTableDrilldownContent(tableData) {
   // Participant Filtering Section
   html += `<div class="subsection"><h4>Participant Filtering</h4>`;
 
-  html += `<div class="quality-cards-grid quality-cards-grid-four">`;
-
-  // Rows Without Connect ID Card
-  var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
-  var missingPercent = (tableData.missing_person_id_percent || 0).toFixed(1);
-  var missingDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(tableData.missing_person_id_rows) + ` <span class="percentage-display">(` + missingPercent + `%)</span>`);
-  html += `
-    <div class="metric-card ` + missingClass + `">
-      <div class="metric-label">Rows Without Connect ID</div>
-      <div class="metric-value">` + missingDisplay + `</div>
-      <div class="metric-sublabel">Missing Connect ID</div>
-    </div>
-  `;
-
-  // Rows Not in Connect Data Card
-  var notInConnectRows = tableData.identifier_not_in_connect_rows || 0;
-  var notInConnectClass = tableData.final_rows === 0 ? "neutral" : (notInConnectRows > 0 ? "warning" : "success");
-  var notInConnectPercent = tableData.initial_rows > 0 ? ((notInConnectRows / tableData.initial_rows) * 100).toFixed(1) : "0.0";
-  var notInConnectDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(notInConnectRows) + ` <span class="percentage-display">(` + notInConnectPercent + `%)</span>`);
-  html += `
-    <div class="metric-card ` + notInConnectClass + `">
-      <div class="metric-label">Rows Not in Connect</div>
-      <div class="metric-value">` + notInConnectDisplay + `</div>
-      <div class="metric-sublabel">Connect ID not found in Connect database</div>
-    </div>
-  `;
+  html += `<div class="quality-cards-grid quality-cards-grid-three">`;
 
   // Rows Matching Exclusion Rules Card
   var connectExclusionRows = tableData.connect_exclusion_rows || 0;
@@ -478,6 +453,18 @@ function buildTableDrilldownContent(tableData) {
       <div class="metric-label">IDs Not Found in Connect</div>
       <div class="metric-value">` + deliveredNotFoundDisplay + `</div>
       <div class="metric-sublabel">Delivered Connect IDs not in Connect database</div>
+    </div>
+  `;
+
+  // Rows Without Connect ID Card
+  var missingClass = tableData.final_rows === 0 ? "neutral" : (tableData.missing_person_id_rows > 0 ? "warning" : "success");
+  var missingPercent = (tableData.missing_person_id_percent || 0).toFixed(1);
+  var missingDisplay = tableData.final_rows === 0 ? "N/A" : (formatNumber(tableData.missing_person_id_rows) + ` <span class="percentage-display">(` + missingPercent + `%)</span>`);
+  html += `
+    <div class="metric-card ` + missingClass + `">
+      <div class="metric-label">Rows Without Connect ID</div>
+      <div class="metric-value">` + missingDisplay + `</div>
+      <div class="metric-sublabel">Missing Connect ID</div>
     </div>
   `;
 
