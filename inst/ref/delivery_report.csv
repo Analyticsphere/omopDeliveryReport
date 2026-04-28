@@ -1,489 +1,492 @@
 metadata_id,metadata_concept_id,metadata_type_concept_id,name,value_as_string,value_as_concept_id,value_as_number,metadata_date,metadata_datetime
-1025007734,0,32880,Delivery patient IDs not in Connect data,-1|7133488226145219,0,,2026-03-15,2026-03-15 20:55:33
-1483800030,0,32880,Invalid concept_id count: condition_occurrence.condition_type_concept_id,condition_occurrence.condition_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:33
-1334125040,1147576,32880,Valid column name: measurement.value_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:39
-1808629720,0,32880,Target vocabulary breakdown: drug_exposure.drug_concept_id,CVX,0,1620.0,2026-03-15,2026-03-15 21:28:21
-2093533142,1147335,32880,Final row count: location,location,1147335,0.0,2026-03-15,2026-03-15 21:33:39
-2147210891,1147327,32880,Final row count: payer_plan_period,payer_plan_period,1147327,0.0,2026-03-15,2026-03-15 21:33:49
-1144133775,1147096,32880,Valid column name: drug_exposure.drug_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:43
-534555950,1147301,32880,Time series row count: procedure_occurrence.1986,procedure_occurrence.1986,1147301,2.0,2026-03-15,2026-03-15 21:35:08
-1255401443,1147339,32880,Time series row count: drug_exposure.1995,drug_exposure.1995,1147339,12.0,2026-03-15,2026-03-15 21:34:22
-2050673278,1147339,32880,Vocab harmonization status: drug_exposure - domain check,,0,8162.0,2026-03-15,2026-03-15 21:08:37
-2109163392,1147301,32880,Time series row count: procedure_occurrence.2019,procedure_occurrence.2019,1147301,687.0,2026-03-15,2026-03-15 21:35:41
-1358356037,0,32880,Delivery processing date,2026-03-15,0,,2026-03-15,2026-03-15 21:26:36
-7059617,0,32880,Source vocabulary breakdown: condition_occurrence.condition_concept_id,SNOMED,0,108.0,2026-03-15,2026-03-15 21:28:08
-676887766,1147303,32880,Date/datetime default value count: drug_era.drug_era_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:56
-1769775657,1147567,32880,Valid column name: measurement.measurement_type_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:48
-1891567254,1147304,32880,Final row count: observation,observation,1147304,228.0,2026-03-15,2026-03-15 21:33:46
-1965799447,1147568,32880,Valid column name: measurement.operator_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:42
-1302523248,0,32880,Source vocabulary breakdown: observation.observation_concept_id,SNOMED,0,227.0,2026-03-15,2026-03-15 21:29:50
-798114459,1147577,32880,Valid column name: measurement.visit_detail_id,valid column name,0,,2026-03-15,2026-03-15 20:49:51
-1907840549,1147324,32880,Final row count: dose_era,dose_era,1147324,0.0,2026-03-15,2026-03-15 21:33:30
-1764406389,0,32880,Connect participant breakdown: Consent withdrawn status (Yes),1286106230|2537423491|2758935713|3474680828|3529645229|5512983871|5525659497|5773487914|7691613290|7777006201|7806989704|7956451897|7997689599|8010150172|8239341771,353358909,15.0,2026-03-15,2026-03-15 20:55:19
-1454113519,1147339,32880,Vocab harmonization table transition: drug_exposure to drug_exposure,,0,8332.0,2026-03-15,2026-03-15 21:08:35
-12360729,1147339,32880,Time series row count: drug_exposure.1993,drug_exposure.1993,1147339,16.0,2026-03-15,2026-03-15 21:34:21
-1681691674,1147314,32880,Number of rows removed due to Connect exclusion rules: person,,0,44.0,2026-03-15,2026-03-15 20:56:05
-1262961103,0,32880,Invalid column name: person.src_id,invalid column name,0,,2026-03-15,2026-03-15 20:49:56
-1356700780,1147301,32880,Time series row count: procedure_occurrence.2015,procedure_occurrence.2015,1147301,816.0,2026-03-15,2026-03-15 21:35:37
-1946631417,1147573,32880,Valid column name: measurement.unit_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:55
-2117703760,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,SNOMED,0,36.0,2026-03-15,2026-03-15 21:28:30
-2120967109,1147332,32880,Final row count: visit_occurrence,visit_occurrence,1147332,0.0,2026-03-15,2026-03-15 21:33:59
-1761723324,1147329,32880,Date/datetime default value count: condition_era.condition_era_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:52
-1321840666,0,32880,Target vocabulary breakdown: drug_exposure.drug_concept_id,RxNorm,0,6748.0,2026-03-15,2026-03-15 21:28:20
-1101933200,1147301,32880,Time series row count: procedure_occurrence.1981,procedure_occurrence.1981,1147301,1.0,2026-03-15,2026-03-15 21:35:03
-1641643845,1147489,32880,Valid column name: procedure_occurrence.visit_occurrence_id,valid column name,0,,2026-03-15,2026-03-15 20:49:50
-897751994,32822,32880,Type concept breakdown: condition_occurrence,EHR chief complaint,32822,13.0,2026-03-15,2026-03-15 21:26:56
-2132547923,1147303,32880,Final row count: drug_era,drug_era,1147303,588.0,2026-03-15,2026-03-15 21:33:32
-1190610439,1147572,32880,Valid column name: measurement.unit_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:33
-1109427124,0,32880,Invalid concept_id count: observation.qualifier_concept_id,observation.qualifier_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:31
-139674831,0,32880,Connect participant breakdown: HIPAA revoked status (Yes),1286106230|2529339904|2537423491|2758935713|3474680828|3529645229|5512983871|5525659497|5773487914|7691613290|7777006201|7806989704|7956451897|7997689599|8010150172|8239341771,353358909,16.0,2026-03-15,2026-03-15 20:55:13
-1311459433,1147339,32880,Person_id referential integrity violation count: drug_exposure,drug_exposure,1147339,0.0,2026-03-15,2026-03-15 21:32:53
-736811557,1147561,32880,Valid column name: drug_exposure.route_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:47
-1511141261,1147301,32880,Vocab harmonization table transition: procedure_occurrence to drug_exposure,,0,36.0,2026-03-15,2026-03-15 21:08:36
-1931706221,1147339,32880,Time series row count: drug_exposure.2006,drug_exposure.2006,1147339,28.0,2026-03-15,2026-03-15 21:34:33
-1718352298,1147304,32880,Time series row count: observation.2015,observation.2015,1147304,11.0,2026-03-15,2026-03-15 21:36:40
-1098470690,0,32880,Target vocabulary breakdown: measurement.measurement_concept_id,SNOMED,0,4677.0,2026-03-15,2026-03-15 21:29:04
-1156611031,1147301,32880,Time series row count: procedure_occurrence.2000,procedure_occurrence.2000,1147301,47.0,2026-03-15,2026-03-15 21:35:22
-292266323,1147301,32880,Time series row count: procedure_occurrence.1999,procedure_occurrence.1999,1147301,49.0,2026-03-15,2026-03-15 21:35:21
-529760159,1147339,32880,Time series row count: drug_exposure.2023,drug_exposure.2023,1147339,746.0,2026-03-15,2026-03-15 21:34:50
-536567971,1147304,32880,Time series row count: observation.2024,observation.2024,1147304,10.0,2026-03-15,2026-03-15 21:36:48
-2019556754,1147333,32880,Time series row count: condition_occurrence.2012,condition_occurrence.2012,1147333,2.0,2026-03-15,2026-03-15 21:34:07
-573673306,1147314,32880,Valid row count: person,,0,110.0,2026-03-15,2026-03-15 20:51:32
-1022634628,1147301,32880,Number of rows removed due to Connect exclusion rules: procedure_occurrence,,0,5791.0,2026-03-15,2026-03-15 20:56:10
-1176135221,1147333,32880,Final row count: condition_occurrence,condition_occurrence,1147333,108.0,2026-03-15,2026-03-15 21:33:25
-559169795,1147030,32880,Valid column name: person.day_of_birth,valid column name,0,,2026-03-15,2026-03-15 20:49:33
-2142227664,1147321,32880,Date/datetime default value count: observation_period.observation_period_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:48
-181415862,1147339,32880,Time series row count: drug_exposure.2003,drug_exposure.2003,1147339,274.0,2026-03-15,2026-03-15 21:34:30
-1620518339,1147140,32880,Valid column name: measurement.measurement_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:37
-1788239190,1147330,32880,Time series row count: measurement.2012,measurement.2012,1147330,196.0,2026-03-15,2026-03-15 21:36:07
-44825280,1147304,32880,Time series row count: observation.1992,observation.1992,1147304,1.0,2026-03-15,2026-03-15 21:36:21
-1643813596,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_end_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:35
-1187118288,1147304,32880,Time series row count: observation.2012,observation.2012,1147304,3.0,2026-03-15,2026-03-15 21:36:37
-341674992,0,32880,Standardized to vocabulary version,v5.0 27-FEB-26,0,,2026-03-15,2026-03-15 21:26:47
-808177882,0,32880,Connect participant breakdown: Study status (Not Yet Verified),1096863499|1308855384|1583484222|1678854196|2336226814|3176407383|3360566696|3708425699|3989686450|4022781120|4385422891|4736864485|5068760660|5469340958|5736066830|6319094863|6383538001|6557152441|6862380488|6917153929|7107627131|7691613290|7887473571|9326943606|9385744222|9775576119,875007964,26.0,2026-03-15,2026-03-15 20:55:06
-2025141466,1147304,32880,Time series row count: observation.2023,observation.2023,1147304,15.0,2026-03-15,2026-03-15 21:36:47
-1422632146,1147301,32880,Time series row count: procedure_occurrence.2004,procedure_occurrence.2004,1147301,7.0,2026-03-15,2026-03-15 21:35:26
-1579528465,0,32880,Invalid concept_id count: person.race_concept_id,person.race_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:15
-667077540,1147513,32880,Valid column name: drug_exposure.verbatim_end_date,valid column name,0,,2026-03-15,2026-03-15 20:49:33
-2063583845,1147330,32880,Time series row count: measurement.2022,measurement.2022,1147330,3186.0,2026-03-15,2026-03-15 21:36:16
-648238181,1147334,32880,Final row count: source_to_concept_map,source_to_concept_map,1147334,0.0,2026-03-15,2026-03-15 21:33:56
-820875102,0,32880,Delivered vocabulary version,No vocabulary file provided,0,,2026-03-15,2026-03-15 21:26:46
-1585609916,1146953,32880,Valid column name: concept.valid_end_date,valid column name,0,,2026-03-15,2026-03-15 20:49:42
-597466223,1147339,32880,Time series row count: drug_exposure.2012,drug_exposure.2012,1147339,46.0,2026-03-15,2026-03-15 21:34:39
-1736857296,1147321,32880,Final row count: observation_period,observation_period,1147321,64.0,2026-03-15,2026-03-15 21:33:48
-123204147,1147330,32880,Vocab harmonization row disposition: measurement - stayed and copied,,0,1.0,2026-03-15,2026-03-15 21:08:46
-503475459,1147611,32880,Valid column name: procedure_occurrence.procedure_datetime,valid column name,0,,2026-03-15,2026-03-15 20:49:42
-519205013,1147304,32880,Time series row count: observation.1995,observation.1995,1147304,1.0,2026-03-15,2026-03-15 21:36:24
-1164030975,0,32880,Standardized to CDM version,5.4,756265,,2026-03-15,2026-03-15 21:26:48
-727245534,1147094,32880,Valid column name: drug_exposure.drug_exposure_id,valid column name,0,,2026-03-15,2026-03-15 20:49:26
-1367243041,1147301,32880,Time series row count: procedure_occurrence.2008,procedure_occurrence.2008,1147301,22.0,2026-03-15,2026-03-15 21:35:30
-405365039,32817,32880,Type concept breakdown: observation,EHR,32817,13.0,2026-03-15,2026-03-15 21:27:21
-507096376,1147330,32880,Vocab harmonization same-table mapping: measurement - 1:2,,0,2.0,2026-03-15,2026-03-15 21:08:44
-471391597,1147301,32880,Time series row count: procedure_occurrence.1987,procedure_occurrence.1987,1147301,4.0,2026-03-15,2026-03-15 21:35:09
-899323477,1147578,32880,Valid column name: measurement.visit_occurrence_id,valid column name,0,,2026-03-15,2026-03-15 20:49:52
-1532278220,0,32880,Connect participant breakdown: HIPAA revoked status (No),"",104430631,92.0,2026-03-15,2026-03-15 20:55:11
-601417569,1147305,32880,Final row count: device_exposure,device_exposure,1147305,0.0,2026-03-15,2026-03-15 21:33:28
-879918121,1147333,32880,Time series row count: condition_occurrence.2015,condition_occurrence.2015,1147333,13.0,2026-03-15,2026-03-15 21:34:08
-2138162297,0,32880,Invalid concept_id count: observation.observation_concept_id,observation.observation_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:27
-2119381930,1147330,32880,Time series row count: measurement.2009,measurement.2009,1147330,153.0,2026-03-15,2026-03-15 21:36:04
-722152488,1147301,32880,Time series row count: procedure_occurrence.2002,procedure_occurrence.2002,1147301,130.0,2026-03-15,2026-03-15 21:35:24
-1905576166,1147325,32880,Date/datetime default value count: cdm_source.source_release_date,,0,0.0,2026-03-15,2026-03-15 21:30:58
-880664109,0,32880,Target vocabulary breakdown: person.race_concept_id,None,0,3.0,2026-03-15,2026-03-15 21:27:43
-2100907597,1147301,32880,Time series row count: procedure_occurrence.2018,procedure_occurrence.2018,1147301,802.0,2026-03-15,2026-03-15 21:35:40
-1434013434,1147304,32880,Person_id referential integrity violation count: observation,observation,1147304,0.0,2026-03-15,2026-03-15 21:33:03
-1057189727,0,32880,Invalid concept_id count: procedure_occurrence.modifier_concept_id,procedure_occurrence.modifier_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:53
-1885118316,1147084,32880,Valid column name: procedure_occurrence.procedure_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:53
-1309573388,1147481,32880,Valid column name: procedure_occurrence.modifier_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:33
-901362409,32817,32880,Type concept breakdown: measurement,EHR,32817,37147.0,2026-03-15,2026-03-15 21:27:13
-1744760644,1147304,32880,Time series row count: observation.2022,observation.2022,1147304,23.0,2026-03-15,2026-03-15 21:36:46
-723157284,1147301,32880,Time series row count: procedure_occurrence.1972,procedure_occurrence.1972,1147301,3.0,2026-03-15,2026-03-15 21:34:55
-449479080,1147333,32880,Person_id referential integrity violation count: condition_occurrence,condition_occurrence,1147333,0.0,2026-03-15,2026-03-15 21:32:50
-39418624,1147301,32880,Time series row count: procedure_occurrence.1993,procedure_occurrence.1993,1147301,8.0,2026-03-15,2026-03-15 21:35:15
-1204768685,1147027,32880,Valid column name: person.gender_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:27
-811451904,1147330,32880,Person_id referential integrity violation count: measurement,measurement,1147330,0.0,2026-03-15,2026-03-15 21:33:00
-1256215907,1147333,32880,Time series row count: condition_occurrence.2017,condition_occurrence.2017,1147333,15.0,2026-03-15,2026-03-15 21:34:09
-888017983,0,32880,Invalid column name: procedure_occurrence.src_id,invalid column name,0,,2026-03-15,2026-03-15 20:49:54
-1104280822,0,32880,Source vocabulary breakdown: drug_exposure.route_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:28:35
-792309710,1147330,32880,Time series row count: measurement.1994,measurement.1994,1147330,49.0,2026-03-15,2026-03-15 21:35:49
-1960854737,1147507,32880,Valid column name: drug_exposure.quantity,valid column name,0,,2026-03-15,2026-03-15 20:49:44
-323491163,0,32880,Target vocabulary breakdown: measurement.operator_concept_id,None,0,39516.0,2026-03-15,2026-03-15 21:29:17
-1535352513,1147333,32880,Date/datetime default value count: condition_occurrence.condition_end_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:16
-2010280837,1147614,32880,Missing column: procedure_occurrence.visit_detail_id,missing column,0,,2026-03-15,2026-03-15 20:49:56
-1775606213,1147301,32880,Invalid row count: procedure_occurrence,,0,2.0,2026-03-15,2026-03-15 20:51:34
-885627037,1147301,32880,Time series row count: procedure_occurrence.2006,procedure_occurrence.2006,1147301,14.0,2026-03-15,2026-03-15 21:35:28
-2017238847,1147301,32880,Time series row count: procedure_occurrence.2010,procedure_occurrence.2010,1147301,23.0,2026-03-15,2026-03-15 21:35:32
-1358074300,1147339,32880,Time series row count: drug_exposure.2014,drug_exposure.2014,1147339,604.0,2026-03-15,2026-03-15 21:34:41
-1798509361,1147330,32880,Time series row count: measurement.2014,measurement.2014,1147330,1424.0,2026-03-15,2026-03-15 21:36:09
-1241648325,1147033,32880,Valid column name: person.ethnicity_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:30
-1850680282,1147301,32880,Time series row count: procedure_occurrence.1989,procedure_occurrence.1989,1147301,4.0,2026-03-15,2026-03-15 21:35:11
-661645141,1147575,32880,Valid column name: measurement.value_as_number,valid column name,0,,2026-03-15,2026-03-15 20:49:32
-215183849,0,32880,Invalid concept_id count: drug_exposure.route_concept_id,drug_exposure.route_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:41
-351726323,1147488,32880,Valid column name: procedure_occurrence.quantity,valid column name,0,,2026-03-15,2026-03-15 20:49:48
-1405149888,1147321,32880,Person_id referential integrity violation count: observation_period,observation_period,1147321,0.0,2026-03-15,2026-03-15 21:32:46
-2118240498,1147558,32880,Valid column name: drug_exposure.drug_exposure_start_datetime,valid column name,0,,2026-03-15,2026-03-15 20:49:56
-1075213184,0,32880,Invalid concept_id count: drug_exposure.drug_concept_id,drug_exposure.drug_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:38
-18534150,1147559,32880,Valid column name: drug_exposure.drug_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:37
-1769127252,1147301,32880,Time series row count: procedure_occurrence.1973,procedure_occurrence.1973,1147301,1.0,2026-03-15,2026-03-15 21:34:56
-1611015810,1147301,32880,Time series row count: procedure_occurrence.1976,procedure_occurrence.1976,1147301,1.0,2026-03-15,2026-03-15 21:34:59
-329420023,1147339,32880,Time series row count: drug_exposure.2019,drug_exposure.2019,1147339,436.0,2026-03-15,2026-03-15 21:34:46
-2099152414,1147315,32880,Final row count: provider,provider,1147315,0.0,2026-03-15,2026-03-15 21:33:54
-930646273,1147311,32880,Date/datetime default value count: concept.valid_start_date,,0,6140322.0,2026-03-15,2026-03-15 21:31:02
-1714491921,1147301,32880,Time series row count: procedure_occurrence.1983,procedure_occurrence.1983,1147301,2.0,2026-03-15,2026-03-15 21:35:05
-1826950278,1147514,32880,Valid column name: drug_exposure.visit_occurrence_id,valid column name,0,,2026-03-15,2026-03-15 20:49:53
-1836694294,1147095,32880,Valid column name: drug_exposure.person_id,valid column name,0,,2026-03-15,2026-03-15 20:49:49
-1272119239,1147339,32880,Time series row count: drug_exposure.1996,drug_exposure.1996,1147339,12.0,2026-03-15,2026-03-15 21:34:23
-1910706974,1147301,32880,Vocab harmonization status: procedure_occurrence - source_concept_id mapped to new target,,0,170.0,2026-03-15,2026-03-15 21:08:44
-187858968,0,32880,Invalid concept_id count: person.ethnicity_concept_id,person.ethnicity_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:21
-591264535,1146949,32880,Valid column name: concept.concept_class_id,valid column name,0,,2026-03-15,2026-03-15 20:49:38
-542568543,1147301,32880,Time series row count: procedure_occurrence.1996,procedure_occurrence.1996,1147301,17.0,2026-03-15,2026-03-15 21:35:18
-1631294962,0,32880,Invalid concept_id count: condition_occurrence.condition_status_concept_id,condition_occurrence.condition_status_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:28
-1422963713,1147314,32880,Date/datetime default value count: person.birth_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:08
-183151288,1147330,32880,Time series row count: measurement.2024,measurement.2024,1147330,1526.0,2026-03-15,2026-03-15 21:36:18
-1077155968,1147301,32880,Final row count: procedure_occurrence,procedure_occurrence,1147301,9562.0,2026-03-15,2026-03-15 21:33:53
-744174615,0,32880,Target vocabulary breakdown: person.race_concept_id,Race,0,61.0,2026-03-15,2026-03-15 21:27:42
-2062074974,1147501,32880,Valid column name: drug_exposure.drug_exposure_end_date,valid column name,0,,2026-03-15,2026-03-15 20:49:50
-1217062289,1147636,32880,Final row count: metadata,metadata,1147636,0.0,2026-03-15,2026-03-15 21:33:42
-526576605,1147333,32880,Time series row count: condition_occurrence.2009,condition_occurrence.2009,1147333,7.0,2026-03-15,2026-03-15 21:34:06
-1683395040,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_end_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:25
-1949273942,756346,32880,Final row count: cohort,cohort,756346,0.0,2026-03-15,2026-03-15 21:33:14
-1605170235,1147333,32880,Time series row count: condition_occurrence.2020,condition_occurrence.2020,1147333,2.0,2026-03-15,2026-03-15 21:34:11
-1585036142,1147339,32880,Time series row count: drug_exposure.2022,drug_exposure.2022,1147339,654.0,2026-03-15,2026-03-15 21:34:49
-1098378055,0,32880,Source vocabulary breakdown: observation.observation_concept_id,Read,0,1.0,2026-03-15,2026-03-15 21:29:51
-1633722636,1147325,32880,Date/datetime default value count: cdm_source.cdm_release_date,,0,0.0,2026-03-15,2026-03-15 21:31:00
-2144375444,1147311,32880,Date/datetime default value count: concept.valid_end_date,,0,6140322.0,2026-03-15,2026-03-15 21:31:04
-1312421841,1147485,32880,Valid column name: procedure_occurrence.procedure_type_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:51
-2000712608,1147366,32880,Final row count: cost,cost,1147366,0.0,2026-03-15,2026-03-15 21:33:26
-1033909837,1147301,32880,Time series row count: procedure_occurrence.2014,procedure_occurrence.2014,1147301,395.0,2026-03-15,2026-03-15 21:35:36
-1174775137,1147339,32880,Time series row count: drug_exposure.1989,drug_exposure.1989,1147339,6.0,2026-03-15,2026-03-15 21:34:20
-1261314774,1147306,32880,Final row count: specimen,specimen,1147306,0.0,2026-03-15,2026-03-15 21:33:57
-1379222466,1147301,32880,Time series row count: procedure_occurrence.1990,procedure_occurrence.1990,1147301,6.0,2026-03-15,2026-03-15 21:35:12
-1198770870,1146946,32880,Valid column name: concept.concept_name,valid column name,0,,2026-03-15,2026-03-15 20:49:34
-16906340,1147301,32880,Time series row count: procedure_occurrence.2024,procedure_occurrence.2024,1147301,369.0,2026-03-15,2026-03-15 21:35:46
-1389984750,1147330,32880,Time series row count: measurement.2011,measurement.2011,1147330,76.0,2026-03-15,2026-03-15 21:36:06
-1450962280,1147301,32880,Time series row count: procedure_occurrence.2023,procedure_occurrence.2023,1147301,816.0,2026-03-15,2026-03-15 21:35:45
-1771316506,1147339,32880,Time series row count: drug_exposure.2018,drug_exposure.2018,1147339,366.0,2026-03-15,2026-03-15 21:34:45
-1556863473,1147333,32880,Time series row count: condition_occurrence.2008,condition_occurrence.2008,1147333,2.0,2026-03-15,2026-03-15 21:34:05
-576853068,1147564,32880,Valid column name: measurement.measurement_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:45
-721385137,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,ICD10CN,0,3.0,2026-03-15,2026-03-15 21:29:12
-2082314920,1146952,32880,Valid column name: concept.valid_start_date,valid column name,0,,2026-03-15,2026-03-15 20:49:33
-2035880802,1147304,32880,Time series row count: observation.2001,observation.2001,1147304,1.0,2026-03-15,2026-03-15 21:36:30
-657438681,0,32880,Source vocabulary breakdown: measurement.unit_concept_id,None,0,39516.0,2026-03-15,2026-03-15 21:29:37
-1118146134,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,SNOMED,0,4673.0,2026-03-15,2026-03-15 21:29:11
-1726287740,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,None,0,12.0,2026-03-15,2026-03-15 21:28:42
-871300854,0,32880,Invalid concept_id count: observation.unit_concept_id,observation.unit_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:34
-1488658207,1147301,32880,Time series row count: procedure_occurrence.2020,procedure_occurrence.2020,1147301,926.0,2026-03-15,2026-03-15 21:35:42
-337421266,0,32880,Invalid concept_id count: measurement.measurement_type_concept_id,measurement.measurement_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:21
-321986620,1147330,32880,Time series row count: measurement.2002,measurement.2002,1147330,1347.0,2026-03-15,2026-03-15 21:35:57
-493161382,0,32880,Connect participant breakdown: Data destruction status (No),"",104430631,98.0,2026-03-15,2026-03-15 20:55:22
-1546227551,1147509,32880,Valid column name: drug_exposure.route_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:58
-1206061491,1147339,32880,Time series row count: drug_exposure.2015,drug_exposure.2015,1147339,844.0,2026-03-15,2026-03-15 21:34:42
-463589318,1147339,32880,Vocab harmonization status: drug_exposure - source_concept_id mapped to new target,,0,170.0,2026-03-15,2026-03-15 21:08:38
-336808999,756348,32880,Final row count: episode_event,episode_event,756348,0.0,2026-03-15,2026-03-15 21:33:37
-1910414913,1147511,32880,Valid column name: drug_exposure.sig,valid column name,0,,2026-03-15,2026-03-15 20:49:29
-1675922625,1147571,32880,Valid column name: measurement.range_low,valid column name,0,,2026-03-15,2026-03-15 20:49:36
-273468529,1147301,32880,Time series row count: procedure_occurrence.1979,procedure_occurrence.1979,1147301,2.0,2026-03-15,2026-03-15 21:35:01
-1108067320,1147329,32880,Final row count: condition_era,condition_era,1147329,19.0,2026-03-15,2026-03-15 21:33:23
-77256360,0,32880,Target vocabulary breakdown: procedure_occurrence.modifier_concept_id,None,0,9562.0,2026-03-15,2026-03-15 21:28:55
-1364666162,1147333,32880,Time series row count: condition_occurrence.2021,condition_occurrence.2021,1147333,30.0,2026-03-15,2026-03-15 21:34:12
-103990172,32822,32880,Type concept breakdown: measurement,EHR chief complaint,32822,32.0,2026-03-15,2026-03-15 21:27:15
-1772045082,1147301,32880,Vocab harmonization table transition: procedure_occurrence to observation,,0,227.0,2026-03-15,2026-03-15 21:08:39
-1472000717,1147637,32880,Final row count: visit_detail,visit_detail,1147637,0.0,2026-03-15,2026-03-15 21:33:58
-1611559556,0,32880,Invalid concept_id count: procedure_occurrence.procedure_type_concept_id,procedure_occurrence.procedure_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:58
-750956495,1147314,32880,Number of persons with missing person_id,,0,1.0,2026-03-15,2026-03-15 20:56:01
-1279990292,1147304,32880,Time series row count: observation.2013,observation.2013,1147304,6.0,2026-03-15,2026-03-15 21:36:38
-454085823,1147330,32880,Time series row count: measurement.2010,measurement.2010,1147330,96.0,2026-03-15,2026-03-15 21:36:05
-1541730065,1147323,32880,Final row count: cohort_definition,cohort_definition,1147323,0.0,2026-03-15,2026-03-15 21:33:15
-2108761659,1147301,32880,Person_id referential integrity violation count: procedure_occurrence,procedure_occurrence,1147301,0.0,2026-03-15,2026-03-15 21:32:56
-78674589,1147304,32880,Time series row count: observation.2018,observation.2018,1147304,16.0,2026-03-15,2026-03-15 21:36:43
-1172038104,1147333,32880,Date/datetime default value count: condition_occurrence.condition_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:15
-261956476,1147141,32880,Valid column name: measurement.measurement_date,valid column name,0,,2026-03-15,2026-03-15 20:49:27
-1116905137,1147333,32880,Time series row count: condition_occurrence.2006,condition_occurrence.2006,1147333,2.0,2026-03-15,2026-03-15 21:34:03
-93986101,756347,32880,Final row count: episode,episode,756347,0.0,2026-03-15,2026-03-15 21:33:36
-1312137065,1147311,32880,Valid table name: concept,valid table name,0,,2026-03-15,2026-03-15 20:49:23
-143099415,1147304,32880,Time series row count: observation.2011,observation.2011,1147304,1.0,2026-03-15,2026-03-15 21:36:36
-399314967,1147304,32880,Time series row count: observation.2016,observation.2016,1147304,13.0,2026-03-15,2026-03-15 21:36:41
-1457884106,1147339,32880,Time series row count: drug_exposure.1997,drug_exposure.1997,1147339,78.0,2026-03-15,2026-03-15 21:34:24
-1657061789,1147612,32880,Valid column name: procedure_occurrence.procedure_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:40
-1930042123,1147570,32880,Valid column name: measurement.range_high,valid column name,0,,2026-03-15,2026-03-15 20:49:43
-167933099,1147304,32880,Time series row count: observation.2021,observation.2021,1147304,28.0,2026-03-15,2026-03-15 21:36:45
-708217787,0,32880,Target vocabulary breakdown: person.ethnicity_concept_id,Ethnicity,0,53.0,2026-03-15,2026-03-15 21:27:53
-1667448565,0,32880,Invalid concept_id count: measurement.value_as_concept_id,measurement.value_as_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:12
-48067955,32817,32880,Type concept breakdown: procedure_occurrence,EHR,32817,4286.0,2026-03-15,2026-03-15 21:27:08
-1772090108,1147301,32880,Vocab harmonization row disposition: procedure_occurrence - moved to other tables,,0,322.0,2026-03-15,2026-03-15 21:08:49
-1159986820,0,32880,Source vocabulary breakdown: measurement.operator_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:29:18
-165546106,1147330,32880,Time series row count: measurement.2015,measurement.2015,1147330,2921.0,2026-03-15,2026-03-15 21:36:10
-1415823000,1147301,32880,Valid row count: procedure_occurrence,,0,15752.0,2026-03-15,2026-03-15 20:51:32
-2051337898,0,32880,Type concept breakdown: procedure_occurrence,No matching concept,0,5276.0,2026-03-15,2026-03-15 21:27:07
-1851994067,1147301,32880,Time series row count: procedure_occurrence.1982,procedure_occurrence.1982,1147301,1.0,2026-03-15,2026-03-15 21:35:04
-1463171550,0,32880,Invalid concept_id count: observation.observation_type_concept_id,observation.observation_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:38
-1264691889,1147454,32880,Valid column name: drug_exposure.drug_exposure_end_datetime,valid column name,0,,2026-03-15,2026-03-15 20:49:41
-222305701,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:23
-1855328725,1147301,32880,Time series row count: procedure_occurrence.1985,procedure_occurrence.1985,1147301,1.0,2026-03-15,2026-03-15 21:35:07
-566073725,1147565,32880,Valid column name: measurement.measurement_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:54
-1355587444,1147330,32880,Time series row count: measurement.2018,measurement.2018,1147330,2743.0,2026-03-15,2026-03-15 21:36:13
-340547094,1147301,32880,Time series row count: procedure_occurrence.2022,procedure_occurrence.2022,1147301,918.0,2026-03-15,2026-03-15 21:35:44
-923340896,0,32880,Target vocabulary breakdown: measurement.measurement_concept_id,LOINC,0,34839.0,2026-03-15,2026-03-15 21:29:03
-1351198860,1147307,32880,Final row count: relationship,relationship,1147307,0.0,2026-03-15,2026-03-15 21:33:55
-217995442,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:33
-371621057,0,32880,Source vocabulary breakdown: procedure_occurrence.procedure_concept_id,SNOMED,0,9560.0,2026-03-15,2026-03-15 21:28:50
-930189454,1147301,32880,Time series row count: procedure_occurrence.1998,procedure_occurrence.1998,1147301,31.0,2026-03-15,2026-03-15 21:35:20
-1452494414,1147339,32880,Valid table name: drug_exposure,valid table name,0,,2026-03-15,2026-03-15 20:49:20
-1437609812,1147034,32880,Valid column name: person.location_id,valid column name,0,,2026-03-15,2026-03-15 20:49:54
-136546138,1147304,32880,Time series row count: observation.1998,observation.1998,1147304,1.0,2026-03-15,2026-03-15 21:36:27
-1567527945,1147330,32880,Time series row count: measurement.2023,measurement.2023,1147330,3665.0,2026-03-15,2026-03-15 21:36:17
-148383222,1147330,32880,Time series row count: measurement.2004,measurement.2004,1147330,38.0,2026-03-15,2026-03-15 21:35:59
-89788063,1147330,32880,Vocab harmonization table transition: measurement to observation,,0,1.0,2026-03-15,2026-03-15 21:08:35
-1114863747,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_date,,0,0.0,2026-03-15,2026-03-15 21:30:29
-1552380417,1147339,32880,Time series row count: drug_exposure.1998,drug_exposure.1998,1147339,100.0,2026-03-15,2026-03-15 21:34:25
-1246442537,1147035,32880,Valid column name: person.provider_id,valid column name,0,,2026-03-15,2026-03-15 20:49:40
-293827391,0,32880,Invalid concept_id count: person.gender_concept_id,person.gender_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:09
-1876694415,1147301,32880,Time series row count: procedure_occurrence.2005,procedure_occurrence.2005,1147301,14.0,2026-03-15,2026-03-15 21:35:27
-1201911851,1147330,32880,Time series row count: measurement.2017,measurement.2017,1147330,2456.0,2026-03-15,2026-03-15 21:36:12
-1512145579,1147512,32880,Valid column name: drug_exposure.stop_reason,valid column name,0,,2026-03-15,2026-03-15 20:49:38
-798062343,0,32880,Delivery date,2025-01-01,0,,2026-03-15,2026-03-15 21:26:42
-2120739802,1147304,32880,Time series row count: observation.1999,observation.1999,1147304,1.0,2026-03-15,2026-03-15 21:36:28
-680139039,1147330,32880,Time series row count: measurement.2005,measurement.2005,1147330,21.0,2026-03-15,2026-03-15 21:36:00
-77384021,1147314,32880,Number of rows removed due to identifier not in Connect database: person,,0,1.0,2026-03-15,2026-03-15 20:56:04
-1594899333,32817,32880,Type concept breakdown: condition_occurrence,EHR,32817,15.0,2026-03-15,2026-03-15 21:26:55
-1249500495,1147304,32880,Time series row count: observation.2019,observation.2019,1147304,16.0,2026-03-15,2026-03-15 21:36:44
-149797235,1147301,32880,Vocab harmonization table transition: procedure_occurrence to condition_occurrence,,0,108.0,2026-03-15,2026-03-15 21:08:35
-1428920279,1146948,32880,Valid column name: concept.vocabulary_id,valid column name,0,,2026-03-15,2026-03-15 20:49:37
-1279357979,1147301,32880,Time series row count: procedure_occurrence.1997,procedure_occurrence.1997,1147301,40.0,2026-03-15,2026-03-15 21:35:19
-1649581284,1147329,32880,Person_id referential integrity violation count: condition_era,condition_era,1147329,0.0,2026-03-15,2026-03-15 21:33:10
-2118491247,1147318,32880,Final row count: vocabulary,vocabulary,1147318,0.0,2026-03-15,2026-03-15 21:34:01
-2078744406,1147310,32880,Final row count: domain,domain,1147310,0.0,2026-03-15,2026-03-15 21:33:29
-1035824071,1147339,32880,Time series row count: drug_exposure.1973,drug_exposure.1973,1147339,2.0,2026-03-15,2026-03-15 21:34:17
-704704607,1147339,32880,Time series row count: drug_exposure.2017,drug_exposure.2017,1147339,430.0,2026-03-15,2026-03-15 21:34:44
-1413488192,1147311,32880,Invalid row count: concept,,0,0.0,2026-03-15,2026-03-15 20:52:00
-255719166,1147486,32880,Valid column name: procedure_occurrence.provider_id,valid column name,0,,2026-03-15,2026-03-15 20:49:43
-867391163,1147339,32880,Time series row count: drug_exposure.2007,drug_exposure.2007,1147339,34.0,2026-03-15,2026-03-15 21:34:34
-788823274,1147313,32880,Final row count: care_site,care_site,1147313,0.0,2026-03-15,2026-03-15 21:33:11
-738458829,1147301,32880,Vocab harmonization table transition: procedure_occurrence to measurement,,0,4.0,2026-03-15,2026-03-15 21:08:38
-766997204,1147339,32880,Time series row count: drug_exposure.2020,drug_exposure.2020,1147339,686.0,2026-03-15,2026-03-15 21:34:47
-419230596,1147339,32880,Time series row count: drug_exposure.2010,drug_exposure.2010,1147339,34.0,2026-03-15,2026-03-15 21:34:37
-467554603,0,32880,Invalid concept_id count: procedure_occurrence.procedure_concept_id,procedure_occurrence.procedure_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:51
-699918826,0,32880,Invalid column name: measurement.src_id,invalid column name,0,,2026-03-15,2026-03-15 20:49:57
-1478156644,1147304,32880,Time series row count: observation.1993,observation.1993,1147304,2.0,2026-03-15,2026-03-15 21:36:22
-1395882973,1147026,32880,Valid column name: person.person_id,valid column name,0,,2026-03-15,2026-03-15 20:49:35
-91014209,1147339,32880,Time series row count: drug_exposure.1970,drug_exposure.1970,1147339,4.0,2026-03-15,2026-03-15 21:34:16
-1102890905,1147330,32880,Time series row count: measurement.2020,measurement.2020,1147330,4629.0,2026-03-15,2026-03-15 21:36:15
-1512892310,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_start_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:21
-1101251649,1147330,32880,Invalid row count: measurement,,0,0.0,2026-03-15,2026-03-15 20:51:35
-1535429662,1147504,32880,Valid column name: drug_exposure.drug_type_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:35
-1210788779,1147301,32880,Number of rows removed due to identifier not in Connect database: procedure_occurrence,,0,23.0,2026-03-15,2026-03-15 20:56:08
-1615672785,1147339,32880,Number of rows removed due to identifier not in Connect database: drug_exposure,,0,46.0,2026-03-15,2026-03-15 20:56:07
-1949941582,1147304,32880,Time series row count: observation.1989,observation.1989,1147304,1.0,2026-03-15,2026-03-15 21:36:21
-395502496,1147304,32880,Time series row count: observation.1994,observation.1994,1147304,1.0,2026-03-15,2026-03-15 21:36:23
-459218377,0,32880,Target vocabulary breakdown: measurement.value_as_concept_id,None,0,37954.0,2026-03-15,2026-03-15 21:29:25
-1845405638,1147301,32880,Time series row count: procedure_occurrence.2009,procedure_occurrence.2009,1147301,29.0,2026-03-15,2026-03-15 21:35:31
-1728615201,1147304,32880,Time series row count: observation.2003,observation.2003,1147304,4.0,2026-03-15,2026-03-15 21:36:32
-890257172,1147304,32880,Time series row count: observation.2006,observation.2006,1147304,2.0,2026-03-15,2026-03-15 21:36:33
-1506803042,1147304,32880,Date/datetime default value count: observation.observation_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:43
-1664208211,1147301,32880,Time series row count: procedure_occurrence.1978,procedure_occurrence.1978,1147301,4.0,2026-03-15,2026-03-15 21:35:00
-154697838,1147314,32880,Valid table name: person,valid table name,0,,2026-03-15,2026-03-15 20:49:18
-135386683,0,32880,Delivered CDM version,5.3,1147543,,2026-03-15,2026-03-15 21:26:45
-1261032337,1147330,32880,Final row count: measurement,measurement,1147330,39516.0,2026-03-15,2026-03-15 21:33:41
-998612025,1147639,32880,Valid column name: measurement.measurement_datetime,valid column name,0,,2026-03-15,2026-03-15 20:49:40
-892813608,1147301,32880,Time series row count: procedure_occurrence.1988,procedure_occurrence.1988,1147301,2.0,2026-03-15,2026-03-15 21:35:10
-762810538,1147506,32880,Valid column name: drug_exposure.provider_id,valid column name,0,,2026-03-15,2026-03-15 20:49:30
-1886330337,1147557,32880,Valid column name: drug_exposure.dose_unit_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:24
-295075565,1147339,32880,Number of rows removed due to missing person_id values: drug_exposure,,0,0.0,2026-03-15,2026-03-15 20:56:06
-1801220995,1147339,32880,Time series row count: drug_exposure.2011,drug_exposure.2011,1147339,18.0,2026-03-15,2026-03-15 21:34:38
-2139425507,0,32880,Type concept breakdown: observation,No matching concept,0,215.0,2026-03-15,2026-03-15 21:27:20
-780856973,1147301,32880,Time series row count: procedure_occurrence.2011,procedure_occurrence.2011,1147301,27.0,2026-03-15,2026-03-15 21:35:33
-1127899921,1147339,32880,Time series row count: drug_exposure.1975,drug_exposure.1975,1147339,2.0,2026-03-15,2026-03-15 21:34:18
-1957847029,1147339,32880,Time series row count: drug_exposure.1977,drug_exposure.1977,1147339,4.0,2026-03-15,2026-03-15 21:34:19
-2119722152,1147505,32880,Valid column name: drug_exposure.lot_number,valid column name,0,,2026-03-15,2026-03-15 20:49:40
-58587019,1147508,32880,Valid column name: drug_exposure.refills,valid column name,0,,2026-03-15,2026-03-15 20:49:27
-588106811,1147330,32880,Time series row count: measurement.1996,measurement.1996,1147330,60.0,2026-03-15,2026-03-15 21:35:51
-2025473015,1147301,32880,Time series row count: procedure_occurrence.2013,procedure_occurrence.2013,1147301,163.0,2026-03-15,2026-03-15 21:35:35
-76434700,1147304,32880,Time series row count: observation.2017,observation.2017,1147304,18.0,2026-03-15,2026-03-15 21:36:42
-1386170887,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,CVX,0,1754.0,2026-03-15,2026-03-15 21:28:29
-452121503,0,32880,Invalid concept_id count: condition_occurrence.condition_concept_id,condition_occurrence.condition_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:26
-173959644,1147330,32880,Time series row count: measurement.2006,measurement.2006,1147330,23.0,2026-03-15,2026-03-15 21:36:01
-701524659,0,32880,Number of Connect patients not in delivery,1004328098|1010030350|1029169492|1041773275|1042002451|1093519257|1097792434|1118573492|1138446254|1171383285|1190729520|1191313342|1198218471|1203567973|1211731369|1218638761|1239044520|1245143127|1255052980|1277595627|1278662256|1292483078|1320809529|1324236832|1328930438|1358445902|1358857263|1363111740|1378902740|1381343059|1416736206|1440716819|1450574090|1463424173|1470082748|1492465155|1520977047|1546693338|1547988583|1550186475|1553610698|1562131870|1588491134|1589052104|1606766322|1625966027|1640895433|1660783548|1691226813|1699657088|1712069473|1712701516|1716850532|1722799018|1764603313|1795062944|1815251372|1816036096|1828880183|1845811919|1855423655|1856224911|1860119383|1865230347|1886268550|1913877484|1979448209|2027771809|2031865345|2038757656|2040161852|2063687173|2073429309|2080858442|2084954333|2117670353|2138910330|2144496991|2171646764|2192814270|2193982916|2210967306|2258801332|2298308296|2308396342|2309187992|2312805157|2328032215|2371128442|2378555069|2386230910|2396830079|2403656584|2412004348|2436508208|2440402663|2445650966|2448620667|2474535182|2484534915|2486498633|2504869446|2519457683|2547971085|2555584194|2569193631|2578325151|2580144054|2584065759|2596288027|2600856307|2638333882|2686682066|2694463805|2738290135|2763014434|2773244426|2774099288|2774887960|2788485402|2804675820|2858348134|2926436672|2954367071|2976677987|2987887066|2988662029|2992175697|3016297304|3019562714|3028949000|3052249126|3058090530|3110926317|3111171032|3117681537|3131923248|3138953725|3221903400|3275851123|3311152284|3331606379|3336822035|3344744505|3350960216|3365259882|3368002841|3396361062|3403989698|3407276085|3436140231|3455042782|3460757811|3574611614|3577696952|3595949470|3603305643|3626698638|3629784968|3664175626|3673857976|3679066448|3689100655|3722960206|3726729788|3742146768|3754136822|3766743637|3776425387|3803022177|3808880673|3813598584|3818867448|3853024775|3860352953|3864113595|3871171542|4005036732|4028521705|4040744981|4041719501|4043803945|4048677829|4056588521|4079659243|4082746033|4092758189|4147308961|4148884445|4151371961|4160494454|4187416960|4194104336|4231065125|4249714142|4258498117|4260244384|4263493293|4263514929|4278638706|4280987933|4292054738|4303478728|4310953134|4312415544|4315537447|4326229684|4333279265|4335003653|4354798712|4364066572|4383252942|4409363579|4437820761|4451328790|4509571722|4515170909|4529149149|4531118041|4533920700|4542674917|4620460933|4626667157|4646135888|4658512308|4710262822|4715014373|4723748117|4746105364|4758132878|4776322496|4800072280|4806091014|4871360063|4896229019|4898921842|4913714774|4919185484|4952784184|4962356912|4977418399|4985334252|4995840313|5009010623|5028329654|5040433021|5047382961|5050277911|5077470614|5107694841|5107969890|5116483370|5132401028|5144063983|5153646724|5161330250|5162109299|5165111362|5178532864|5178627784|5203672476|5212066883|5218938966|5240888855|5247818535|5247989660|5250058705|5324522388|5330611180|5353526729|5381635789|5423453096|5425325572|5425859269|5445358016|5456036546|5522253145|5523942811|5578338538|5596951510|5616023509|5641637221|5645673113|5668319520|5673261462|5674137289|5684582816|5686188670|5695676839|5734687129|5735211517|5739359781|5742781808|5746637824|5772421724|5780966053|5805193818|5810010461|5833914347|5835721286|5848273023|5850861442|5869339163|5904060072|5919747547|5973504016|5998598948|5999809545|6019020541|6040661198|6064624777|6068656265|6074930545|6088271004|6104206617|6125002748|6156011575|6186942837|6210496366|6240149648|6250137577|6309403810|6326535217|6353266534|6367113153|6447341358|6451999189|6455280774|6457834379|6485746830|6490501297|6501229511|6504189607|6528620492|6545210140|6547969025|6609310763|6613005780|6622292760|6627087043|6628869238|6629859900|6657279295|6659017574|6703298679|6703855186|6722215788|6736395535|6739234547|6746084305|6759772253|6761062284|6784219494|6786363504|6789293429|6792847852|6827054620|6849748520|6852513423|6854398576|6918036479|6920384032|6928034577|6967494997|6977936572|6989627676|7008668038|7009372190|7009564247|7030177309|7033757344|7052372319|7058170452|7067843335|7068474556|7075411461|7109493805|7112479646|7178666083|7190360630|7201983394|7204238865|7219848547|7221835553|7223422145|7242330846|7246200076|7259996963|7267077233|7282846047|7283162127|7285010954|7333028666|7334164009|7363634285|7363964727|7369463213|7375472862|7377034640|7406523513|7412320450|7453359181|7455374362|7478044625|7493093195|7509565204|7518058662|7531939822|7563355327|7574314526|7587821310|7627422469|7630549920|7664364628|7668598073|7674751841|7675263976|7677179497|7700008329|7709164608|7730161977|7735533526|7750528362|7761830383|7846399594|7858709997|7875055607|7885509232|7886636946|7892136642|7908295765|7910304352|7933925221|7940377048|7955848792|7958545760|8006945997|8024105526|8057889850|8062848248|8149654778|8156259673|8187861538|8189353704|8201026226|8203717026|8225059492|8238973523|8250509533|8253054665|8254485551|8280414512|8300989360|8310405466|8320540876|8332742692|8345814872|8346691057|8394960662|8435052300|8445180135|8474793540|8478527116|8489274632|8496773595|8512765497|8536688301|8569607460|8575003849|8576196328|8598257138|8646038636|8650332928|8651478149|8653053211|8668595609|8669376736|8671356278|8687400603|8698239740|8701654673|8732721707|8736013792|8736582209|8739789498|8762499295|8786700366|8808599718|8826293907|8844706334|8868707481|8875622479|8921372455|8924602344|8927906989|8956423871|8961882555|8962405130|8973094744|8982955553|8995612420|9018972750|9040469842|9069197842|9096581719|9104060150|9133446820|9133685927|9138035066|9138811627|9162329763|9179635695|9222181167|9237544941|9267212438|9283824699|9358420545|9416157521|9416238817|9423605027|9432733572|9437867886|9445934119|9454277373|9472526210|9479028828|9515024209|9520707056|9522777380|9522931059|9523832537|9532748404|9547587392|9553341709|9561172205|9587233591|9591584447|9608347770|9618414078|9632611479|9653550568|9659783746|9660407165|9700132037|9744003770|9754434216|9768888597|9771129018|9804378387|9824541704|9826938343|9843965322|9854266986|9873327250|9901349382|9932417443|9937359264|9963252890|9963333878|9981014546|9990219326,0,561.0,2026-03-15,2026-03-15 20:55:27
-1259535183,1147301,32880,Time series row count: procedure_occurrence.2012,procedure_occurrence.2012,1147301,58.0,2026-03-15,2026-03-15 21:35:34
-531870900,1147613,32880,Valid column name: procedure_occurrence.procedure_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:46
-127794708,1147028,32880,Valid column name: person.year_of_birth,valid column name,0,,2026-03-15,2026-03-15 20:49:37
-542903323,1147301,32880,Vocab harmonization row disposition: procedure_occurrence - stayed only,,0,9151.0,2026-03-15,2026-03-15 21:08:50
-1055134289,0,32880,Site,Synthea Synthetic Data,0,,2026-03-15,2026-03-15 21:26:43
-412064262,1147330,32880,Vocab harmonization table transition: measurement to measurement,,0,39512.0,2026-03-15,2026-03-15 21:08:33
-1754916629,1147330,32880,Time series row count: measurement.2019,measurement.2019,1147330,2838.0,2026-03-15,2026-03-15 21:36:14
-838475590,1147301,32880,Time series row count: procedure_occurrence.1971,procedure_occurrence.1971,1147301,2.0,2026-03-15,2026-03-15 21:34:54
-1648951848,1147339,32880,Time series row count: drug_exposure.2005,drug_exposure.2005,1147339,6.0,2026-03-15,2026-03-15 21:34:32
-1383075175,0,32880,Invalid concept_id count: measurement.unit_concept_id,measurement.unit_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:17
-1641478817,1147339,32880,Vocab harmonization same-table mapping: drug_exposure - 1:1,,0,8332.0,2026-03-15,2026-03-15 21:08:41
-912701130,1147041,32880,Valid column name: person.race_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:48
-2140327462,1147301,32880,Time series row count: procedure_occurrence.1980,procedure_occurrence.1980,1147301,3.0,2026-03-15,2026-03-15 21:35:02
-18855743,1147029,32880,Valid column name: person.month_of_birth,valid column name,0,,2026-03-15,2026-03-15 20:49:28
-411537274,1147039,32880,Valid column name: person.gender_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:46
-937351356,0,32880,Target vocabulary breakdown: observation.unit_concept_id,None,0,228.0,2026-03-15,2026-03-15 21:30:05
-967365274,1147037,32880,Valid column name: person.person_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:38
-1697067744,1147339,32880,Vocab harmonization row disposition: drug_exposure - stayed only,,0,7976.0,2026-03-15,2026-03-15 21:08:43
-2059135385,1147339,32880,Date/datetime default value count: drug_exposure.verbatim_end_date,,0,0.0,2026-03-15,2026-03-15 21:30:27
-1230835527,1147330,32880,Time series row count: measurement.2000,measurement.2000,1147330,445.0,2026-03-15,2026-03-15 21:35:55
-1599721983,1147301,32880,Vocab harmonization status: procedure_occurrence - domain check,,0,9767.0,2026-03-15,2026-03-15 21:08:43
-2142609099,1147301,32880,Time series row count: procedure_occurrence.2021,procedure_occurrence.2021,1147301,1391.0,2026-03-15,2026-03-15 21:35:43
-2036474805,1147314,32880,Final row count: person,person,1147314,64.0,2026-03-15,2026-03-15 21:33:51
-252162089,1147311,32880,Valid row count: concept,,0,6140322.0,2026-03-15,2026-03-15 20:51:58
-130911648,1147303,32880,Date/datetime default value count: drug_era.drug_era_start_date,,0,0.0,2026-03-15,2026-03-15 21:30:54
-1589888544,1147330,32880,Number of rows removed due to identifier not in Connect database: measurement,,0,91.0,2026-03-15,2026-03-15 20:55:56
-800317006,1147333,32880,Time series row count: condition_occurrence.2022,condition_occurrence.2022,1147333,2.0,2026-03-15,2026-03-15 21:34:13
-449686084,1147304,32880,Date/datetime default value count: observation.observation_date,,0,0.0,2026-03-15,2026-03-15 21:30:41
-362934135,1147339,32880,Time series row count: drug_exposure.2008,drug_exposure.2008,1147339,18.0,2026-03-15,2026-03-15 21:34:35
-1047699137,1147040,32880,Valid column name: person.race_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:42
-692284171,1147301,32880,Time series row count: procedure_occurrence.1995,procedure_occurrence.1995,1147301,9.0,2026-03-15,2026-03-15 21:35:17
-2034972827,1147330,32880,Time series row count: measurement.2001,measurement.2001,1147330,599.0,2026-03-15,2026-03-15 21:35:56
-1453729896,1147339,32880,Time series row count: drug_exposure.2013,drug_exposure.2013,1147339,348.0,2026-03-15,2026-03-15 21:34:40
-594617388,1147304,32880,Time series row count: observation.2000,observation.2000,1147304,1.0,2026-03-15,2026-03-15 21:36:29
-532289555,0,32880,Type concept breakdown: condition_occurrence,No matching concept,0,80.0,2026-03-15,2026-03-15 21:26:54
-2104015845,0,32880,Target vocabulary breakdown: person.ethnicity_concept_id,None,0,11.0,2026-03-15,2026-03-15 21:27:54
-628955638,1147082,32880,Valid column name: procedure_occurrence.procedure_occurrence_id,valid column name,0,,2026-03-15,2026-03-15 20:49:37
-1532939672,1147301,32880,Time series row count: procedure_occurrence.2001,procedure_occurrence.2001,1147301,89.0,2026-03-15,2026-03-15 21:35:23
-1311615653,1147330,32880,Time series row count: measurement.2008,measurement.2008,1147330,84.0,2026-03-15,2026-03-15 21:36:03
-651220521,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,LOINC,0,34839.0,2026-03-15,2026-03-15 21:29:10
-842103793,1147333,32880,Time series row count: condition_occurrence.2023,condition_occurrence.2023,1147333,13.0,2026-03-15,2026-03-15 21:34:14
-785969693,1147339,32880,Time series row count: drug_exposure.2024,drug_exposure.2024,1147339,296.0,2026-03-15,2026-03-15 21:34:51
-1618462232,0,32880,Target vocabulary breakdown: condition_occurrence.condition_concept_id,SNOMED,0,108.0,2026-03-15,2026-03-15 21:28:03
-617511716,0,32880,Target vocabulary breakdown: person.gender_concept_id,Gender,0,64.0,2026-03-15,2026-03-15 21:27:31
-930227500,1147339,32880,Time series row count: drug_exposure.2016,drug_exposure.2016,1147339,506.0,2026-03-15,2026-03-15 21:34:43
-420930838,1147330,32880,Time series row count: measurement.2003,measurement.2003,1147330,876.0,2026-03-15,2026-03-15 21:35:58
-833092856,0,32880,Invalid concept_id count: observation_period.period_type_concept_id,observation_period.period_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:43
-59136233,1147322,32880,Final row count: concept_class,concept_class,1147322,0.0,2026-03-15,2026-03-15 21:33:19
-757327667,1147301,32880,Time series row count: procedure_occurrence.1984,procedure_occurrence.1984,1147301,4.0,2026-03-15,2026-03-15 21:35:06
-1972492032,1147083,32880,Valid column name: procedure_occurrence.person_id,valid column name,0,,2026-03-15,2026-03-15 20:49:38
-242936677,1147321,32880,Date/datetime default value count: observation_period.observation_period_start_date,,0,64.0,2026-03-15,2026-03-15 21:30:46
-1577863640,1147301,32880,Number of rows removed due to missing person_id values: procedure_occurrence,,0,1.0,2026-03-15,2026-03-15 20:56:06
-1640374023,1147320,32880,Final row count: fact_relationship,fact_relationship,1147320,0.0,2026-03-15,2026-03-15 21:33:38
-104342228,0,32880,Type concept breakdown: measurement,No matching concept,0,2337.0,2026-03-15,2026-03-15 21:27:14
-1162873640,0,32880,Type concept breakdown: drug_exposure,No matching concept,0,4184.0,2026-03-15,2026-03-15 21:27:01
-735455233,1147330,32880,Time series row count: measurement.2013,measurement.2013,1147330,838.0,2026-03-15,2026-03-15 21:36:08
-408405317,1147330,32880,Date/datetime default value count: measurement.measurement_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:39
-86334138,0,32880,Source vocabulary breakdown: observation.unit_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:30:06
-1551050969,1147330,32880,Vocab harmonization status: measurement - domain check,,0,39030.0,2026-03-15,2026-03-15 21:08:37
-882397099,1147301,32880,Time series row count: procedure_occurrence.1975,procedure_occurrence.1975,1147301,3.0,2026-03-15,2026-03-15 21:34:58
-643831813,1147339,32880,Time series row count: drug_exposure.1999,drug_exposure.1999,1147339,118.0,2026-03-15,2026-03-15 21:34:26
-1489790091,1147303,32880,Person_id referential integrity violation count: drug_era,drug_era,1147303,0.0,2026-03-15,2026-03-15 21:33:07
-1683350644,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,LOINC,0,2.0,2026-03-15,2026-03-15 21:28:43
-1695664165,1147301,32880,Time series row count: procedure_occurrence.1992,procedure_occurrence.1992,1147301,4.0,2026-03-15,2026-03-15 21:35:14
-1830742461,1147333,32880,Date/datetime default value count: condition_occurrence.condition_start_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:13
-196912140,1147301,32880,Time series row count: procedure_occurrence.1977,procedure_occurrence.1977,1147301,4.0,2026-03-15,2026-03-15 21:34:59
-1402036913,1147314,32880,Number of rows removed due to missing person_id values: person,,0,1.0,2026-03-15,2026-03-15 20:56:02
-1255772752,1147330,32880,Time series row count: measurement.2021,measurement.2021,1147330,5349.0,2026-03-15,2026-03-15 21:36:15
-1580707446,32882,32880,Type concept breakdown: observation_period,Standard algorithm from EHR,32882,64.0,2026-03-15,2026-03-15 21:27:26
-437033709,1147301,32880,Time series row count: procedure_occurrence.1970,procedure_occurrence.1970,1147301,4.0,2026-03-15,2026-03-15 21:34:53
-1002871329,0,32880,Target vocabulary breakdown: measurement.value_as_concept_id,SNOMED,0,1562.0,2026-03-15,2026-03-15 21:29:26
-567087314,0,32880,Connect participant breakdown: Study status (Verified),"",197316935,79.0,2026-03-15,2026-03-15 20:55:08
-2050386821,1147301,32880,Valid table name: procedure_occurrence,valid table name,0,,2026-03-15,2026-03-15 20:49:25
-1153555506,1147336,32880,Final row count: concept_relationship,concept_relationship,1147336,0.0,2026-03-15,2026-03-15 21:33:20
-889008191,0,32880,Source vocabulary breakdown: condition_occurrence.condition_status_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:28:13
-926349342,1147330,32880,Vocab harmonization row disposition: measurement - stayed only,,0,39502.0,2026-03-15,2026-03-15 21:08:48
-1755550031,1147138,32880,Valid column name: measurement.measurement_id,valid column name,0,,2026-03-15,2026-03-15 20:49:30
-1760849830,1147308,32880,Final row count: concept_synonym,concept_synonym,1147308,0.0,2026-03-15,2026-03-15 21:33:21
-1410566014,0,32880,Target vocabulary breakdown: condition_occurrence.condition_status_concept_id,None,0,108.0,2026-03-15,2026-03-15 21:28:12
-189255566,1147304,32880,Time series row count: observation.2009,observation.2009,1147304,1.0,2026-03-15,2026-03-15 21:36:34
-1395321706,0,32880,Connect participant breakdown: Study status (Duplicate),1073219688|1495492220|9471612999,922622075,3.0,2026-03-15,2026-03-15 20:55:05
-1201411984,1147304,32880,Time series row count: observation.2010,observation.2010,1147304,3.0,2026-03-15,2026-03-15 21:36:35
-1948225332,1147301,32880,Time series row count: procedure_occurrence.2007,procedure_occurrence.2007,1147301,30.0,2026-03-15,2026-03-15 21:35:29
-2049020400,1147139,32880,Valid column name: measurement.person_id,valid column name,0,,2026-03-15,2026-03-15 20:49:46
-303721655,0,32880,Pipeline file processor version,565a3dee786328203dd282eeff12c45f1ad149f6,0,,2026-03-15,2026-03-15 21:26:41
-918527861,1147304,32880,Time series row count: observation.2020,observation.2020,1147304,24.0,2026-03-15,2026-03-15 21:36:45
-101187808,1147339,32880,Time series row count: drug_exposure.2021,drug_exposure.2021,1147339,974.0,2026-03-15,2026-03-15 21:34:48
-1163064289,1147038,32880,Valid column name: person.gender_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:32
-1471551605,1147330,32880,Date/datetime default value count: measurement.measurement_date,,0,0.0,2026-03-15,2026-03-15 21:30:37
-350075019,0,32880,Target vocabulary breakdown: measurement.unit_concept_id,UCUM,0,25567.0,2026-03-15,2026-03-15 21:29:32
-458201817,1146951,32880,Valid column name: concept.concept_code,valid column name,0,,2026-03-15,2026-03-15 20:49:39
-1746119792,1146954,32880,Valid column name: concept.invalid_reason,valid column name,0,,2026-03-15,2026-03-15 20:49:32
-1259073105,1147337,32880,Final row count: drug_strength,drug_strength,1147337,0.0,2026-03-15,2026-03-15 21:33:35
-796887558,0,32880,Invalid column name: drug_exposure.src_id,invalid column name,0,,2026-03-15,2026-03-15 20:49:59
-552417802,1147480,32880,Valid column name: person.birth_datetime,valid column name,0,,2026-03-15,2026-03-15 20:49:43
-1110221590,1147569,32880,Valid column name: measurement.provider_id,valid column name,0,,2026-03-15,2026-03-15 20:49:35
-1715303612,1147330,32880,Number of rows removed due to Connect exclusion rules: measurement,,0,22471.0,2026-03-15,2026-03-15 20:55:58
-1865657366,0,32880,Source vocabulary breakdown: person.ethnicity_concept_id,None,0,64.0,2026-03-15,2026-03-15 21:27:58
-1296795395,1147304,32880,Time series row count: observation.2002,observation.2002,1147304,1.0,2026-03-15,2026-03-15 21:36:31
-1882827722,1146950,32880,Valid column name: concept.standard_concept,valid column name,0,,2026-03-15,2026-03-15 20:49:30
-1718910550,1147330,32880,Time series row count: measurement.1995,measurement.1995,1147330,47.0,2026-03-15,2026-03-15 21:35:50
-521192624,1147339,32880,Time series row count: drug_exposure.2001,drug_exposure.2001,1147339,144.0,2026-03-15,2026-03-15 21:34:28
-52876540,0,32880,Invalid concept_id count: measurement.measurement_concept_id,measurement.measurement_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:03
-1299048967,1147333,32880,Time series row count: condition_occurrence.2007,condition_occurrence.2007,1147333,6.0,2026-03-15,2026-03-15 21:34:04
-999105724,1147325,32880,Final row count: cdm_source,cdm_source,1147325,1.0,2026-03-15,2026-03-15 21:33:13
-420227964,1147330,32880,Time series row count: measurement.2016,measurement.2016,1147330,2188.0,2026-03-15,2026-03-15 21:36:11
-690470606,1146945,32880,Valid column name: concept.concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:41
-99260009,1147333,32880,Date/datetime default value count: condition_occurrence.condition_start_date,,0,0.0,2026-03-15,2026-03-15 21:30:11
-751685804,0,32880,Source vocabulary breakdown: person.gender_concept_id,None,0,64.0,2026-03-15,2026-03-15 21:27:35
-317169196,1147317,32880,Final row count: note,note,1147317,0.0,2026-03-15,2026-03-15 21:33:43
-787544434,1147330,32880,Vocab harmonization same-table mapping: measurement - 1:1,,0,39510.0,2026-03-15,2026-03-15 21:08:43
-1325564766,1147339,32880,Time series row count: drug_exposure.2000,drug_exposure.2000,1147339,94.0,2026-03-15,2026-03-15 21:34:27
-1999298776,0,32880,Connect participant breakdown: Consent withdrawn status (No),"",104430631,93.0,2026-03-15,2026-03-15 20:55:17
-690351607,0,32880,File delivery format,.csv,0,,2026-03-15,2026-03-15 21:26:44
-786243517,0,32880,Target vocabulary breakdown: observation.observation_concept_id,SNOMED,0,228.0,2026-03-15,2026-03-15 21:29:44
-1173307282,1147499,32880,Valid column name: drug_exposure.days_supply,valid column name,0,,2026-03-15,2026-03-15 20:49:32
-1899341113,1147330,32880,Time series row count: measurement.1970,measurement.1970,1147330,9.0,2026-03-15,2026-03-15 21:35:48
-89099488,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,Read,0,1.0,2026-03-15,2026-03-15 21:29:13
-1292042527,0,32880,Invalid concept_id count: drug_exposure.drug_type_concept_id,drug_exposure.drug_type_concept_id,0,0.0,2026-03-15,2026-03-15 21:31:45
-1738417907,0,32880,Target vocabulary breakdown: drug_exposure.route_concept_id,None,0,8368.0,2026-03-15,2026-03-15 21:28:34
-879694072,1147339,32880,Final row count: drug_exposure,drug_exposure,1147339,8368.0,2026-03-15,2026-03-15 21:33:34
-351978123,1147301,32880,Time series row count: procedure_occurrence.1974,procedure_occurrence.1974,1147301,1.0,2026-03-15,2026-03-15 21:34:57
-1574340139,1147562,32880,Valid column name: drug_exposure.visit_detail_id,valid column name,0,,2026-03-15,2026-03-15 20:49:51
-1911553266,1146947,32880,Valid column name: concept.domain_id,valid column name,0,,2026-03-15,2026-03-15 20:49:35
-911356607,1147330,32880,Vocab harmonization status: measurement - existing non-standard target remapped to standard code,,0,5.0,2026-03-15,2026-03-15 21:08:39
-1851219816,0,32880,Source vocabulary breakdown: procedure_occurrence.procedure_concept_id,LOINC,0,2.0,2026-03-15,2026-03-15 21:28:51
-775296914,0,32880,Target vocabulary breakdown: observation.qualifier_concept_id,None,0,228.0,2026-03-15,2026-03-15 21:30:00
-143736208,1147330,32880,Vocab harmonization status: measurement - source_concept_id mapped to new target,,0,478.0,2026-03-15,2026-03-15 21:08:40
-888610899,1147610,32880,Valid column name: procedure_occurrence.modifier_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:35
-1422263905,0,32880,Source vocabulary breakdown: person.race_concept_id,None,0,64.0,2026-03-15,2026-03-15 21:27:46
-50361053,1147331,32880,Final row count: concept_ancestor,concept_ancestor,1147331,0.0,2026-03-15,2026-03-15 21:33:18
-1789638802,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,RxNorm,0,6578.0,2026-03-15,2026-03-15 21:28:28
-2144702611,1147304,32880,Time series row count: observation.1996,observation.1996,1147304,1.0,2026-03-15,2026-03-15 21:36:25
-1764575217,1147339,32880,Time series row count: drug_exposure.2002,drug_exposure.2002,1147339,314.0,2026-03-15,2026-03-15 21:34:29
-489489291,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_datetime,,0,0.0,2026-03-15,2026-03-15 21:30:31
-756158029,1147301,32880,Time series row count: procedure_occurrence.2017,procedure_occurrence.2017,1147301,605.0,2026-03-15,2026-03-15 21:35:39
-1358295701,1147339,32880,Valid row count: drug_exposure,,0,12690.0,2026-03-15,2026-03-15 20:51:32
-2041125152,1147339,32880,Time series row count: drug_exposure.1994,drug_exposure.1994,1147339,12.0,2026-03-15,2026-03-15 21:34:22
-1086435729,1147339,32880,Invalid row count: drug_exposure,,0,0.0,2026-03-15,2026-03-15 20:51:34
-629446469,1147036,32880,Valid column name: person.care_site_id,valid column name,0,,2026-03-15,2026-03-15 20:49:45
-1159762888,0,32880,Source vocabulary breakdown: observation.qualifier_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:30:01
-1123308516,1147311,32880,Final row count: concept,concept,1147311,6140322.0,2026-03-15,2026-03-15 21:33:17
-1644522364,1147560,32880,Valid column name: drug_exposure.drug_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:55
-1014178875,1147042,32880,Valid column name: person.ethnicity_source_value,valid column name,0,,2026-03-15,2026-03-15 20:49:51
-392392533,1147312,32880,Final row count: death,death,1147312,0.0,2026-03-15,2026-03-15 21:33:27
-135292649,0,32880,Target vocabulary breakdown: measurement.unit_concept_id,None,0,13949.0,2026-03-15,2026-03-15 21:29:33
-484998039,1147330,32880,Time series row count: measurement.1998,measurement.1998,1147330,449.0,2026-03-15,2026-03-15 21:35:53
-1265707621,1147329,32880,Date/datetime default value count: condition_era.condition_era_start_date,,0,0.0,2026-03-15,2026-03-15 21:30:50
-1799257993,1147542,32880,Final row count: note_nlp,note_nlp,1147542,0.0,2026-03-15,2026-03-15 21:33:44
-485173008,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,SNOMED,0,9548.0,2026-03-15,2026-03-15 21:28:41
-389592034,1147330,32880,Number of rows removed due to missing person_id values: measurement,,0,0.0,2026-03-15,2026-03-15 20:55:55
-1265026953,1147304,32880,Time series row count: observation.2014,observation.2014,1147304,21.0,2026-03-15,2026-03-15 21:36:39
-1310918500,1147330,32880,Time series row count: measurement.2007,measurement.2007,1147330,83.0,2026-03-15,2026-03-15 21:36:02
-849023102,1147330,32880,Valid table name: measurement,valid table name,0,,2026-03-15,2026-03-15 20:49:18
-694837701,0,32880,Invalid concept_id count: measurement.operator_concept_id,measurement.operator_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:06
-1100698682,0,32880,Source vocabulary breakdown: measurement.value_as_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:29:27
-538504287,1147314,32880,Invalid row count: person,,0,0.0,2026-03-15,2026-03-15 20:51:34
-384429609,1147043,32880,Valid column name: person.ethnicity_source_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:53
-1382510999,0,32880,Connect participant breakdown: Data destruction status (Yes),1286106230|2537423491|2758935713|3474680828|5512983871|5525659497|5773487914|7956451897|7997689599|8010150172,353358909,10.0,2026-03-15,2026-03-15 20:55:24
-1458456966,1147301,32880,Time series row count: procedure_occurrence.2003,procedure_occurrence.2003,1147301,120.0,2026-03-15,2026-03-15 21:35:25
-765720550,1147339,32880,Time series row count: drug_exposure.2004,drug_exposure.2004,1147339,16.0,2026-03-15,2026-03-15 21:34:31
-2087065036,0,32880,Invalid concept_id count: observation.value_as_concept_id,observation.value_as_concept_id,0,0.0,2026-03-15,2026-03-15 21:32:29
-598704810,1147301,32880,Time series row count: procedure_occurrence.1994,procedure_occurrence.1994,1147301,13.0,2026-03-15,2026-03-15 21:35:16
-777784324,0,32880,Source vocabulary breakdown: observation.value_as_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:29:56
-475305991,1147640,32880,Valid column name: measurement.measurement_time,valid column name,0,,2026-03-15,2026-03-15 20:49:49
-894913547,1147301,32880,Time series row count: procedure_occurrence.1991,procedure_occurrence.1991,1147301,6.0,2026-03-15,2026-03-15 21:35:13
-1731930249,1147574,32880,Valid column name: measurement.value_as_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:28
-1646005427,1147032,32880,Valid column name: person.race_concept_id,valid column name,0,,2026-03-15,2026-03-15 20:49:50
-853752127,1147301,32880,Time series row count: procedure_occurrence.2016,procedure_occurrence.2016,1147301,769.0,2026-03-15,2026-03-15 21:35:38
-1271981153,1147330,32880,Valid row count: measurement,,0,62073.0,2026-03-15,2026-03-15 20:51:33
-1743667738,1147301,32880,Vocab harmonization same-table mapping: procedure_occurrence - 1:1,,0,9562.0,2026-03-15,2026-03-15 21:08:46
-602937882,1147339,32880,Time series row count: drug_exposure.2009,drug_exposure.2009,1147339,48.0,2026-03-15,2026-03-15 21:34:36
-1826722801,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_start_date,,0,0.0,2026-03-15,2026-03-15 21:30:19
-179850604,1147097,32880,Valid column name: drug_exposure.drug_exposure_start_date,valid column name,0,,2026-03-15,2026-03-15 20:49:46
-2125442583,1147339,32880,Number of rows removed due to Connect exclusion rules: drug_exposure,,0,4312.0,2026-03-15,2026-03-15 20:56:08
-171418336,0,32880,Target vocabulary breakdown: observation.value_as_concept_id,None,0,228.0,2026-03-15,2026-03-15 21:29:55
-704838426,1147333,32880,Time series row count: condition_occurrence.2018,condition_occurrence.2018,1147333,14.0,2026-03-15,2026-03-15 21:34:10
-100487850,1147301,32880,Vocab harmonization table transition: procedure_occurrence to procedure_occurrence,,0,9562.0,2026-03-15,2026-03-15 21:08:40
-1452178870,0,32880,Number of delivery patients not in Connect data,-1|7133488226145219,0,2.0,2026-03-15,2026-03-15 20:55:31
-620186231,1147085,32880,Valid column name: procedure_occurrence.procedure_date,valid column name,0,,2026-03-15,2026-03-15 20:49:45
-477626768,1147330,32880,Time series row count: measurement.1997,measurement.1997,1147330,355.0,2026-03-15,2026-03-15 21:35:52
-1238157105,0,32880,Source vocabulary breakdown: procedure_occurrence.modifier_concept_id,Source vocabulary not captured in OMOP,0,,2026-03-15,2026-03-15 21:28:55
-990767662,1147304,32880,Time series row count: observation.1997,observation.1997,1147304,1.0,2026-03-15,2026-03-15 21:36:26
-1121846884,1147330,32880,Time series row count: measurement.1999,measurement.1999,1147330,559.0,2026-03-15,2026-03-15 21:35:54
-2121174801,32817,32880,Type concept breakdown: drug_exposure,EHR,32817,4184.0,2026-03-15,2026-03-15 21:27:02
+566824601,1147330,32880,Time series row count: measurement.2019,measurement.2019,1147330,2884.0,2026-04-15,2026-04-15 13:26:48
+291449773,1147329,32880,Date/datetime default value count: condition_era.condition_era_end_date,,0,0.0,2026-04-15,2026-04-15 13:25:18
+1402489882,1147339,32880,Number of rows removed due to Connect exclusion rules: drug_exposure,,0,4188.0,2026-04-15,2026-04-15 12:52:14
+1097823529,1147333,32880,Date/datetime default value count: condition_occurrence.condition_end_date,,0,0.0,2026-04-15,2026-04-15 13:24:39
+164826497,1147322,32880,Final row count: concept_class,concept_class,1147322,0.0,2026-04-15,2026-04-15 13:24:41
+1039389961,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,ICD10CN,0,3.0,2026-04-15,2026-04-15 13:26:25
+500425420,1147330,32880,Time series row count: measurement.2000,measurement.2000,1147330,445.0,2026-04-15,2026-04-15 13:26:29
+271177799,1147339,32880,Time series row count: drug_exposure.2023,drug_exposure.2023,1147339,776.0,2026-04-15,2026-04-15 13:25:22
+1847047182,0,32880,Delivered Connect ID values not found in Connect database: procedure_occurrence,1111|12345|7133488226145219|asdf|idfromprococc,0,5.0,2026-04-15,2026-04-15 12:51:56
+527932662,1147512,32880,Valid column name: drug_exposure.stop_reason,valid column name,0,,2026-04-15,2026-04-15 12:45:24
+1405819283,1147577,32880,Valid column name: measurement.visit_detail_id,valid column name,0,,2026-04-15,2026-04-15 12:45:49
+1200937725,1147301,32880,Time series row count: procedure_occurrence.1977,procedure_occurrence.1977,1147301,4.0,2026-04-15,2026-04-15 13:25:32
+1468425937,0,32880,Site,Synthea Synthetic Data,0,,2026-04-15,2026-04-15 13:24:34
+1759557258,1147504,32880,Valid column name: drug_exposure.drug_type_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:22
+1319698265,0,32880,Invalid concept_id count: observation.observation_concept_id,observation.observation_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:14
+999550880,1147301,32880,Vocab harmonization table transition: procedure_occurrence to drug_exposure,,0,38.0,2026-04-15,2026-04-15 13:06:19
+111071121,1147330,32880,Time series row count: measurement.2016,measurement.2016,1147330,2206.0,2026-04-15,2026-04-15 13:26:45
+1915717952,1147083,32880,Valid column name: procedure_occurrence.person_id,valid column name,0,,2026-04-15,2026-04-15 12:45:20
+845121165,1147301,32880,Vocab harmonization table transition: procedure_occurrence to observation,,0,233.0,2026-04-15,2026-04-15 13:06:22
+1827472203,0,32880,Connect participant breakdown: Consent withdrawn status (No),"",104430631,89.0,2026-04-15,2026-04-15 12:51:23
+1354428093,1147301,32880,Time series row count: procedure_occurrence.1987,procedure_occurrence.1987,1147301,4.0,2026-04-15,2026-04-15 13:25:42
+492573970,1147301,32880,Time series row count: procedure_occurrence.1983,procedure_occurrence.1983,1147301,2.0,2026-04-15,2026-04-15 13:25:38
+324823396,1147301,32880,Valid row count: procedure_occurrence,,0,15751.0,2026-04-15,2026-04-15 12:47:49
+340656838,1147508,32880,Valid column name: drug_exposure.refills,valid column name,0,,2026-04-15,2026-04-15 12:45:16
+244056458,1147330,32880,Time series row count: measurement.2005,measurement.2005,1147330,21.0,2026-04-15,2026-04-15 13:26:34
+2117394654,0,32880,File delivery format,.csv,0,,2026-04-15,2026-04-15 13:24:35
+779473071,0,32880,Target vocabulary breakdown: observation.unit_concept_id,None,0,234.0,2026-04-15,2026-04-15 13:27:23
+135326069,1147301,32880,Time series row count: procedure_occurrence.1979,procedure_occurrence.1979,1147301,2.0,2026-04-15,2026-04-15 13:25:34
+1848480673,1147303,32880,Date/datetime default value count: drug_era.drug_era_end_date,,0,0.0,2026-04-15,2026-04-15 13:25:22
+700024877,1147330,32880,Time series row count: measurement.2004,measurement.2004,1147330,38.0,2026-04-15,2026-04-15 13:26:33
+436345745,0,32880,Delivery date,2025-01-01,0,,2026-04-15,2026-04-15 13:24:33
+804748280,1147301,32880,Time series row count: procedure_occurrence.2006,procedure_occurrence.2006,1147301,14.0,2026-04-15,2026-04-15 13:26:01
+180443160,0,32880,Invalid concept_id count: person.gender_concept_id,person.gender_concept_id,0,0.0,2026-04-15,2026-04-15 13:24:37
+1051293258,1147576,32880,Valid column name: measurement.value_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:33
+706424474,1147301,32880,Time series row count: procedure_occurrence.1980,procedure_occurrence.1980,1147301,3.0,2026-04-15,2026-04-15 13:25:35
+428071213,1147330,32880,Vocab harmonization status: measurement - source_concept_id mapped to new target,,0,493.0,2026-04-15,2026-04-15 13:06:22
+1897423468,0,32880,Type concept breakdown: procedure_occurrence,No matching concept,0,5368.0,2026-04-15,2026-04-15 13:24:59
+635925222,1146952,32880,Valid column name: concept.valid_start_date,valid column name,0,,2026-04-15,2026-04-15 12:45:16
+278570839,0,32880,Target vocabulary breakdown: drug_exposure.drug_concept_id,CVX,0,1652.0,2026-04-15,2026-04-15 13:25:30
+811334612,1147332,32880,Final row count: visit_occurrence,visit_occurrence,1147332,0.0,2026-04-15,2026-04-15 13:25:28
+1689141023,0,32880,Source vocabulary breakdown: measurement.operator_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:26:32
+211132123,1147333,32880,Time series row count: condition_occurrence.2018,condition_occurrence.2018,1147333,14.0,2026-04-15,2026-04-15 13:24:39
+1990645687,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_date,,0,0.0,2026-04-15,2026-04-15 13:24:54
+849136989,1147339,32880,Time series row count: drug_exposure.1996,drug_exposure.1996,1147339,12.0,2026-04-15,2026-04-15 13:24:54
+1725941819,0,32880,Invalid concept_id count: measurement.value_as_concept_id,measurement.value_as_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:55
+542696154,1147304,32880,Time series row count: observation.2014,observation.2014,1147304,23.0,2026-04-15,2026-04-15 13:27:15
+483301489,1147330,32880,Time series row count: measurement.2003,measurement.2003,1147330,876.0,2026-04-15,2026-04-15 13:26:32
+1213830529,1147330,32880,Time series row count: measurement.1994,measurement.1994,1147330,49.0,2026-04-15,2026-04-15 13:26:23
+540872247,0,32880,Invalid concept_id count: observation.qualifier_concept_id,observation.qualifier_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:20
+2078280121,1147514,32880,Valid column name: drug_exposure.visit_occurrence_id,valid column name,0,,2026-04-15,2026-04-15 12:45:35
+605412017,1146947,32880,Valid column name: concept.domain_id,valid column name,0,,2026-04-15,2026-04-15 12:45:20
+1248697151,1147314,32880,Number of rows removed due to Connect exclusion rules: person,,0,41.0,2026-04-15,2026-04-15 12:52:27
+1430070275,0,32880,Invalid concept_id count: measurement.unit_concept_id,measurement.unit_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:01
+343907322,1146945,32880,Valid column name: concept.concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:26
+1629503955,756346,32880,Final row count: cohort,cohort,756346,0.0,2026-04-15,2026-04-15 13:24:35
+2016071966,1147325,32880,Date/datetime default value count: cdm_source.source_release_date,,0,0.0,2026-04-15,2026-04-15 13:25:25
+1097328086,1147339,32880,Vocab harmonization status: drug_exposure - domain check,,0,8282.0,2026-04-15,2026-04-15 13:06:19
+587681266,1147339,32880,Time series row count: drug_exposure.1973,drug_exposure.1973,1147339,2.0,2026-04-15,2026-04-15 13:24:47
+1270282058,1147330,32880,Time series row count: measurement.2020,measurement.2020,1147330,4669.0,2026-04-15,2026-04-15 13:26:49
+1376290540,1147301,32880,Vocab harmonization row disposition: procedure_occurrence - moved to other tables,,0,329.0,2026-04-15,2026-04-15 13:06:32
+1412242725,1147096,32880,Valid column name: drug_exposure.drug_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:28
+447114224,1147339,32880,Vocab harmonization status: drug_exposure - source_concept_id mapped to new target,,0,174.0,2026-04-15,2026-04-15 13:06:20
+52046005,1147304,32880,Time series row count: observation.2016,observation.2016,1147304,13.0,2026-04-15,2026-04-15 13:27:17
+2060936279,1147559,32880,Valid column name: drug_exposure.drug_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:23
+379467636,1147637,32880,Final row count: visit_detail,visit_detail,1147637,0.0,2026-04-15,2026-04-15 13:25:27
+1112291324,0,32880,Invalid concept_id count: observation_period.period_type_concept_id,observation_period.period_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:34
+579790829,1147565,32880,Valid column name: measurement.measurement_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:52
+30322666,1147330,32880,Time series row count: measurement.1999,measurement.1999,1147330,559.0,2026-04-15,2026-04-15 13:26:28
+1374879030,1147329,32880,Date/datetime default value count: condition_era.condition_era_start_date,,0,0.0,2026-04-15,2026-04-15 13:25:16
+813909972,1147339,32880,Time series row count: drug_exposure.2017,drug_exposure.2017,1147339,444.0,2026-04-15,2026-04-15 13:25:16
+1012654541,1147311,32880,Invalid row count: concept,,0,0.0,2026-04-15,2026-04-15 12:48:16
+2053385654,1147304,32880,Time series row count: observation.2013,observation.2013,1147304,6.0,2026-04-15,2026-04-15 13:27:13
+400919547,1147320,32880,Final row count: fact_relationship,fact_relationship,1147320,0.0,2026-04-15,2026-04-15 13:25:04
+1188965258,1147557,32880,Valid column name: drug_exposure.dose_unit_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:13
+1817728694,0,32880,Standardized to vocabulary version,v5.0 27-FEB-26,0,,2026-04-15,2026-04-15 13:24:38
+525020565,1147330,32880,Time series row count: measurement.2012,measurement.2012,1147330,196.0,2026-04-15,2026-04-15 13:26:41
+956230816,1147304,32880,Time series row count: observation.1999,observation.1999,1147304,1.0,2026-04-15,2026-04-15 13:27:03
+884147032,1147303,32880,Person_id referential integrity violation count: drug_era,drug_era,1147303,14.0,2026-04-15,2026-04-15 13:25:10
+376013938,0,32880,Target vocabulary breakdown: measurement.unit_concept_id,None,0,14300.0,2026-04-15,2026-04-15 13:26:49
+148101105,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_end_date,,0,0.0,2026-04-15,2026-04-15 13:24:47
+1804075310,1147564,32880,Valid column name: measurement.measurement_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:42
+145573865,1147513,32880,Valid column name: drug_exposure.verbatim_end_date,valid column name,0,,2026-04-15,2026-04-15 12:45:21
+1235089639,1147330,32880,Vocab harmonization same-table mapping: measurement - 1:1,,0,40225.0,2026-04-15,2026-04-15 13:06:24
+1416086675,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_start_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:45
+1630154056,1147339,32880,Time series row count: drug_exposure.2007,drug_exposure.2007,1147339,34.0,2026-04-15,2026-04-15 13:25:05
+813536608,1147037,32880,Valid column name: person.person_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:33
+193093511,1147321,32880,Final row count: observation_period,observation_period,1147321,62.0,2026-04-15,2026-04-15 13:25:15
+207337898,1147307,32880,Final row count: relationship,relationship,1147307,0.0,2026-04-15,2026-04-15 13:25:23
+2084749405,1147301,32880,Time series row count: procedure_occurrence.2017,procedure_occurrence.2017,1147301,612.0,2026-04-15,2026-04-15 13:26:12
+1210522100,1147042,32880,Valid column name: person.ethnicity_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:48
+1799981354,0,32880,Invalid concept_id count: measurement.measurement_type_concept_id,measurement.measurement_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:06
+873146475,0,32880,Delivered CDM version,5.3,1147543,,2026-04-15,2026-04-15 13:24:36
+1882192311,1147301,32880,Vocab harmonization table transition: procedure_occurrence to procedure_occurrence,,0,9731.0,2026-04-15,2026-04-15 13:06:23
+265944000,1147339,32880,Time series row count: drug_exposure.1994,drug_exposure.1994,1147339,12.0,2026-04-15,2026-04-15 13:24:52
+158140463,1147488,32880,Valid column name: procedure_occurrence.quantity,valid column name,0,,2026-04-15,2026-04-15 12:45:32
+928456853,1147301,32880,Time series row count: procedure_occurrence.1989,procedure_occurrence.1989,1147301,4.0,2026-04-15,2026-04-15 13:25:44
+1643532240,32817,32880,Type concept breakdown: observation,EHR,32817,13.0,2026-04-15,2026-04-15 13:25:15
+638544905,1146949,32880,Valid column name: concept.concept_class_id,valid column name,0,,2026-04-15,2026-04-15 12:45:23
+697570553,1147304,32880,Date/datetime default value count: observation.observation_date,,0,0.0,2026-04-15,2026-04-15 13:25:07
+1954597579,1147301,32880,Time series row count: procedure_occurrence.2018,procedure_occurrence.2018,1147301,821.0,2026-04-15,2026-04-15 13:26:13
+724871843,1147304,32880,Time series row count: observation.2001,observation.2001,1147304,1.0,2026-04-15,2026-04-15 13:27:05
+1063282829,1147304,32880,Time series row count: observation.2000,observation.2000,1147304,1.0,2026-04-15,2026-04-15 13:27:04
+456413949,1147339,32880,Date/datetime default value count: drug_exposure.verbatim_end_date,,0,0.0,2026-04-15,2026-04-15 13:24:52
+1658704979,0,32880,Invalid column name: procedure_occurrence.src_id,invalid column name,0,,2026-04-15,2026-04-15 12:45:40
+719933424,1147304,32880,Time series row count: observation.2017,observation.2017,1147304,19.0,2026-04-15,2026-04-15 13:27:18
+344190846,1147139,32880,Valid column name: measurement.person_id,valid column name,0,,2026-04-15,2026-04-15 12:45:44
+820254960,1147301,32880,Final row count: procedure_occurrence,procedure_occurrence,1147301,9731.0,2026-04-15,2026-04-15 13:25:21
+964147964,1147330,32880,Time series row count: measurement.2021,measurement.2021,1147330,5439.0,2026-04-15,2026-04-15 13:26:50
+1198191943,0,32880,Connect participant breakdown: Data destruction status (No),"",104430631,94.0,2026-04-15,2026-04-15 12:51:27
+832860957,1147501,32880,Valid column name: drug_exposure.drug_exposure_end_date,valid column name,0,,2026-04-15,2026-04-15 12:45:33
+372479117,1147639,32880,Valid column name: measurement.measurement_datetime,valid column name,0,,2026-04-15,2026-04-15 12:45:35
+1298842045,1146951,32880,Valid column name: concept.concept_code,valid column name,0,,2026-04-15,2026-04-15 12:45:24
+2088085881,1147330,32880,Time series row count: measurement.2006,measurement.2006,1147330,23.0,2026-04-15,2026-04-15 13:26:35
+1130191413,1147333,32880,Final row count: condition_occurrence,condition_occurrence,1147333,107.0,2026-04-15,2026-04-15 13:24:48
+1716604240,1147301,32880,Time series row count: procedure_occurrence.2019,procedure_occurrence.2019,1147301,720.0,2026-04-15,2026-04-15 13:26:14
+1926842457,1147311,32880,Valid row count: concept,,0,6140322.0,2026-04-15,2026-04-15 12:48:13
+1408086244,1147562,32880,Valid column name: drug_exposure.visit_detail_id,valid column name,0,,2026-04-15,2026-04-15 12:45:34
+1030046061,1147301,32880,Time series row count: procedure_occurrence.1972,procedure_occurrence.1972,1147301,3.0,2026-04-15,2026-04-15 13:25:27
+1656005185,0,32880,Source vocabulary breakdown: procedure_occurrence.modifier_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:26:08
+433215230,1147313,32880,Final row count: care_site,care_site,1147313,0.0,2026-04-15,2026-04-15 13:24:28
+956353883,1147339,32880,Time series row count: drug_exposure.2021,drug_exposure.2021,1147339,986.0,2026-04-15,2026-04-15 13:25:20
+1382691517,1147339,32880,Time series row count: drug_exposure.2015,drug_exposure.2015,1147339,850.0,2026-04-15,2026-04-15 13:25:14
+1018163830,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_start_date,,0,0.0,2026-04-15,2026-04-15 13:24:43
+1382378331,1147301,32880,Person_id referential integrity violation count: procedure_occurrence,procedure_occurrence,1147301,166.0,2026-04-15,2026-04-15 13:24:56
+132494140,1147330,32880,Vocab harmonization table transition: measurement to observation,,0,1.0,2026-04-15,2026-04-15 13:06:18
+242400910,1147339,32880,Time series row count: drug_exposure.2004,drug_exposure.2004,1147339,16.0,2026-04-15,2026-04-15 13:25:02
+1000393724,1147339,32880,Time series row count: drug_exposure.2016,drug_exposure.2016,1147339,514.0,2026-04-15,2026-04-15 13:25:15
+1867762893,1147323,32880,Final row count: cohort_definition,cohort_definition,1147323,0.0,2026-04-15,2026-04-15 13:24:36
+2146827520,1147330,32880,Date/datetime default value count: measurement.measurement_date,,0,0.0,2026-04-15,2026-04-15 13:25:03
+246210706,1147339,32880,Time series row count: drug_exposure.2019,drug_exposure.2019,1147339,446.0,2026-04-15,2026-04-15 13:25:18
+249015040,1147301,32880,Time series row count: procedure_occurrence.2009,procedure_occurrence.2009,1147301,29.0,2026-04-15,2026-04-15 13:26:04
+429560553,1147330,32880,Time series row count: measurement.1970,measurement.1970,1147330,9.0,2026-04-15,2026-04-15 13:26:22
+625982391,1147301,32880,Time series row count: procedure_occurrence.2008,procedure_occurrence.2008,1147301,22.0,2026-04-15,2026-04-15 13:26:03
+541245557,1147339,32880,Time series row count: drug_exposure.2008,drug_exposure.2008,1147339,18.0,2026-04-15,2026-04-15 13:25:06
+475144814,32817,32880,Type concept breakdown: drug_exposure,EHR,32817,4247.0,2026-04-15,2026-04-15 13:24:53
+1774713954,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,SNOMED,0,4816.0,2026-04-15,2026-04-15 13:26:24
+1165494615,1147333,32880,Person_id referential integrity violation count: condition_occurrence,condition_occurrence,1147333,0.0,2026-04-15,2026-04-15 13:24:48
+1655321453,1147339,32880,Time series row count: drug_exposure.2001,drug_exposure.2001,1147339,144.0,2026-04-15,2026-04-15 13:24:59
+654456908,0,32880,Delivered Connect ID values not found in Connect database: measurement,7133488226145219,0,1.0,2026-04-15,2026-04-15 12:51:45
+352506880,1147330,32880,Time series row count: measurement.2001,measurement.2001,1147330,599.0,2026-04-15,2026-04-15 13:26:30
+1741524749,1147330,32880,Vocab harmonization row disposition: measurement - stayed only,,0,40217.0,2026-04-15,2026-04-15 13:06:28
+2087960221,1147301,32880,Time series row count: procedure_occurrence.1978,procedure_occurrence.1978,1147301,4.0,2026-04-15,2026-04-15 13:25:33
+725538078,1147301,32880,Time series row count: procedure_occurrence.1992,procedure_occurrence.1992,1147301,4.0,2026-04-15,2026-04-15 13:25:47
+595944994,32882,32880,Type concept breakdown: observation_period,Standard algorithm from EHR,32882,62.0,2026-04-15,2026-04-15 13:25:21
+1772267789,1147324,32880,Final row count: dose_era,dose_era,1147324,0.0,2026-04-15,2026-04-15 13:24:54
+797324655,756347,32880,Final row count: episode,episode,756347,0.0,2026-04-15,2026-04-15 13:25:01
+1240453761,1147304,32880,Time series row count: observation.2010,observation.2010,1147304,3.0,2026-04-15,2026-04-15 13:27:11
+1992307230,1147301,32880,Time series row count: procedure_occurrence.2005,procedure_occurrence.2005,1147301,14.0,2026-04-15,2026-04-15 13:26:00
+84961160,1147304,32880,Time series row count: observation.1994,observation.1994,1147304,1.0,2026-04-15,2026-04-15 13:26:58
+661353260,1147304,32880,Time series row count: observation.2019,observation.2019,1147304,17.0,2026-04-15,2026-04-15 13:27:20
+596340831,1147304,32880,Time series row count: observation.2015,observation.2015,1147304,12.0,2026-04-15,2026-04-15 13:27:16
+1622743638,0,32880,Target vocabulary breakdown: person.race_concept_id,None,0,3.0,2026-04-15,2026-04-15 13:24:48
+1080043873,1147028,32880,Valid column name: person.year_of_birth,valid column name,0,,2026-04-15,2026-04-15 12:45:32
+229951372,0,32880,Source vocabulary breakdown: procedure_occurrence.procedure_concept_id,LOINC,0,1.0,2026-04-15,2026-04-15 13:26:02
+1857484295,1147505,32880,Valid column name: drug_exposure.lot_number,valid column name,0,,2026-04-15,2026-04-15 12:45:25
+1637795701,1147040,32880,Valid column name: person.race_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:37
+912455881,0,32880,Invalid concept_id count: measurement.operator_concept_id,measurement.operator_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:48
+919455966,1147315,32880,Final row count: provider,provider,1147315,0.0,2026-04-15,2026-04-15 13:25:22
+2144221175,1147331,32880,Final row count: concept_ancestor,concept_ancestor,1147331,0.0,2026-04-15,2026-04-15 13:24:40
+1099938048,1147330,32880,Time series row count: measurement.2010,measurement.2010,1147330,96.0,2026-04-15,2026-04-15 13:26:39
+390638534,1147339,32880,Time series row count: drug_exposure.1977,drug_exposure.1977,1147339,4.0,2026-04-15,2026-04-15 13:24:49
+1754749957,1147301,32880,Time series row count: procedure_occurrence.1993,procedure_occurrence.1993,1147301,8.0,2026-04-15,2026-04-15 13:25:48
+1319518821,1147304,32880,Final row count: observation,observation,1147304,234.0,2026-04-15,2026-04-15 13:25:13
+1687630499,0,32880,Target vocabulary breakdown: observation.value_as_concept_id,None,0,234.0,2026-04-15,2026-04-15 13:27:13
+2085423357,0,32880,Target vocabulary breakdown: condition_occurrence.condition_status_concept_id,None,0,107.0,2026-04-15,2026-04-15 13:25:21
+811529049,0,32880,Invalid concept_id count: condition_occurrence.condition_concept_id,condition_occurrence.condition_concept_id,0,0.0,2026-04-15,2026-04-15 13:24:58
+968191263,0,32880,Target vocabulary breakdown: measurement.operator_concept_id,None,0,40231.0,2026-04-15,2026-04-15 13:26:31
+359901628,1147301,32880,Time series row count: procedure_occurrence.1970,procedure_occurrence.1970,1147301,4.0,2026-04-15,2026-04-15 13:25:25
+1237469616,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,LOINC,0,1.0,2026-04-15,2026-04-15 13:25:54
+860433529,1147301,32880,Time series row count: procedure_occurrence.1973,procedure_occurrence.1973,1147301,1.0,2026-04-15,2026-04-15 13:25:28
+323388801,0,32880,Delivered Connect ID values not found in Connect database: person,23541|7133488226145219|809650c6-b80d-57aa-d502-9d28d67274b5|ce0f8782-b546-f9c5-7c1a-425a18496e00,0,4.0,2026-04-15,2026-04-15 12:51:51
+1145831771,0,32880,Target vocabulary breakdown: measurement.value_as_concept_id,SNOMED,0,1605.0,2026-04-15,2026-04-15 13:26:40
+715307221,1147330,32880,Valid table name: measurement,valid table name,0,,2026-04-15,2026-04-15 12:45:09
+2104475548,1147304,32880,Time series row count: observation.2020,observation.2020,1147304,24.0,2026-04-15,2026-04-15 13:27:21
+1546377575,1147561,32880,Valid column name: drug_exposure.route_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:31
+1666058904,0,32880,Source vocabulary breakdown: person.gender_concept_id,None,0,62.0,2026-04-15,2026-04-15 13:24:40
+1951103980,1147334,32880,Final row count: source_to_concept_map,source_to_concept_map,1147334,0.0,2026-04-15,2026-04-15 13:25:24
+1669411238,0,32880,Invalid column name: person.src_id,invalid column name,0,,2026-04-15,2026-04-15 12:45:53
+4095374,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,CVX,0,1788.0,2026-04-15,2026-04-15 13:25:38
+27935359,1147339,32880,Time series row count: drug_exposure.2005,drug_exposure.2005,1147339,6.0,2026-04-15,2026-04-15 13:25:03
+1279412505,1147301,32880,Time series row count: procedure_occurrence.1988,procedure_occurrence.1988,1147301,2.0,2026-04-15,2026-04-15 13:25:43
+1242215541,1147301,32880,Time series row count: procedure_occurrence.1984,procedure_occurrence.1984,1147301,4.0,2026-04-15,2026-04-15 13:25:39
+540183248,1147138,32880,Valid column name: measurement.measurement_id,valid column name,0,,2026-04-15,2026-04-15 12:45:22
+583406634,1147301,32880,Time series row count: procedure_occurrence.2000,procedure_occurrence.2000,1147301,47.0,2026-04-15,2026-04-15 13:25:55
+1066284997,1147301,32880,Time series row count: procedure_occurrence.2004,procedure_occurrence.2004,1147301,7.0,2026-04-15,2026-04-15 13:25:59
+1004123146,1147301,32880,Time series row count: procedure_occurrence.2012,procedure_occurrence.2012,1147301,58.0,2026-04-15,2026-04-15 13:26:07
+2110873787,1147301,32880,Time series row count: procedure_occurrence.2014,procedure_occurrence.2014,1147301,408.0,2026-04-15,2026-04-15 13:26:09
+953858252,1147301,32880,Vocab harmonization row disposition: procedure_occurrence - stayed only,,0,9318.0,2026-04-15,2026-04-15 13:06:33
+1618100397,1147304,32880,Time series row count: observation.2021,observation.2021,1147304,29.0,2026-04-15,2026-04-15 13:27:22
+1799277142,1147506,32880,Valid column name: drug_exposure.provider_id,valid column name,0,,2026-04-15,2026-04-15 12:45:18
+1036193280,1147339,32880,Time series row count: drug_exposure.1997,drug_exposure.1997,1147339,78.0,2026-04-15,2026-04-15 13:24:55
+414321722,1147304,32880,Time series row count: observation.2002,observation.2002,1147304,1.0,2026-04-15,2026-04-15 13:27:06
+1747212675,1147336,32880,Final row count: concept_relationship,concept_relationship,1147336,0.0,2026-04-15,2026-04-15 13:24:42
+333636015,1147304,32880,Time series row count: observation.2006,observation.2006,1147304,2.0,2026-04-15,2026-04-15 13:27:08
+1797813629,1146948,32880,Valid column name: concept.vocabulary_id,valid column name,0,,2026-04-15,2026-04-15 12:45:21
+1129651045,0,32880,Connect participant breakdown: Study status (Duplicate),1495492220|9471612999,922622075,2.0,2026-04-15,2026-04-15 12:51:13
+1811884767,1147330,32880,Time series row count: measurement.2008,measurement.2008,1147330,84.0,2026-04-15,2026-04-15 13:26:37
+1210108338,0,32880,Source vocabulary breakdown: person.race_concept_id,None,0,62.0,2026-04-15,2026-04-15 13:24:53
+20302126,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_end_date,,0,0.0,2026-04-15,2026-04-15 13:24:58
+1829363324,1147640,32880,Valid column name: measurement.measurement_time,valid column name,0,,2026-04-15,2026-04-15 12:45:47
+369666731,1147333,32880,Time series row count: condition_occurrence.2023,condition_occurrence.2023,1147333,13.0,2026-04-15,2026-04-15 13:24:44
+1902366179,1147330,32880,Person_id referential integrity violation count: measurement,measurement,1147330,396.0,2026-04-15,2026-04-15 13:25:01
+1879724912,1147333,32880,Time series row count: condition_occurrence.2012,condition_occurrence.2012,1147333,2.0,2026-04-15,2026-04-15 13:24:36
+1771389404,0,32880,Delivered Connect ID values not found in Connect database: drug_exposure,7133488226145219,0,1.0,2026-04-15,2026-04-15 12:51:39
+772098349,1147333,32880,Date/datetime default value count: condition_occurrence.condition_end_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:41
+1582045667,0,32880,Connect participant breakdown: Consent withdrawn status (Yes),2537423491|2758935713|3474680828|3529645229|5512983871|5525659497|5773487914|7691613290|7777006201|7806989704|7956451897|7997689599|8010150172|8239341771,353358909,14.0,2026-04-15,2026-04-15 12:51:24
+784087352,0,32880,Target vocabulary breakdown: person.race_concept_id,Race,0,59.0,2026-04-15,2026-04-15 13:24:47
+2109159298,1147330,32880,Number of rows removed due to identifier not in Connect database: measurement,,0,91.0,2026-04-15,2026-04-15 12:52:20
+210032231,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:56
+903161152,1147333,32880,Time series row count: condition_occurrence.2009,condition_occurrence.2009,1147333,6.0,2026-04-15,2026-04-15 13:24:35
+2051924550,0,32880,Target vocabulary breakdown: person.ethnicity_concept_id,Ethnicity,0,52.0,2026-04-15,2026-04-15 13:25:00
+2053180245,1147330,32880,Time series row count: measurement.2013,measurement.2013,1147330,838.0,2026-04-15,2026-04-15 13:26:42
+1514080621,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,SNOMED,0,38.0,2026-04-15,2026-04-15 13:25:39
+2068065014,0,32880,Invalid concept_id count: person.race_concept_id,person.race_concept_id,0,0.0,2026-04-15,2026-04-15 13:24:45
+734336603,0,32880,Invalid concept_id count: condition_occurrence.condition_type_concept_id,condition_occurrence.condition_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:06
+1247803631,1147314,32880,Number of rows removed due to identifier not in Connect database: person,,0,2.0,2026-04-15,2026-04-15 12:52:26
+128846877,0,32880,Type concept breakdown: measurement,No matching concept,0,2408.0,2026-04-15,2026-04-15 13:25:07
+678626390,0,32880,Invalid concept_id count: drug_exposure.drug_type_concept_id,drug_exposure.drug_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:22
+1882903975,1147301,32880,Valid table name: procedure_occurrence,valid table name,0,,2026-04-15,2026-04-15 12:45:05
+818223831,1147301,32880,Time series row count: procedure_occurrence.2003,procedure_occurrence.2003,1147301,120.0,2026-04-15,2026-04-15 13:25:58
+143479641,1147301,32880,Time series row count: procedure_occurrence.2021,procedure_occurrence.2021,1147301,1416.0,2026-04-15,2026-04-15 13:26:16
+1977778205,1147330,32880,Time series row count: measurement.2002,measurement.2002,1147330,1347.0,2026-04-15,2026-04-15 13:26:31
+338952285,1147329,32880,Final row count: condition_era,condition_era,1147329,19.0,2026-04-15,2026-04-15 13:24:46
+22415934,32822,32880,Type concept breakdown: condition_occurrence,EHR chief complaint,32822,13.0,2026-04-15,2026-04-15 13:24:46
+10030716,1147339,32880,Time series row count: drug_exposure.2002,drug_exposure.2002,1147339,314.0,2026-04-15,2026-04-15 13:25:00
+1606661580,1147314,32880,Valid table name: person,valid table name,0,,2026-04-15,2026-04-15 12:45:11
+1880687774,0,32880,Standardized to CDM version,5.4,756265,,2026-04-15,2026-04-15 13:24:39
+1607339461,0,32880,Invalid concept_id count: drug_exposure.drug_concept_id,drug_exposure.drug_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:14
+1035160891,0,32880,Type concept breakdown: condition_occurrence,No matching concept,0,79.0,2026-04-15,2026-04-15 13:24:43
+976964357,32817,32880,Type concept breakdown: measurement,EHR,32817,37791.0,2026-04-15,2026-04-15 13:25:06
+280753637,1147032,32880,Valid column name: person.race_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:46
+447591512,756348,32880,Final row count: episode_event,episode_event,756348,0.0,2026-04-15,2026-04-15 13:25:02
+1089591129,0,32880,Source vocabulary breakdown: observation.observation_concept_id,SNOMED,0,233.0,2026-04-15,2026-04-15 13:27:07
+842832086,1147330,32880,Invalid row count: measurement,,0,0.0,2026-04-15,2026-04-15 12:47:45
+1884783148,0,32880,Target vocabulary breakdown: observation.observation_concept_id,SNOMED,0,234.0,2026-04-15,2026-04-15 13:27:00
+962892207,1147304,32880,Time series row count: observation.1997,observation.1997,1147304,1.0,2026-04-15,2026-04-15 13:27:01
+462532975,1147304,32880,Person_id referential integrity violation count: observation,observation,1147304,0.0,2026-04-15,2026-04-15 13:25:05
+516075668,1147321,32880,Date/datetime default value count: observation_period.observation_period_start_date,,0,62.0,2026-04-15,2026-04-15 13:25:12
+200579630,1147480,32880,Valid column name: person.birth_datetime,valid column name,0,,2026-04-15,2026-04-15 12:45:39
+751929900,1147330,32880,Valid row count: measurement,,0,62073.0,2026-04-15,2026-04-15 12:47:43
+417220111,1147339,32880,Vocab harmonization same-table mapping: drug_exposure - 1:1,,0,8456.0,2026-04-15,2026-04-15 13:06:22
+241592140,1147301,32880,Time series row count: procedure_occurrence.1986,procedure_occurrence.1986,1147301,2.0,2026-04-15,2026-04-15 13:25:41
+1788461854,1147304,32880,Time series row count: observation.1995,observation.1995,1147304,1.0,2026-04-15,2026-04-15 13:26:59
+1479341072,1147333,32880,Time series row count: condition_occurrence.2008,condition_occurrence.2008,1147333,2.0,2026-04-15,2026-04-15 13:24:34
+14952211,1147335,32880,Final row count: location,location,1147335,0.0,2026-04-15,2026-04-15 13:25:05
+790052891,1147339,32880,Time series row count: drug_exposure.2012,drug_exposure.2012,1147339,46.0,2026-04-15,2026-04-15 13:25:10
+1125363026,1147301,32880,Time series row count: procedure_occurrence.2020,procedure_occurrence.2020,1147301,933.0,2026-04-15,2026-04-15 13:26:15
+1413360018,1147312,32880,Final row count: death,death,1147312,0.0,2026-04-15,2026-04-15 13:24:51
+1831875480,1147568,32880,Valid column name: measurement.operator_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:37
+1369820586,1147339,32880,Vocab harmonization row disposition: drug_exposure - stayed only,,0,8099.0,2026-04-15,2026-04-15 13:06:24
+1812797117,1147489,32880,Valid column name: procedure_occurrence.visit_occurrence_id,valid column name,0,,2026-04-15,2026-04-15 12:45:34
+982559183,1147330,32880,Time series row count: measurement.1997,measurement.1997,1147330,355.0,2026-04-15,2026-04-15 13:26:26
+527609566,1147333,32880,Time series row count: condition_occurrence.2007,condition_occurrence.2007,1147333,6.0,2026-04-15,2026-04-15 13:24:33
+789508260,1147303,32880,Final row count: drug_era,drug_era,1147303,602.0,2026-04-15,2026-04-15 13:24:57
+450270214,0,32880,Connect participant breakdown: Study status (Verified),"",197316935,76.0,2026-04-15,2026-04-15 12:51:16
+986163481,1147499,32880,Valid column name: drug_exposure.days_supply,valid column name,0,,2026-04-15,2026-04-15 12:45:19
+586913124,1147339,32880,Time series row count: drug_exposure.2003,drug_exposure.2003,1147339,274.0,2026-04-15,2026-04-15 13:25:01
+1778429208,1147366,32880,Final row count: cost,cost,1147366,0.0,2026-04-15,2026-04-15 13:24:49
+429297721,1147330,32880,Vocab harmonization row disposition: measurement - stayed and copied,,0,1.0,2026-04-15,2026-04-15 13:06:27
+1167334096,1147301,32880,Time series row count: procedure_occurrence.1999,procedure_occurrence.1999,1147301,49.0,2026-04-15,2026-04-15 13:25:54
+397483954,1147333,32880,Time series row count: condition_occurrence.2020,condition_occurrence.2020,1147333,2.0,2026-04-15,2026-04-15 13:24:40
+1880628392,1147325,32880,Date/datetime default value count: cdm_source.cdm_release_date,,0,0.0,2026-04-15,2026-04-15 13:25:27
+1413343351,0,32880,Connect participant breakdown: Study status (Not Yet Verified),1096863499|1308855384|1583484222|1678854196|2336226814|3176407383|3360566696|3708425699|4022781120|4385422891|4736864485|5068760660|5469340958|5736066830|6319094863|6383538001|6557152441|6862380488|6917153929|7107627131|7691613290|7887473571|9326943606|9385744222|9775576119,875007964,25.0,2026-04-15,2026-04-15 12:51:15
+1138787827,1147301,32880,Time series row count: procedure_occurrence.1994,procedure_occurrence.1994,1147301,13.0,2026-04-15,2026-04-15 13:25:49
+780414771,1146954,32880,Valid column name: concept.invalid_reason,valid column name,0,,2026-04-15,2026-04-15 12:45:15
+113316559,0,32880,Invalid concept_id count: measurement.measurement_concept_id,measurement.measurement_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:45
+446066504,1147301,32880,Time series row count: procedure_occurrence.1971,procedure_occurrence.1971,1147301,2.0,2026-04-15,2026-04-15 13:25:26
+1807946322,0,32880,Invalid concept_id count: procedure_occurrence.modifier_concept_id,procedure_occurrence.modifier_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:32
+1314322318,1147339,32880,Vocab harmonization table transition: drug_exposure to drug_exposure,,0,8456.0,2026-04-15,2026-04-15 13:06:16
+315673765,1147573,32880,Valid column name: measurement.unit_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:53
+2127085354,1147507,32880,Valid column name: drug_exposure.quantity,valid column name,0,,2026-04-15,2026-04-15 12:45:29
+99414044,1147329,32880,Person_id referential integrity violation count: condition_era,condition_era,1147329,0.0,2026-04-15,2026-04-15 13:25:14
+1387844513,1147304,32880,Time series row count: observation.2024,observation.2024,1147304,10.0,2026-04-15,2026-04-15 13:27:25
+183310820,1147301,32880,Number of rows removed due to missing person_id values: procedure_occurrence,,0,1.0,2026-04-15,2026-04-15 12:52:25
+1854675515,0,32880,Source vocabulary breakdown: observation.unit_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:27:24
+707898046,0,32880,Target vocabulary breakdown: drug_exposure.route_concept_id,None,0,8494.0,2026-04-15,2026-04-15 13:25:44
+1469942454,1147301,32880,Vocab harmonization status: procedure_occurrence - source_concept_id mapped to new target,,0,170.0,2026-04-15,2026-04-15 13:06:27
+486677790,1147301,32880,Time series row count: procedure_occurrence.1981,procedure_occurrence.1981,1147301,1.0,2026-04-15,2026-04-15 13:25:36
+547590464,1147339,32880,Time series row count: drug_exposure.1995,drug_exposure.1995,1147339,12.0,2026-04-15,2026-04-15 13:24:53
+1797889713,1147301,32880,Time series row count: procedure_occurrence.1974,procedure_occurrence.1974,1147301,1.0,2026-04-15,2026-04-15 13:25:29
+1848677291,1147321,32880,Person_id referential integrity violation count: observation_period,observation_period,1147321,0.0,2026-04-15,2026-04-15 13:24:42
+1771238828,1147301,32880,Vocab harmonization status: procedure_occurrence - domain check,,0,9943.0,2026-04-15,2026-04-15 13:06:25
+157551429,1147330,32880,Time series row count: measurement.1998,measurement.1998,1147330,449.0,2026-04-15,2026-04-15 13:26:27
+2023622978,1147140,32880,Valid column name: measurement.measurement_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:31
+330645729,1147575,32880,Valid column name: measurement.value_as_number,valid column name,0,,2026-04-15,2026-04-15 12:45:24
+259427690,0,32880,Delivery processing date,2026-04-15,0,,2026-04-15,2026-04-15 13:24:27
+1156944658,1147330,32880,Time series row count: measurement.2018,measurement.2018,1147330,2783.0,2026-04-15,2026-04-15 13:26:47
+1744239424,1147325,32880,Final row count: cdm_source,cdm_source,1147325,1.0,2026-04-15,2026-04-15 13:24:34
+1938765935,0,32880,Target vocabulary breakdown: measurement.unit_concept_id,UCUM,0,25931.0,2026-04-15,2026-04-15 13:26:48
+234178702,0,32880,Source vocabulary breakdown: measurement.unit_concept_id,None,0,40231.0,2026-04-15,2026-04-15 13:26:53
+1928927889,1147330,32880,Number of rows removed due to missing person_id values: measurement,,0,0.0,2026-04-15,2026-04-15 12:52:18
+953138749,0,32880,Invalid concept_id count: observation.value_as_concept_id,observation.value_as_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:17
+474613447,1147094,32880,Valid column name: drug_exposure.drug_exposure_id,valid column name,0,,2026-04-15,2026-04-15 12:45:15
+1910852833,0,32880,Source vocabulary breakdown: observation.value_as_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:27:14
+436070425,1147339,32880,Time series row count: drug_exposure.2011,drug_exposure.2011,1147339,18.0,2026-04-15,2026-04-15 13:25:09
+461980276,1147041,32880,Valid column name: person.race_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:45
+647656973,1147558,32880,Valid column name: drug_exposure.drug_exposure_start_datetime,valid column name,0,,2026-04-15,2026-04-15 12:45:38
+1310800417,0,32880,Target vocabulary breakdown: observation.qualifier_concept_id,None,0,234.0,2026-04-15,2026-04-15 13:27:18
+190538455,1147301,32880,Time series row count: procedure_occurrence.2015,procedure_occurrence.2015,1147301,819.0,2026-04-15,2026-04-15 13:26:10
+1261750128,0,32880,Invalid concept_id count: observation.unit_concept_id,observation.unit_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:23
+1195207970,1146950,32880,Valid column name: concept.standard_concept,valid column name,0,,2026-04-15,2026-04-15 12:45:13
+690947278,1147301,32880,Time series row count: procedure_occurrence.2016,procedure_occurrence.2016,1147301,782.0,2026-04-15,2026-04-15 13:26:11
+1444227566,1147095,32880,Valid column name: drug_exposure.person_id,valid column name,0,,2026-04-15,2026-04-15 12:45:32
+1540859810,1147339,32880,Time series row count: drug_exposure.2010,drug_exposure.2010,1147339,34.0,2026-04-15,2026-04-15 13:25:08
+1873329196,0,32880,Invalid column name: measurement.src_id,invalid column name,0,,2026-04-15,2026-04-15 12:45:55
+226475987,0,32880,Target vocabulary breakdown: person.gender_concept_id,Gender,0,62.0,2026-04-15,2026-04-15 13:24:35
+32059591,1147301,32880,Time series row count: procedure_occurrence.1976,procedure_occurrence.1976,1147301,1.0,2026-04-15,2026-04-15 13:25:31
+1310144703,1147301,32880,Time series row count: procedure_occurrence.2023,procedure_occurrence.2023,1147301,845.0,2026-04-15,2026-04-15 13:26:18
+945671856,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,Read,0,1.0,2026-04-15,2026-04-15 13:26:26
+548205890,1147339,32880,Time series row count: drug_exposure.2006,drug_exposure.2006,1147339,28.0,2026-04-15,2026-04-15 13:25:04
+1064474421,1147571,32880,Valid column name: measurement.range_low,valid column name,0,,2026-04-15,2026-04-15 12:45:30
+119584699,1147026,32880,Valid column name: person.person_id,valid column name,0,,2026-04-15,2026-04-15 12:45:30
+328268248,1147339,32880,Time series row count: drug_exposure.1989,drug_exposure.1989,1147339,6.0,2026-04-15,2026-04-15 13:24:50
+449364379,1147304,32880,Time series row count: observation.2011,observation.2011,1147304,1.0,2026-04-15,2026-04-15 13:27:11
+1776486637,1147301,32880,Time series row count: procedure_occurrence.1990,procedure_occurrence.1990,1147301,6.0,2026-04-15,2026-04-15 13:25:45
+870473945,1147509,32880,Valid column name: drug_exposure.route_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:39
+240415535,0,32880,Delivered vocabulary version,No vocabulary file provided,0,,2026-04-15,2026-04-15 13:24:37
+139878818,1147304,32880,Time series row count: observation.1992,observation.1992,1147304,1.0,2026-04-15,2026-04-15 13:26:56
+1275246423,0,32880,Invalid concept_id count: drug_exposure.route_concept_id,drug_exposure.route_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:17
+30785482,1147570,32880,Valid column name: measurement.range_high,valid column name,0,,2026-04-15,2026-04-15 12:45:39
+1404091725,1147339,32880,Time series row count: drug_exposure.1970,drug_exposure.1970,1147339,4.0,2026-04-15,2026-04-15 13:24:46
+2071497486,1147636,32880,Final row count: metadata,metadata,1147636,0.0,2026-04-15,2026-04-15 13:25:08
+421431244,1147454,32880,Valid column name: drug_exposure.drug_exposure_end_datetime,valid column name,0,,2026-04-15,2026-04-15 12:45:26
+504769738,1147339,32880,Time series row count: drug_exposure.1998,drug_exposure.1998,1147339,100.0,2026-04-15,2026-04-15 13:24:56
+807480698,1147330,32880,Time series row count: measurement.2017,measurement.2017,1147330,2481.0,2026-04-15,2026-04-15 13:26:46
+1140543662,1147339,32880,Time series row count: drug_exposure.2013,drug_exposure.2013,1147339,348.0,2026-04-15,2026-04-15 13:25:12
+1387767965,1147304,32880,Time series row count: observation.2022,observation.2022,1147304,23.0,2026-04-15,2026-04-15 13:27:23
+1333646934,0,32880,Source vocabulary breakdown: drug_exposure.route_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:25:45
+292629514,1147321,32880,Date/datetime default value count: observation_period.observation_period_end_date,,0,0.0,2026-04-15,2026-04-15 13:25:14
+1281625389,0,32880,Connect participant breakdown: Data destruction status (Yes),2537423491|2758935713|3474680828|5512983871|5525659497|5773487914|7956451897|7997689599|8010150172,353358909,9.0,2026-04-15,2026-04-15 12:51:28
+266690463,1147301,32880,Time series row count: procedure_occurrence.1997,procedure_occurrence.1997,1147301,40.0,2026-04-15,2026-04-15 13:25:52
+511283493,1147578,32880,Valid column name: measurement.visit_occurrence_id,valid column name,0,,2026-04-15,2026-04-15 12:45:50
+1434966926,1147301,32880,Number of rows removed due to identifier not in Connect database: procedure_occurrence,,0,24.0,2026-04-15,2026-04-15 12:52:27
+1084295576,1147339,32880,Number of rows removed due to missing person_id values: drug_exposure,,0,0.0,2026-04-15,2026-04-15 12:52:12
+698229109,1147301,32880,Date/datetime default value count: procedure_occurrence.procedure_end_datetime,,0,0.0,2026-04-15,2026-04-15 13:25:00
+1267677493,1147039,32880,Valid column name: person.gender_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:43
+959993994,1147330,32880,Time series row count: measurement.1995,measurement.1995,1147330,47.0,2026-04-15,2026-04-15 13:26:24
+682307120,1147330,32880,Time series row count: measurement.2022,measurement.2022,1147330,3347.0,2026-04-15,2026-04-15 13:26:51
+1274554670,1147141,32880,Valid column name: measurement.measurement_date,valid column name,0,,2026-04-15,2026-04-15 12:45:18
+831933335,1147301,32880,Invalid row count: procedure_occurrence,,0,3.0,2026-04-15,2026-04-15 12:47:52
+1974089400,1147301,32880,Time series row count: procedure_occurrence.2001,procedure_occurrence.2001,1147301,89.0,2026-04-15,2026-04-15 13:25:56
+1009196977,1147314,32880,Date/datetime default value count: person.birth_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:32
+360602686,1147339,32880,Person_id referential integrity violation count: drug_exposure,drug_exposure,1147339,98.0,2026-04-15,2026-04-15 13:24:52
+382889877,1147330,32880,Vocab harmonization same-table mapping: measurement - 1:2,,0,2.0,2026-04-15,2026-04-15 13:06:25
+1547225360,1147304,32880,Time series row count: observation.2012,observation.2012,1147304,3.0,2026-04-15,2026-04-15 13:27:12
+41018978,0,32880,Number of eligible Connect patients not in delivery,1004328098|1010030350|1041773275|1042002451|1097792434|1118573492|1138446254|1190729520|1198218471|1203567973|1239044520|1277595627|1278662256|1292483078|1320809529|1324236832|1358857263|1363111740|1378902740|1381343059|1470082748|1520977047|1546693338|1547988583|1550186475|1562131870|1589052104|1699657088|1712069473|1712701516|1716850532|1722799018|1764603313|1795062944|1815251372|1816036096|1828880183|1845811919|1856224911|1860119383|1865230347|1886268550|1913877484|1979448209|2027771809|2040161852|2063687173|2073429309|2080858442|2084954333|2144496991|2192814270|2193982916|2258801332|2298308296|2309187992|2312805157|2371128442|2378555069|2386230910|2396830079|2403656584|2436508208|2440402663|2445650966|2448620667|2474535182|2484534915|2504869446|2519457683|2547971085|2569193631|2578325151|2580144054|2584065759|2596288027|2600856307|2694463805|2773244426|2774099288|2774887960|2788485402|2804675820|2858348134|2926436672|2976677987|2987887066|2988662029|3016297304|3052249126|3058090530|3111171032|3117681537|3131923248|3138953725|3221903400|3311152284|3336822035|3350960216|3365259882|3368002841|3396361062|3403989698|3407276085|3436140231|3455042782|3460757811|3519230792|3574611614|3577696952|3595949470|3603305643|3673857976|3679066448|3689100655|3726090758|3726729788|3742146768|3754136822|3766743637|3776425387|3803022177|3808880673|3813598584|3818867448|3853024775|3860352953|3871171542|4005036732|4028521705|4041719501|4056588521|4079659243|4082746033|4092758189|4148884445|4160494454|4187416960|4194104336|4249714142|4258498117|4260244384|4263493293|4263514929|4278638706|4292054738|4303478728|4310953134|4312415544|4326229684|4333279265|4335003653|4354798712|4364066572|4383252942|4437820761|4451328790|4529149149|4531118041|4626667157|4646135888|4658512308|4705597272|4710262822|4715014373|4746105364|4776322496|4800072280|4871360063|4896229019|4898921842|4913714774|4919185484|4977418399|4985334252|5047382961|5077470614|5107969890|5116483370|5161330250|5162109299|5165111362|5178627784|5203672476|5212066883|5218938966|5240888855|5247818535|5250058705|5324522388|5330611180|5353526729|5381635789|5423453096|5425325572|5425859269|5445358016|5522253145|5523942811|5578338538|5596951510|5616023509|5641637221|5645673113|5668319520|5673261462|5674137289|5684582816|5686188670|5695676839|5734687129|5739359781|5746637824|5772421724|5780966053|5805193818|5835721286|5848273023|5904060072|5919747547|5973504016|5998598948|6019020541|6064624777|6088271004|6125002748|6156011575|6186942837|6210496366|6250137577|6309403810|6353266534|6367113153|6457834379|6490501297|6501229511|6504189607|6545210140|6609310763|6613005780|6622292760|6627087043|6629859900|6657279295|6659017574|6703298679|6739234547|6746084305|6759772253|6761062284|6784219494|6792847852|6827054620|6849748520|6852513423|6918036479|6920384032|6928034577|6967494997|6977936572|6989627676|7008668038|7030177309|7033757344|7058170452|7067843335|7068474556|7075411461|7109493805|7112479646|7178666083|7190360630|7221835553|7223422145|7246200076|7259996963|7267077233|7282846047|7283162127|7363634285|7363964727|7375472862|7377034640|7406523513|7453359181|7455374362|7478044625|7509565204|7518058662|7531939822|7563355327|7574314526|7664364628|7668598073|7674751841|7677179497|7730161977|7735533526|7750528362|7761830383|7858709997|7875055607|7886636946|7892136642|7906783510|7910304352|7933925221|7955848792|7958545760|8006945997|8024105526|8062848248|8149654778|8156259673|8189353704|8203717026|8225059492|8250509533|8253054665|8254485551|8300989360|8310405466|8320540876|8345814872|8346691057|8435052300|8445180135|8474793540|8496773595|8512765497|8536688301|8575003849|8576196328|8598257138|8650332928|8651478149|8653053211|8668595609|8669376736|8687400603|8698239740|8701654673|8732721707|8736013792|8762499295|8786700366|8808599718|8826293907|8921372455|8927906989|8956423871|8962405130|8973094744|8982955553|8995612420|9018972750|9040469842|9096581719|9104060150|9133446820|9133685927|9138811627|9162329763|9179635695|9237544941|9283824699|9358420545|9416157521|9416238817|9423605027|9432733572|9437867886|9472526210|9479028828|9515024209|9520707056|9522931059|9523832537|9532748404|9547587392|9553341709|9587233591|9591584447|9608347770|9744003770|9824541704|9843965322|9854266986|9873327250|9901349382|9932417443|9937359264|9963333878|9990219326,0,394.0,2026-04-15,2026-04-15 12:51:31
+1253289507,1147304,32880,Time series row count: observation.1998,observation.1998,1147304,1.0,2026-04-15,2026-04-15 13:27:02
+1945063701,1147030,32880,Valid column name: person.day_of_birth,valid column name,0,,2026-04-15,2026-04-15 12:45:28
+1864253018,1147036,32880,Valid column name: person.care_site_id,valid column name,0,,2026-04-15,2026-04-15 12:45:41
+250434260,1147339,32880,Time series row count: drug_exposure.1975,drug_exposure.1975,1147339,2.0,2026-04-15,2026-04-15 13:24:48
+396759302,1147311,32880,Final row count: concept,concept,1147311,6140322.0,2026-04-15,2026-04-15 13:24:39
+1832211052,0,32880,Invalid column name: drug_exposure.src_id,invalid column name,0,,2026-04-15,2026-04-15 12:45:40
+2107314315,1147043,32880,Valid column name: person.ethnicity_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:50
+144160235,1147304,32880,Time series row count: observation.1989,observation.1989,1147304,1.0,2026-04-15,2026-04-15 13:26:55
+1411862939,1147339,32880,Time series row count: drug_exposure.2014,drug_exposure.2014,1147339,616.0,2026-04-15,2026-04-15 13:25:13
+488935746,0,32880,Source vocabulary breakdown: observation.observation_concept_id,Read,0,1.0,2026-04-15,2026-04-15 13:27:08
+1512350969,1147339,32880,Time series row count: drug_exposure.2024,drug_exposure.2024,1147339,296.0,2026-04-15,2026-04-15 13:25:23
+1989220780,1147314,32880,Invalid row count: person,,0,2.0,2026-04-15,2026-04-15 12:47:46
+2119450627,0,32880,Pipeline file processor version,05eb25838b6003dff5e72f03d6d2b820765dae60,0,,2026-04-15,2026-04-15 13:24:32
+1072630833,1147311,32880,Date/datetime default value count: concept.valid_end_date,,0,6140322.0,2026-04-15,2026-04-15 13:25:31
+297778687,0,32880,Source vocabulary breakdown: procedure_occurrence.procedure_concept_id,SNOMED,0,9730.0,2026-04-15,2026-04-15 13:26:01
+728680458,1147339,32880,Time series row count: drug_exposure.1993,drug_exposure.1993,1147339,16.0,2026-04-15,2026-04-15 13:24:51
+2117457910,1147304,32880,Time series row count: observation.2018,observation.2018,1147304,16.0,2026-04-15,2026-04-15 13:27:19
+6135078,1147339,32880,Final row count: drug_exposure,drug_exposure,1147339,8494.0,2026-04-15,2026-04-15 13:24:59
+306308920,1147330,32880,Time series row count: measurement.2023,measurement.2023,1147330,3917.0,2026-04-15,2026-04-15 13:26:52
+290824795,1147304,32880,Time series row count: observation.2023,observation.2023,1147304,15.0,2026-04-15,2026-04-15 13:27:24
+1267955342,1147574,32880,Valid column name: measurement.value_as_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:20
+1674276101,1147301,32880,Time series row count: procedure_occurrence.1982,procedure_occurrence.1982,1147301,1.0,2026-04-15,2026-04-15 13:25:37
+1008963910,1147330,32880,Vocab harmonization table transition: measurement to measurement,,0,40227.0,2026-04-15,2026-04-15 13:06:16
+703109876,1147082,32880,Valid column name: procedure_occurrence.procedure_occurrence_id,valid column name,0,,2026-04-15,2026-04-15 12:45:18
+2112199204,1147330,32880,Time series row count: measurement.2007,measurement.2007,1147330,83.0,2026-04-15,2026-04-15 13:26:36
+701801927,1147314,32880,Final row count: person,person,1147314,62.0,2026-04-15,2026-04-15 13:25:19
+199931261,1147611,32880,Valid column name: procedure_occurrence.procedure_datetime,valid column name,0,,2026-04-15,2026-04-15 12:45:24
+1893798232,1147339,32880,Number of rows removed due to identifier not in Connect database: drug_exposure,,0,46.0,2026-04-15,2026-04-15 12:52:13
+2067043225,1147304,32880,Date/datetime default value count: observation.observation_datetime,,0,0.0,2026-04-15,2026-04-15 13:25:09
+465887792,0,32880,Source vocabulary breakdown: measurement.measurement_concept_id,LOINC,0,35411.0,2026-04-15,2026-04-15 13:26:23
+594608487,0,32880,Type concept breakdown: observation,No matching concept,0,221.0,2026-04-15,2026-04-15 13:25:14
+941273395,1147311,32880,Date/datetime default value count: concept.valid_start_date,,0,6140322.0,2026-04-15,2026-04-15 13:25:29
+961659343,1147333,32880,Time series row count: condition_occurrence.2021,condition_occurrence.2021,1147333,30.0,2026-04-15,2026-04-15 13:24:41
+2125798985,1147330,32880,Time series row count: measurement.2024,measurement.2024,1147330,1526.0,2026-04-15,2026-04-15 13:26:53
+830290688,0,32880,Target vocabulary breakdown: measurement.measurement_concept_id,LOINC,0,35411.0,2026-04-15,2026-04-15 13:26:15
+991759928,1147610,32880,Valid column name: procedure_occurrence.modifier_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:16
+373693938,1147339,32880,Time series row count: drug_exposure.2022,drug_exposure.2022,1147339,674.0,2026-04-15,2026-04-15 13:25:21
+2045059010,1147330,32880,Time series row count: measurement.2011,measurement.2011,1147330,76.0,2026-04-15,2026-04-15 13:26:40
+1866531976,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,SNOMED,0,9718.0,2026-04-15,2026-04-15 13:25:52
+1553395346,1147339,32880,Time series row count: drug_exposure.1999,drug_exposure.1999,1147339,118.0,2026-04-15,2026-04-15 13:24:57
+1091274639,1147327,32880,Final row count: payer_plan_period,payer_plan_period,1147327,0.0,2026-04-15,2026-04-15 13:25:16
+1836922820,1147314,32880,Number of rows removed due to missing person_id values: person,,0,3.0,2026-04-15,2026-04-15 12:52:24
+1019941785,1147339,32880,Valid row count: drug_exposure,,0,12690.0,2026-04-15,2026-04-15 12:47:46
+361704068,1147339,32880,Invalid row count: drug_exposure,,0,0.0,2026-04-15,2026-04-15 12:47:48
+863312274,1147301,32880,Time series row count: procedure_occurrence.1998,procedure_occurrence.1998,1147301,31.0,2026-04-15,2026-04-15 13:25:53
+1971476427,1147301,32880,Time series row count: procedure_occurrence.1975,procedure_occurrence.1975,1147301,3.0,2026-04-15,2026-04-15 13:25:30
+79335960,1146953,32880,Valid column name: concept.valid_end_date,valid column name,0,,2026-04-15,2026-04-15 12:45:27
+628982308,1146946,32880,Valid column name: concept.concept_name,valid column name,0,,2026-04-15,2026-04-15 12:45:18
+1162654683,1147301,32880,Time series row count: procedure_occurrence.2011,procedure_occurrence.2011,1147301,27.0,2026-04-15,2026-04-15 13:26:06
+1969461013,1147613,32880,Valid column name: procedure_occurrence.procedure_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:30
+1750334237,1147314,32880,Number of persons with missing person_id,,0,3.0,2026-04-15,2026-04-15 12:52:23
+560347875,1147333,32880,Date/datetime default value count: condition_occurrence.condition_start_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:36
+2103950965,1147339,32880,Valid table name: drug_exposure,valid table name,0,,2026-04-15,2026-04-15 12:45:07
+30980356,1147034,32880,Valid column name: person.location_id,valid column name,0,,2026-04-15,2026-04-15 12:45:51
+1969459654,1147301,32880,Time series row count: procedure_occurrence.1996,procedure_occurrence.1996,1147301,17.0,2026-04-15,2026-04-15 13:25:51
+721908626,1147301,32880,Time series row count: procedure_occurrence.2010,procedure_occurrence.2010,1147301,23.0,2026-04-15,2026-04-15 13:26:05
+379947727,1147339,32880,Time series row count: drug_exposure.2000,drug_exposure.2000,1147339,94.0,2026-04-15,2026-04-15 13:24:58
+379085537,1147330,32880,Time series row count: measurement.2009,measurement.2009,1147330,153.0,2026-04-15,2026-04-15 13:26:38
+705888527,1147029,32880,Valid column name: person.month_of_birth,valid column name,0,,2026-04-15,2026-04-15 12:45:22
+1363934804,32822,32880,Type concept breakdown: measurement,EHR chief complaint,32822,32.0,2026-04-15,2026-04-15 13:25:08
+594635088,1147333,32880,Time series row count: condition_occurrence.2006,condition_occurrence.2006,1147333,2.0,2026-04-15,2026-04-15 13:24:31
+1909410612,1147304,32880,Time series row count: observation.2009,observation.2009,1147304,1.0,2026-04-15,2026-04-15 13:27:10
+1889330806,0,32880,Invalid concept_id count: procedure_occurrence.procedure_concept_id,procedure_occurrence.procedure_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:29
+1335245799,1147337,32880,Final row count: drug_strength,drug_strength,1147337,0.0,2026-04-15,2026-04-15 13:25:00
+858121394,32817,32880,Type concept breakdown: procedure_occurrence,EHR,32817,4363.0,2026-04-15,2026-04-15 13:25:00
+958835610,1147330,32880,Vocab harmonization status: measurement - domain check,,0,39730.0,2026-04-15,2026-04-15 13:06:20
+1610132772,1147304,32880,Time series row count: observation.1996,observation.1996,1147304,1.0,2026-04-15,2026-04-15 13:27:00
+2080617620,1147330,32880,Time series row count: measurement.1996,measurement.1996,1147330,60.0,2026-04-15,2026-04-15 13:26:25
+1811565678,1147339,32880,Time series row count: drug_exposure.2018,drug_exposure.2018,1147339,374.0,2026-04-15,2026-04-15 13:25:17
+1243129002,1147485,32880,Valid column name: procedure_occurrence.procedure_type_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:36
+2135847884,1147301,32880,Time series row count: procedure_occurrence.1985,procedure_occurrence.1985,1147301,1.0,2026-04-15,2026-04-15 13:25:40
+2135727331,0,32880,Connect participant breakdown: HIPAA revoked status (Yes),2529339904|2537423491|2758935713|3474680828|3529645229|5512983871|5525659497|5773487914|7691613290|7777006201|7806989704|7956451897|7997689599|8010150172|8239341771,353358909,15.0,2026-04-15,2026-04-15 12:51:20
+1075460776,1147542,32880,Final row count: note_nlp,note_nlp,1147542,0.0,2026-04-15,2026-04-15 13:25:11
+1220701457,1147035,32880,Valid column name: person.provider_id,valid column name,0,,2026-04-15,2026-04-15 12:45:35
+1019372133,1147027,32880,Valid column name: person.gender_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:20
+1500772085,0,32880,Invalid column name: person.connect_id,invalid column name,0,,2026-04-15,2026-04-15 12:45:55
+185513376,0,32880,Invalid concept_id count: procedure_occurrence.procedure_type_concept_id,procedure_occurrence.procedure_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:38
+2098364140,1147318,32880,Final row count: vocabulary,vocabulary,1147318,0.0,2026-04-15,2026-04-15 13:25:29
+1606843787,1147333,32880,Time series row count: condition_occurrence.2015,condition_occurrence.2015,1147333,13.0,2026-04-15,2026-04-15 13:24:37
+1857931189,0,32880,Type concept breakdown: drug_exposure,No matching concept,0,4247.0,2026-04-15,2026-04-15 13:24:52
+1062506017,0,32880,Target vocabulary breakdown: person.ethnicity_concept_id,None,0,10.0,2026-04-15,2026-04-15 13:25:02
+896696757,1147301,32880,Time series row count: procedure_occurrence.2002,procedure_occurrence.2002,1147301,129.0,2026-04-15,2026-04-15 13:25:57
+2021556674,0,32880,Invalid concept_id count: person.ethnicity_concept_id,person.ethnicity_concept_id,0,0.0,2026-04-15,2026-04-15 13:24:52
+705655808,0,32880,Source vocabulary breakdown: drug_exposure.drug_concept_id,RxNorm,0,6668.0,2026-04-15,2026-04-15 13:25:37
+909650464,0,32880,Source vocabulary breakdown: condition_occurrence.condition_concept_id,SNOMED,0,107.0,2026-04-15,2026-04-15 13:25:17
+1287258406,1147301,32880,Number of rows removed due to Connect exclusion rules: procedure_occurrence,,0,5613.0,2026-04-15,2026-04-15 12:52:28
+841491860,1147301,32880,Time series row count: procedure_occurrence.1995,procedure_occurrence.1995,1147301,9.0,2026-04-15,2026-04-15 13:25:50
+304555213,0,32880,Target vocabulary breakdown: procedure_occurrence.modifier_concept_id,None,0,9731.0,2026-04-15,2026-04-15 13:26:07
+1746224490,1147330,32880,Final row count: measurement,measurement,1147330,40231.0,2026-04-15,2026-04-15 13:25:07
+194975452,0,32880,Target vocabulary breakdown: drug_exposure.drug_concept_id,RxNorm,0,6842.0,2026-04-15,2026-04-15 13:25:29
+1815814295,0,32880,Connect participant breakdown: HIPAA revoked status (No),"",104430631,88.0,2026-04-15,2026-04-15 12:51:19
+473846178,1147612,32880,Valid column name: procedure_occurrence.procedure_source_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:22
+1396502672,0,32880,Invalid concept_id count: condition_occurrence.condition_status_concept_id,condition_occurrence.condition_status_concept_id,0,0.0,2026-04-15,2026-04-15 13:25:01
+864334191,1147330,32880,Number of rows removed due to Connect exclusion rules: measurement,,0,21756.0,2026-04-15,2026-04-15 12:52:22
+645558953,1147339,32880,Time series row count: drug_exposure.2009,drug_exposure.2009,1147339,48.0,2026-04-15,2026-04-15 13:25:07
+1126652458,0,32880,Source vocabulary breakdown: person.ethnicity_concept_id,None,0,62.0,2026-04-15,2026-04-15 13:25:06
+1205676030,1147304,32880,Time series row count: observation.2003,observation.2003,1147304,4.0,2026-04-15,2026-04-15 13:27:07
+547151190,0,32880,Source vocabulary breakdown: observation.qualifier_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:27:19
+1269756966,1147330,32880,Vocab harmonization status: measurement - existing non-standard target remapped to standard code,,0,5.0,2026-04-15,2026-04-15 13:06:21
+863007026,1147301,32880,Time series row count: procedure_occurrence.1991,procedure_occurrence.1991,1147301,6.0,2026-04-15,2026-04-15 13:25:46
+1000503479,1147301,32880,Vocab harmonization same-table mapping: procedure_occurrence - 1:1,,0,9731.0,2026-04-15,2026-04-15 13:06:29
+1586154185,0,32880,Source vocabulary breakdown: measurement.value_as_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:26:41
+946460033,1147038,32880,Valid column name: person.gender_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:26
+1517642651,1147569,32880,Valid column name: measurement.provider_id,valid column name,0,,2026-04-15,2026-04-15 12:45:28
+292174131,0,32880,Target vocabulary breakdown: measurement.measurement_concept_id,SNOMED,0,4820.0,2026-04-15,2026-04-15 13:26:16
+1525052068,1147033,32880,Valid column name: person.ethnicity_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:24
+77616995,1147303,32880,Date/datetime default value count: drug_era.drug_era_start_date,,0,0.0,2026-04-15,2026-04-15 13:25:20
+1896498617,1147330,32880,Date/datetime default value count: measurement.measurement_datetime,,0,0.0,2026-04-15,2026-04-15 13:25:05
+897436585,1147305,32880,Final row count: device_exposure,device_exposure,1147305,0.0,2026-04-15,2026-04-15 13:24:52
+2033509764,1147614,32880,Missing column: procedure_occurrence.visit_detail_id,missing column,0,,2026-04-15,2026-04-15 12:45:42
+1053295901,1147306,32880,Final row count: specimen,specimen,1147306,0.0,2026-04-15,2026-04-15 13:25:26
+1419731488,1147301,32880,Time series row count: procedure_occurrence.2007,procedure_occurrence.2007,1147301,30.0,2026-04-15,2026-04-15 13:26:02
+1573425246,0,32880,Target vocabulary breakdown: procedure_occurrence.procedure_concept_id,None,0,12.0,2026-04-15,2026-04-15 13:25:53
+82350090,1147301,32880,Time series row count: procedure_occurrence.2013,procedure_occurrence.2013,1147301,163.0,2026-04-15,2026-04-15 13:26:08
+1070074199,1147481,32880,Valid column name: procedure_occurrence.modifier_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:14
+78082897,1147085,32880,Valid column name: procedure_occurrence.procedure_date,valid column name,0,,2026-04-15,2026-04-15 12:45:28
+1720562699,0,32880,Target vocabulary breakdown: measurement.value_as_concept_id,None,0,38626.0,2026-04-15,2026-04-15 13:26:39
+1053037960,1147097,32880,Valid column name: drug_exposure.drug_exposure_start_date,valid column name,0,,2026-04-15,2026-04-15 12:45:30
+1131156017,1147333,32880,Time series row count: condition_occurrence.2022,condition_occurrence.2022,1147333,2.0,2026-04-15,2026-04-15 13:24:42
+1130298036,1147304,32880,Time series row count: observation.1993,observation.1993,1147304,2.0,2026-04-15,2026-04-15 13:26:57
+1528308477,1147330,32880,Time series row count: measurement.2015,measurement.2015,1147330,2932.0,2026-04-15,2026-04-15 13:26:44
+1065563681,32817,32880,Type concept breakdown: condition_occurrence,EHR,32817,15.0,2026-04-15,2026-04-15 13:24:45
+958488953,1147333,32880,Time series row count: condition_occurrence.2017,condition_occurrence.2017,1147333,15.0,2026-04-15,2026-04-15 13:24:38
+2045266404,1147339,32880,Date/datetime default value count: drug_exposure.drug_exposure_end_datetime,,0,0.0,2026-04-15,2026-04-15 13:24:50
+1834600912,1147301,32880,Time series row count: procedure_occurrence.2024,procedure_occurrence.2024,1147301,369.0,2026-04-15,2026-04-15 13:26:19
+594165987,0,32880,Source vocabulary breakdown: condition_occurrence.condition_status_concept_id,Source vocabulary not captured in OMOP,0,,2026-04-15,2026-04-15 13:25:22
+121440890,1147330,32880,Time series row count: measurement.2014,measurement.2014,1147330,1456.0,2026-04-15,2026-04-15 13:26:43
+510770473,1147511,32880,Valid column name: drug_exposure.sig,valid column name,0,,2026-04-15,2026-04-15 12:45:17
+421490386,1147486,32880,Valid column name: procedure_occurrence.provider_id,valid column name,0,,2026-04-15,2026-04-15 12:45:26
+1882453790,1147560,32880,Valid column name: drug_exposure.drug_source_value,valid column name,0,,2026-04-15,2026-04-15 12:45:37
+495896655,0,32880,Invalid concept_id count: observation.observation_type_concept_id,observation.observation_type_concept_id,0,0.0,2026-04-15,2026-04-15 13:26:28
+352691404,1147567,32880,Valid column name: measurement.measurement_type_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:45
+2082635765,1147572,32880,Valid column name: measurement.unit_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:26
+1378870451,0,32880,Target vocabulary breakdown: condition_occurrence.condition_concept_id,SNOMED,0,107.0,2026-04-15,2026-04-15 13:25:11
+995422199,1147314,32880,Valid row count: person,,0,108.0,2026-04-15,2026-04-15 12:47:43
+69335377,1147301,32880,Vocab harmonization table transition: procedure_occurrence to measurement,,0,4.0,2026-04-15,2026-04-15 13:06:20
+970864694,1147301,32880,Time series row count: procedure_occurrence.2022,procedure_occurrence.2022,1147301,939.0,2026-04-15,2026-04-15 13:26:17
+401392534,1147301,32880,Vocab harmonization table transition: procedure_occurrence to condition_occurrence,,0,107.0,2026-04-15,2026-04-15 13:06:17
+471334885,1147310,32880,Final row count: domain,domain,1147310,0.0,2026-04-15,2026-04-15 13:24:53
+53071026,1147311,32880,Valid table name: concept,valid table name,0,,2026-04-15,2026-04-15 12:45:08
+1569386944,1147333,32880,Date/datetime default value count: condition_occurrence.condition_start_date,,0,0.0,2026-04-15,2026-04-15 13:24:34
+1359183015,1147084,32880,Valid column name: procedure_occurrence.procedure_concept_id,valid column name,0,,2026-04-15,2026-04-15 12:45:37
+942010214,1147317,32880,Final row count: note,note,1147317,0.0,2026-04-15,2026-04-15 13:25:09
+176928086,1147339,32880,Time series row count: drug_exposure.2020,drug_exposure.2020,1147339,692.0,2026-04-15,2026-04-15 13:25:19
+738967813,1147308,32880,Final row count: concept_synonym,concept_synonym,1147308,0.0,2026-04-15,2026-04-15 13:24:44
