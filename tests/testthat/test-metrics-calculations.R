@@ -353,7 +353,7 @@ test_that("prepare_delivery_table_row shows Connect participant warning icon whe
   row <- prepare_delivery_table_row("person", metrics, num_participants = 10)
 
   expect_equal(row$row_class, "row-warning")
-  expect_match(row$all_warnings, "🔎", fixed = TRUE)
+  expect_match(row$all_warnings, "🔍", fixed = TRUE)
 })
 
 # ==============================================================================

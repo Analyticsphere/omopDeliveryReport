@@ -328,7 +328,7 @@ function buildTableDrilldownContent(tableData) {
   if (tableData.identifier_not_in_connect_rows > 0 && tableData.final_rows > 0) {
     var notInConnectRowWord = tableData.identifier_not_in_connect_rows === 1 ? "row does" : "rows do";
     var notInConnectRemovedWord = tableData.identifier_not_in_connect_rows === 1 ? "was removed" : "were removed";
-    qualityWarnings.push(`🔎 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
+    qualityWarnings.push(`🔍 <strong>` + formatNumber(tableData.identifier_not_in_connect_rows) + `</strong> ` + notInConnectRowWord + ` not match a Connect participant and ` + notInConnectRemovedWord);
   }
 
   // Delivered Connect IDs not found warning (>0)
