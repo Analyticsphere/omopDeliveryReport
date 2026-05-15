@@ -49,6 +49,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
 
   header_html <- render_template("sections/header", list(
     site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    extraction_date = if (has_delivery_data) metrics$metadata$extraction_date else "Unknown",
     delivery_date = if (has_delivery_data) metrics$metadata$delivery_date else "Unknown"
   ))
 

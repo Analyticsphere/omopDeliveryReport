@@ -295,6 +295,9 @@ parse_delivery_metrics <- function(delivery_data) {
     dplyr::select(table_name, mapping, source_multiplier, target_multiplier, total_rows, rows_added)
 
   # Metadata (special handling for date formatting)
+  extraction_date_raw <- delivery_data |> dplyr::filter(name == "Source system extraction date") |> dplyr::pull(value_as_string)
+  extraction_date_formatted <- format_date_safe(extraction_date_raw)
+
   delivery_date_raw <- delivery_data |> dplyr::filter(name == "Delivery date") |> dplyr::pull(value_as_string)
   delivery_date_formatted <- format_date_safe(delivery_date_raw)
 
@@ -303,6 +306,7 @@ parse_delivery_metrics <- function(delivery_data) {
 
   metrics$metadata <- list(
     site = delivery_data |> dplyr::filter(name == "Site") |> dplyr::pull(value_as_string),
+    extraction_date = extraction_date_formatted,
     delivery_date = delivery_date_formatted,
     processing_date = processing_date_formatted,
     delivered_cdm_version = delivery_data |> dplyr::filter(name == "Delivered CDM version") |> dplyr::pull(value_as_string),
@@ -378,6 +382,7 @@ parse_delivery_metrics <- function(delivery_data) {
 #' @param date_raw Raw date string
 #' @return Formatted date string
 format_date_safe <- function(date_raw) {
+  if (length(date_raw) == 0 || is.null(date_raw)) return("Unknown")
   tryCatch({
     date_obj <- as.Date(date_raw, format = "%m/%d/%y")
     if (is.na(date_obj)) {
@@ -442,6 +447,7 @@ create_empty_metrics <- function() {
   list(
     metadata = list(
       site = "Unknown",
+      extraction_date = "Unknown",
       delivery_date = "Unknown",
       processing_date = "Unknown",
       delivered_cdm_version = "Unknown",
