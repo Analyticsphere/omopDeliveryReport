@@ -129,6 +129,13 @@
     value_field = "count"
   ),
 
+  secondary_backfills = list(
+    pattern = "^Vocab harmonization secondary backfill:",
+    regex = "Vocab harmonization secondary backfill: (\\w+) - (.+)",
+    fields = c("table_name", "column_name"),
+    value_field = "count"
+  ),
+
   time_series = list(
     pattern = "^Time series row count:",
     regex = "Time series row count: (\\w+)\\.(\\d+)",
@@ -479,6 +486,7 @@ create_empty_metrics <- function() {
     type_concepts_grouped = data.frame(table_name = character(), type_group = character(), count = integer()),
     harmonization_statuses = data.frame(table_name = character(), status = character(), count = integer()),
     row_dispositions = data.frame(table_name = character(), disposition = character(), count = integer()),
+    secondary_backfills = data.frame(table_name = character(), column_name = character(), count = numeric()),
     time_series = data.frame(year = integer(), table_name = character(), count = integer()),
     connect_participant_breakdowns = data.frame(
       breakdown_type = character(),

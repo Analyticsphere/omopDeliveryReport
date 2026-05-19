@@ -109,6 +109,9 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     0
   }
 
+  secondary_backfills <- metrics$secondary_backfills |>
+    dplyr::filter(table_name == !!table_name)
+
   dispositions <- metrics$row_dispositions |>
     dplyr::filter(table_name == !!table_name)
 
@@ -159,6 +162,7 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     target_vocabularies = target_vocab,
     transitions = transitions,
     harmonization_statuses = harmonization_statuses,
+    secondary_backfills = secondary_backfills,
     dispositions = dispositions,
     same_table_mappings = same_table_mappings,
     dqd_score = dqd_score,
