@@ -427,7 +427,7 @@ test_that("create_empty_metrics returns complete structure", {
     "default_date_values", "invalid_concepts",
     "type_concepts", "type_concepts_grouped",
     "source_vocabularies", "target_vocabularies",
-    "harmonization_statuses", "row_dispositions",
+    "harmonization_statuses", "row_dispositions", "secondary_backfills",
     "same_table_mappings", "table_transitions",
     "time_series",
     "connect_participant_breakdowns",
@@ -450,9 +450,50 @@ test_that("create_empty_metrics returns complete structure", {
   expect_equal(nrow(result$valid_row_counts), 0)
   expect_equal(nrow(result$connect_participant_breakdowns), 0)
   expect_equal(nrow(result$delivered_connect_ids_not_found), 0)
+  expect_equal(nrow(result$secondary_backfills), 0)
+  expect_true(all(c("table_name", "column_name", "count") %in% colnames(result$secondary_backfills)))
 
   # Scalar defaults
   expect_true(is.na(result$excluded_participants_count))
   expect_true(is.na(result$connect_patient_counts$connect_not_in_delivery))
   expect_true(is.na(result$connect_patient_counts$delivery_not_in_connect))
+})
+
+# ==============================================================================
+# secondary_backfills parsing
+# ==============================================================================
+
+test_that("parse_metric parses secondary backfills correctly", {
+  delivery_data <- data.frame(
+    name = c(
+      "Vocab harmonization secondary backfill: measurement - unit_concept_id",
+      "Vocab harmonization secondary backfill: measurement - value_as_concept_id"
+    ),
+    value_as_string = c(NA, NA),
+    value_as_number = c(0, 15),
+    stringsAsFactors = FALSE
+  )
+
+  parser_config <- .METRIC_PARSERS$secondary_backfills
+  result <- parse_metric(delivery_data, parser_config)
+
+  expect_equal(nrow(result), 2)
+  expect_equal(result$table_name, c("measurement", "measurement"))
+  expect_equal(result$column_name, c("unit_concept_id", "value_as_concept_id"))
+  expect_equal(result$count, c(0, 15))
+})
+
+test_that("parse_metric returns empty for no secondary backfills", {
+  delivery_data <- data.frame(
+    name = c("Vocab harmonization status: measurement - domain check"),
+    value_as_string = c(NA),
+    value_as_number = c(100),
+    stringsAsFactors = FALSE
+  )
+
+  parser_config <- .METRIC_PARSERS$secondary_backfills
+  result <- parse_metric(delivery_data, parser_config)
+
+  expect_equal(nrow(result), 0)
+  expect_true(all(c("table_name", "column_name", "count") %in% colnames(result)))
 })
