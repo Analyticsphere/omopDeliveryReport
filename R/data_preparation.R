@@ -684,6 +684,47 @@ prepare_dqd_grid_rows <- function(grid) {
   Filter(Negate(is.null), rows_data)
 }
 
+#' Prepare DQD failure rows data for template
+#'
+#' Filters DQD results to failed checks (failed > 0), sorts by
+#' pctViolatedRows descending then checkDescription ascending, and
+#' formats each row for template rendering.
+#'
+#' @param dqd_data Data frame with DQD results (or NULL)
+#' @return List of row data for rendering
+#' @export
+prepare_dqd_failure_rows <- function(dqd_data) {
+  if (is.null(dqd_data) || nrow(dqd_data) == 0) {
+    return(list())
+  }
+
+  failures <- dqd_data |>
+    dplyr::filter(!is.na(failed), failed > 0) |>
+    dplyr::mutate(
+      pctViolatedRows = suppressWarnings(as.numeric(pctViolatedRows)),
+      checkDescription = ifelse(is.na(checkDescription), "", checkDescription)
+    ) |>
+    dplyr::arrange(dplyr::desc(pctViolatedRows), checkDescription)
+
+  if (nrow(failures) == 0) {
+    return(list())
+  }
+
+  lapply(seq_len(nrow(failures)), function(i) {
+    pct <- failures$pctViolatedRows[i]
+    pct_display <- if (is.na(pct)) {
+      "N/A"
+    } else {
+      sprintf("%.2f%%", pct * 100)
+    }
+
+    list(
+      description = html_escape(failures$checkDescription[i]),
+      pct_violated = pct_display
+    )
+  })
+}
+
 #' Prepare data for time series section template
 #'
 #' Calculates year ranges and formats time series data for template rendering.
@@ -824,13 +865,6 @@ prepare_delivery_report_data <- function(metrics, table_groups, group_dqd_scores
       '<p class="dqd-score-text"><strong>Data Quality Score:</strong> <span class="text-muted">Not available</span></p>'
     }
 
-    # Prepare type concept subheader
-    type_concept_subheader <- if (group_name == "All Tables") {
-      "All Tables"
-    } else {
-      sprintf("%s Tables", group_name)
-    }
-
     # Prepare table rows
     table_rows_data <- lapply(group_tables, function(tbl) {
       prepare_delivery_table_row(tbl, metrics, num_participants)
@@ -841,7 +875,6 @@ prepare_delivery_report_data <- function(metrics, table_groups, group_dqd_scores
       group_id = group_id,
       display_style = display_style,
       dqd_note = dqd_note,
-      type_concept_subheader = type_concept_subheader,
       table_rows_data = table_rows_data
     )
   })

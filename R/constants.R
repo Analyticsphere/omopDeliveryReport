@@ -8,9 +8,11 @@
 .DQD_FILE <- "dqd_results file"
 .DQD_FILE_COLUMNS <- c(
   "checkName",
+  "checkDescription",
   "cdmTableName",
   "failed",
-  "context"
+  "context",
+  "pctViolatedRows"
 )
 
 .PASS_COMPOSITE_OVERALL_FILE <- "pass_composite_overall file"

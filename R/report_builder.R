@@ -117,7 +117,19 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
     } else {
       '<tr><td colspan="13">No DQD data available</td></tr>'
     }
-    render_template("sections/dqd-grid", list(grid_rows = grid_rows_html))
+
+    failure_rows_data <- prepare_dqd_failure_rows(dqd_data)
+    failure_rows_html <- if (length(failure_rows_data) > 0) {
+      render_component_list("components/dqd-failure-row", failure_rows_data)
+    } else {
+      '<tr><td colspan="2" class="dqd-failures-empty">No failed checks</td></tr>'
+    }
+
+    render_template("sections/dqd-grid", list(
+      grid_rows = grid_rows_html,
+      failure_rows = failure_rows_html,
+      failure_count = length(failure_rows_data)
+    ))
   }
 
   # PASS breakdown section - use template
@@ -176,7 +188,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
 
       # Render the group with its rows
       render_template("components/delivery-report-group", c(
-        group_data[c("group_name", "group_id", "display_style", "dqd_note", "type_concept_subheader")],
+        group_data[c("group_name", "group_id", "display_style", "dqd_note")],
         list(table_rows = table_rows_html)
       ))
     }), collapse = "\n")

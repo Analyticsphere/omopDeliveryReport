@@ -141,6 +141,18 @@ write_file <- function(content, path, max_retries = 3) {
   }
 }
 
+#' Escape HTML special characters
+#'
+#' @param x Character vector to escape
+#' @return Character vector with &, <, > replaced by their HTML entities
+html_escape <- function(x) {
+  if (is.null(x)) return("")
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;",  x, fixed = TRUE)
+  x <- gsub(">", "&gt;",  x, fixed = TRUE)
+  x
+}
+
 #' Get type concept color mapping
 #'
 #' @return Named character vector of hex colors

@@ -1045,6 +1045,71 @@ tr.row-warning:hover {
   border-bottom: 3px solid #cbd5e1;
 }
 
+/* DQD Failures Table */
+.dqd-failures-title {
+  margin: 24px 0 8px;
+  font-size: 1rem;
+  color: #1C5E86;
+}
+
+.dqd-failures-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.dqd-failures-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875em;
+}
+
+.dqd-failures-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid #cbd5e1;
+  z-index: 1;
+}
+
+.dqd-failures-table tbody td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
+}
+
+.dqd-failures-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dqd-failure-desc {
+  color: #334155;
+}
+
+.dqd-failure-pct,
+.dqd-failure-pct-col {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  width: 140px;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.dqd-failures-table thead .dqd-failure-pct-col {
+  color: inherit;
+  font-weight: 600;
+}
+
+.dqd-failures-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 16px;
+}
+
 /* Harmonization column styling */
 .harmonization-positive {
   color: #047857;
@@ -1415,21 +1480,6 @@ tr.row-warning:hover {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.type-concepts-header {
-  margin-bottom: 4px;
-}
-
-.type-concepts-disclaimer {
-  font-size: 0.9em;
-  color: #94a3b8;
-  margin-bottom: 8px;
-  text-align: left;
-}
-
-.type-concepts-container {
-  margin-top: 8px;
 }
 
 /* Technical Summary Section */

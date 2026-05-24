@@ -1068,6 +1068,71 @@ tr.row-warning:hover {
   border-bottom: 3px solid #cbd5e1;
 }
 
+/* DQD Failures Table */
+.dqd-failures-title {
+  margin: 24px 0 8px;
+  font-size: 1rem;
+  color: #1C5E86;
+}
+
+.dqd-failures-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.dqd-failures-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875em;
+}
+
+.dqd-failures-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid #cbd5e1;
+  z-index: 1;
+}
+
+.dqd-failures-table tbody td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
+}
+
+.dqd-failures-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dqd-failure-desc {
+  color: #334155;
+}
+
+.dqd-failure-pct,
+.dqd-failure-pct-col {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  width: 140px;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.dqd-failures-table thead .dqd-failure-pct-col {
+  color: inherit;
+  font-weight: 600;
+}
+
+.dqd-failures-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 16px;
+}
+
 /* Harmonization column styling */
 .harmonization-positive {
   color: #047857;
@@ -1440,21 +1505,6 @@ tr.row-warning:hover {
   letter-spacing: 0.5px;
 }
 
-.type-concepts-header {
-  margin-bottom: 4px;
-}
-
-.type-concepts-disclaimer {
-  font-size: 0.9em;
-  color: #94a3b8;
-  margin-bottom: 8px;
-  text-align: left;
-}
-
-.type-concepts-container {
-  margin-top: 8px;
-}
-
 /* Technical Summary Section */
 .tech-summary-metrics {
   display: flex;
@@ -1701,8 +1751,8 @@ tr.row-warning:hover {
         <a href="#dqd-grid" class="sidebar-nav-item" data-action="scroll-to-section" data-section="dqd-grid">DQD Results</a>
         <a href="#pass-breakdown" class="sidebar-nav-item" data-action="scroll-to-section" data-section="pass-breakdown">PASS Assessment</a>
         <a href="#time-series" class="sidebar-nav-item" data-action="scroll-to-section" data-section="time-series">Data Timeline</a>
-        <a href="#delivery-report" class="sidebar-nav-item" data-action="scroll-to-section" data-section="delivery-report">Row Counts</a>
-        <a href="#vocab-harmonization" class="sidebar-nav-item" data-action="scroll-to-section" data-section="vocab-harmonization">Vocabularies</a>
+        <a href="#delivery-report" class="sidebar-nav-item" data-action="scroll-to-section" data-section="delivery-report">Table Breakdown</a>
+        <a href="#vocab-harmonization" class="sidebar-nav-item" data-action="scroll-to-section" data-section="vocab-harmonization">Vocabulary</a>
         <a href="#technical-summary" class="sidebar-nav-item" data-action="scroll-to-section" data-section="technical-summary">Technical</a>
     </nav>
     <div class="sidebar-footer">
@@ -1996,6 +2046,132 @@ tr.row-warning:hover {
     <td class="fail-cell">28</td>
     <td>2533</td>
     <td><strong>99%</strong></td>
+</tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="dqd-failures-title">Failed Checks (28)</h3>
+    <div class="dqd-failures-container">
+        <table class="dqd-failures-table">
+            <thead>
+                <tr>
+                    <th>Check Description</th>
+                    <th class="dqd-failure-pct-col">% Violated Rows</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+    <td class="dqd-failure-desc">The number and percent of persons in the CDM that do not have at least one record in the VISIT_OCCURRENCE table</td>
+    <td class="dqd-failure-pct">100.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the LOCATION_ID field in the PERSON table that does not exist in the LOCATION table.</td>
+    <td class="dqd-failure-pct">100.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field CONDITION_STATUS_CONCEPT_ID in the CONDITION_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">100.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field UNIT_CONCEPT_ID in the OBSERVATION table.</td>
+    <td class="dqd-failure-pct">100.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PROVIDER_ID field in the OBSERVATION table that does not exist in the PROVIDER table.</td>
+    <td class="dqd-failure-pct">94.44%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field OBSERVATION_TYPE_CONCEPT_ID in the OBSERVATION table.</td>
+    <td class="dqd-failure-pct">94.44%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the VISIT_OCCURRENCE_ID field in the MEASUREMENT table that does not exist in the VISIT_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">94.01%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PROVIDER_ID field in the CONDITION_OCCURRENCE table that does not exist in the PROVIDER table.</td>
+    <td class="dqd-failure-pct">85.98%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field CONDITION_TYPE_CONCEPT_ID in the CONDITION_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">73.83%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records for a given CONCEPT_ID 3019897 (ERYTHROCYTE DISTRIBUTION WIDTH [RATIO] BY AUTOMATED COUNT) with implausible units (i.e., UNIT_CONCEPT_ID NOT IN  (8554,-1)).</td>
+    <td class="dqd-failure-pct">63.64%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a date value in the OBSERVATION_PERIOD_START_DATE field of the OBSERVATION_PERIOD table that occurs prior to birth.</td>
+    <td class="dqd-failure-pct">62.90%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value in the OBSERVATION_PERIOD_START_DATE field of the OBSERVATION_PERIOD that occurs prior to the date in the BIRTH_DATETIME field of the PERSON table.</td>
+    <td class="dqd-failure-pct">62.90%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PROVIDER_ID field in the PROCEDURE_OCCURRENCE table that does not exist in the PROVIDER table.</td>
+    <td class="dqd-failure-pct">55.16%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field PROCEDURE_TYPE_CONCEPT_ID in the PROCEDURE_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">55.16%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PROVIDER_ID field in the DRUG_EXPOSURE table that does not exist in the PROVIDER table.</td>
+    <td class="dqd-failure-pct">50.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the VISIT_OCCURRENCE_ID field in the DRUG_EXPOSURE table that does not exist in the VISIT_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">50.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field DRUG_TYPE_CONCEPT_ID in the DRUG_EXPOSURE table.</td>
+    <td class="dqd-failure-pct">50.00%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the VISIT_OCCURRENCE_ID field in the PROCEDURE_OCCURRENCE table that does not exist in the VISIT_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">44.84%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field UNIT_CONCEPT_ID in the MEASUREMENT table.</td>
+    <td class="dqd-failure-pct">35.54%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the VISIT_OCCURRENCE_ID field in the CONDITION_OCCURRENCE table that does not exist in the VISIT_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">26.17%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PROVIDER_ID field in the MEASUREMENT table that does not exist in the PROVIDER table.</td>
+    <td class="dqd-failure-pct">6.06%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records with a value of 0 in the standard concept field MEASUREMENT_TYPE_CONCEPT_ID in the MEASUREMENT table.</td>
+    <td class="dqd-failure-pct">5.99%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the VISIT_OCCURRENCE_ID field in the OBSERVATION table that does not exist in the VISIT_OCCURRENCE table.</td>
+    <td class="dqd-failure-pct">5.56%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PERSON_ID field in the DRUG_ERA table that does not exist in the PERSON table.</td>
+    <td class="dqd-failure-pct">2.33%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PERSON_ID field in the PROCEDURE_OCCURRENCE table that does not exist in the PERSON table.</td>
+    <td class="dqd-failure-pct">1.71%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PERSON_ID field in the DRUG_EXPOSURE table that does not exist in the PERSON table.</td>
+    <td class="dqd-failure-pct">1.15%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the PERSON_ID field in the MEASUREMENT table that does not exist in the PERSON table.</td>
+    <td class="dqd-failure-pct">0.98%</td>
+</tr>
+<tr>
+    <td class="dqd-failure-desc">The number and percent of records that have a value in the INGREDIENT_CONCEPT_ID field in the DRUG_STRENGTH table that do not conform to the INGREDIENT class.</td>
+    <td class="dqd-failure-pct">0.12%</td>
 </tr>
             </tbody>
         </table>
@@ -2544,14 +2720,6 @@ tr.row-warning:hover {
             </tbody>
         </table>
     </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">All Tables</div>
-        <div id="group-type-concepts-all-tables" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
-    </div>
 </div>
 <div class="table-group-content" id="group-clinical-data" style="">
     <h3 class="table-group-title">Clinical Data</h3>
@@ -2697,14 +2865,6 @@ tr.row-warning:hover {
             </tbody>
         </table>
     </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Clinical Data Tables</div>
-        <div id="group-type-concepts-clinical-data" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
-    </div>
 </div>
 <div class="table-group-content" id="group-health-system" style="display: none;">
     <h3 class="table-group-title">Health System</h3>
@@ -2760,14 +2920,6 @@ tr.row-warning:hover {
             </tbody>
         </table>
     </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Health System Tables</div>
-        <div id="group-type-concepts-health-system" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
-    </div>
 </div>
 <div class="table-group-content" id="group-healthcare-economics" style="display: none;">
     <h3 class="table-group-title">Healthcare Economics</h3>
@@ -2812,14 +2964,6 @@ tr.row-warning:hover {
 </tr>
             </tbody>
         </table>
-    </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Healthcare Economics Tables</div>
-        <div id="group-type-concepts-healthcare-economics" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
     </div>
 </div>
 <div class="table-group-content" id="group-derived-data" style="display: none;">
@@ -2885,14 +3029,6 @@ tr.row-warning:hover {
 </tr>
             </tbody>
         </table>
-    </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Derived Data Tables</div>
-        <div id="group-type-concepts-derived-data" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
     </div>
 </div>
 <div class="table-group-content" id="group-vocabulary" style="display: none;">
@@ -3019,14 +3155,6 @@ tr.row-warning:hover {
             </tbody>
         </table>
     </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Vocabulary Tables</div>
-        <div id="group-type-concepts-vocabulary" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
-    </div>
 </div>
 <div class="table-group-content" id="group-metadata" style="display: none;">
     <h3 class="table-group-title">Metadata</h3>
@@ -3071,14 +3199,6 @@ tr.row-warning:hover {
 </tr>
             </tbody>
         </table>
-    </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Metadata Tables</div>
-        <div id="group-type-concepts-metadata" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
     </div>
 </div>
 <div class="table-group-content" id="group-other" style="display: none;">
@@ -3174,14 +3294,6 @@ tr.row-warning:hover {
 </tr>
             </tbody>
         </table>
-    </div>
-
-    <div class="subsection">
-        <h4 class="type-concepts-header">Type Concept Breakdown</h4>
-        <div class="type-concepts-disclaimer">Other Tables</div>
-        <div id="group-type-concepts-other" class="chart-container type-concepts-container">
-            <!-- Dynamically populated by JavaScript -->
-        </div>
     </div>
 </div>
 </div>
@@ -3379,9 +3491,6 @@ function switchTableGroup(groupName) {
   }
 
   currentGroup = groupName;
-
-  // Update type concepts for this group
-  updateGroupTypeConcepts(groupName);
 
   console.log("Current group set to:", currentGroup);
   console.log("=== switchTableGroup complete ===");
@@ -4230,44 +4339,6 @@ function buildTableDrilldownContent(tableData) {
   }
 
   return html;
-}
-
-// ============================================================================
-// GROUP TYPE CONCEPT UPDATES
-// ============================================================================
-
-function updateGroupTypeConcepts(groupName) {
-  console.log("==== updateGroupTypeConcepts ====");
-  console.log("Group name:", groupName);
-
-  const groupData = getGroupData(groupName);
-  console.log("Group data:", groupData);
-  console.log("Has type_concepts:", groupData && groupData.type_concepts);
-  console.log("Type concepts length:", groupData && groupData.type_concepts && groupData.type_concepts.length);
-
-  if (!groupData || !groupData.type_concepts || groupData.type_concepts.length === 0) {
-    const groupId = groupName.toLowerCase().replace(/ /g, "-");
-    console.log("No type concepts, looking for container:", "group-type-concepts-" + groupId);
-    const container = document.getElementById("group-type-concepts-" + groupId);
-    console.log("Container found:", container !== null);
-    if (container) {
-      container.innerHTML = "<p>No type concept data available for this group</p>";
-    }
-    return;
-  }
-
-  const groupId = groupName.toLowerCase().replace(/ /g, "-");
-  console.log("Looking for container:", "group-type-concepts-" + groupId);
-  const container = document.getElementById("group-type-concepts-" + groupId);
-  console.log("Container found:", container !== null);
-
-  if (container) {
-    const html = buildTypeConceptChart(groupData.type_concepts);
-    container.innerHTML = html;
-    console.log("Type concepts updated successfully");
-  } else {
-    console.warn("Container not found for group ID:", groupId);
-  }
 }
 
 // ============================================================================

@@ -69,9 +69,6 @@ function switchTableGroup(groupName) {
 
   currentGroup = groupName;
 
-  // Update type concepts for this group
-  updateGroupTypeConcepts(groupName);
-
   console.log("Current group set to:", currentGroup);
   console.log("=== switchTableGroup complete ===");
 }
@@ -919,44 +916,6 @@ function buildTableDrilldownContent(tableData) {
   }
 
   return html;
-}
-
-// ============================================================================
-// GROUP TYPE CONCEPT UPDATES
-// ============================================================================
-
-function updateGroupTypeConcepts(groupName) {
-  console.log("==== updateGroupTypeConcepts ====");
-  console.log("Group name:", groupName);
-
-  const groupData = getGroupData(groupName);
-  console.log("Group data:", groupData);
-  console.log("Has type_concepts:", groupData && groupData.type_concepts);
-  console.log("Type concepts length:", groupData && groupData.type_concepts && groupData.type_concepts.length);
-
-  if (!groupData || !groupData.type_concepts || groupData.type_concepts.length === 0) {
-    const groupId = groupName.toLowerCase().replace(/ /g, "-");
-    console.log("No type concepts, looking for container:", "group-type-concepts-" + groupId);
-    const container = document.getElementById("group-type-concepts-" + groupId);
-    console.log("Container found:", container !== null);
-    if (container) {
-      container.innerHTML = "<p>No type concept data available for this group</p>";
-    }
-    return;
-  }
-
-  const groupId = groupName.toLowerCase().replace(/ /g, "-");
-  console.log("Looking for container:", "group-type-concepts-" + groupId);
-  const container = document.getElementById("group-type-concepts-" + groupId);
-  console.log("Container found:", container !== null);
-
-  if (container) {
-    const html = buildTypeConceptChart(groupData.type_concepts);
-    container.innerHTML = html;
-    console.log("Type concepts updated successfully");
-  } else {
-    console.warn("Container not found for group ID:", groupId);
-  }
 }
 
 // ============================================================================
