@@ -124,34 +124,6 @@
   )
 )
 
-# Logic for grouping type concepts
-.TYPE_CONCEPT_GROUPS <- list(
-  ehr = list(
-    patterns = "EHR",
-    case_sensitive = TRUE
-  ),
-  claims = list(
-    patterns = c("claim", "payer system record"),
-    case_sensitive = FALSE
-  ),
-  disease_registry = list(
-    exact_matches = c("Registry", "Tumor Registry"),
-    case_sensitive = TRUE
-  ),
-  patient_reported = list(
-    exact_matches = c(
-      "Patient self-report", "Patient self-tested",
-      "Patient filled survey", "Survey",
-      "Patient Self-Reported Medication"
-    ),
-    case_sensitive = TRUE
-  ),
-  unlabeled = list(
-    exact_matches = c("No matching concept", "0", ""),
-    case_sensitive = FALSE
-  )
-)
-
 .TYPE_CONCEPT_ORDER <- c(
   "EHR",
   "Claims",

@@ -298,20 +298,6 @@ format_number <- function(value, big_mark = ",") {
   format(value, big.mark = big_mark, scientific = FALSE)
 }
 
-#' Calculate percentage and format for display
-#'
-#' Combines calculation and formatting in one step for convenience.
-#'
-#' @param numerator Numeric numerator
-#' @param denominator Numeric denominator
-#' @param decimal_places Integer number of decimal places (default: 1)
-#' @return Character formatted percentage (e.g., "25.5")
-#' @export
-format_percentage <- function(numerator, denominator, decimal_places = 1) {
-  pct <- calculate_percentage(numerator, denominator)
-  format(round(pct, decimal_places), nsmall = decimal_places)
-}
-
 #' Determine DQD score class for styling
 #'
 #' Maps DQD scores to CSS classes for color-coded display.
@@ -395,26 +381,6 @@ get_status_badge <- function(delivered) {
     list(text = "Delivered", class = "delivered")
   } else {
     list(text = "Not Delivered", class = "not-delivered")
-  }
-}
-
-#' Determine metric card class based on value and threshold
-#'
-#' Determines styling based on whether zero is considered good or bad.
-#'
-#' @param value Numeric value to evaluate
-#' @param zero_is_good Logical whether zero is good (TRUE) or bad (FALSE)
-#' @return Character CSS class ("success", "warning", or "neutral")
-#' @export
-get_metric_class <- function(value, zero_is_good = TRUE) {
-  if (is.na(value)) return("neutral")
-
-  if (zero_is_good) {
-    if (value == 0) return("success")
-    return("warning")
-  } else {
-    if (value > 0) return("success")
-    return("neutral")
   }
 }
 
