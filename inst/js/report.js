@@ -638,8 +638,8 @@ function buildTableDrilldownContent(tableData) {
 
       // Apply indentation and special styling for temporal sub-metrics
       var rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
-      var namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
-      var nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
+      var namePrefix = isTemporalSub ? '<span style="color: #475569; margin-right: 6px;">↳</span>' : '';
+      var nameStyle = isTemporalSub ? 'color: #475569; font-size: 0.95em;' : '';
 
       html += `
             <tr class="` + rowClass + `">
@@ -667,7 +667,7 @@ function buildTableDrilldownContent(tableData) {
     html += `
       <div class="subsection">
         <h4 style="margin-bottom: 4px;">Type Concept Breakdown</h4>
-        <div style="font-size: 0.9em; color: #94a3b8; margin-bottom: 8px; text-align: left;">${tableData.name}</div>
+        <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: left;">${tableData.name}</div>
         <div class="chart-container" style="margin-top: 16px;">
           ${buildTypeConceptChart(tableData.type_concepts)}
         </div>
@@ -679,7 +679,7 @@ function buildTableDrilldownContent(tableData) {
   html += `
     <div class="subsection">
       <h4 style="margin-bottom: 4px;">Data Timeline</h4>
-      <div style="font-size: 0.9em; color: #94a3b8; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
+      <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
 
       <div style="margin-top: 16px;">
         <div class="toggle-buttons drilldown-time-series-controls">
@@ -715,13 +715,13 @@ function buildTableDrilldownContent(tableData) {
   // Only show harmonization flow if there was actual harmonization activity
   if (hasHarmonizationFlow) {
     // Format rows out (red with minus sign if > 0)
-    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
+    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #b91c1c;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
 
     // Format rows in (green with plus sign if > 0)
-    var rowsInFormatted = rowsIn > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
+    var rowsInFormatted = rowsIn > 0 ? '<span style="color: #047857;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
 
     // Format rows added from mappings (green with plus sign if > 0)
-    var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
+    var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #047857;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
 
     // Generated rows are additional rows created during mapping and sent elsewhere
     var rowsCopiedFormatted = rowsCopiedOut > 0 ? '<span style="color: #6b7280;">' + formatNumber(rowsCopiedOut) + '</span>' : formatNumber(rowsCopiedOut);
@@ -1340,11 +1340,11 @@ function getPASSClass(score) {
 }
 
 function getPASSColor(score) {
-  if (score === null || score === undefined || isNaN(score)) return "#94a3b8";
-  if (score >= 0.90) return "#059669";  // excellent - emerald-600
-  if (score >= 0.80) return "#10b981";  // good - emerald-500
-  if (score >= 0.60) return "#f59e0b";  // moderate - amber-500
-  if (score >= 0.40) return "#ef4444";  // poor - red-500
+  if (score === null || score === undefined || isNaN(score)) return "#475569";
+  if (score >= 0.90) return "#047857";  // excellent - emerald-700
+  if (score >= 0.80) return "#047857";  // good - emerald-700
+  if (score >= 0.60) return "#b45309";  // moderate - amber-700
+  if (score >= 0.40) return "#b91c1c";  // poor - red-700
   return "#991b1b";  // verypoor - red-800
 }
 
@@ -1362,7 +1362,7 @@ function buildPASSScoreVisualization(score, lowerBound, upperBound, width, heigh
   height = height || 32;
 
   if (score === null || score === undefined || isNaN(score)) {
-    return '<span style="color: #94a3b8;">N/A</span>';
+    return '<span style="color: #475569;">N/A</span>';
   }
 
   var padding = 12;
@@ -1416,10 +1416,10 @@ function buildPASSScoreVisualization(score, lowerBound, upperBound, width, heigh
 
   // Scale labels (0, 1)
   svg += '<text x="' + scaleStart + '" y="' + (height - 2) + '" ';
-  svg += 'font-size="9" fill="#94a3b8" text-anchor="start">0</text>';
+  svg += 'font-size="9" fill="#475569" text-anchor="start">0</text>';
 
   svg += '<text x="' + scaleEnd + '" y="' + (height - 2) + '" ';
-  svg += 'font-size="9" fill="#94a3b8" text-anchor="end">1</text>';
+  svg += 'font-size="9" fill="#475569" text-anchor="end">1</text>';
 
   svg += '</svg>';
 
@@ -1482,7 +1482,7 @@ function initializePASSComponents() {
     // Build CI text if available
     let ciText = '';
     if (lowerBound !== null && upperBound !== null) {
-      ciText = '<div style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
+      ciText = '<div style="font-size: 11px; color: #475569; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
     }
 
     // Check if this is a temporal sub-metric
@@ -1508,7 +1508,7 @@ function initializePASSComponents() {
 
     // Apply indentation and special styling for temporal sub-metrics
     const rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
-    const namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+    const namePrefix = isTemporalSub ? '<span style="color: #475569; margin-right: 6px;">↳</span>' : '';
     const nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
 
     html += '<tr class="' + rowClass + '">';
@@ -2259,7 +2259,7 @@ function drawTableDrilldownTimeSeries() {
     const y = margin.top + chartHeight;
 
     // Tick mark
-    html += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + 6) + '" stroke="#94a3b8" stroke-width="1" />';
+    html += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + 6) + '" stroke="#64748b" stroke-width="1" />';
 
     // Year label
     html += '<text x="' + x + '" y="' + (y + 20) + '" text-anchor="middle" font-size="11" fill="#64748b">' + year + '</text>';

@@ -87,20 +87,20 @@
   dqd_scores = list(
     "good_threshold" = 95,    # >= 95% is "good"
     "fair_threshold" = 85,    # >= 85% is "fair", below is "poor"
-    "good_color" = "#10b981",
-    "fair_color" = "#f59e0b",
-    "poor_color" = "#ef4444"
+    "good_color" = "#047857",   # emerald-700 (WCAG AA on white)
+    "fair_color" = "#b45309",   # amber-700  (WCAG AA on white)
+    "poor_color" = "#b91c1c"    # red-700    (WCAG AA on white)
   ),
   pass_scores = list(
     "excellent_threshold" = 0.90,  # >= 0.90 is "excellent"
     "good_threshold" = 0.80,       # >= 0.80 is "good"
     "moderate_threshold" = 0.60,   # >= 0.60 is "moderate"
     "poor_threshold" = 0.40,       # >= 0.40 is "poor", below is "very poor"
-    "excellent_color" = "#059669",  # emerald-600
-    "good_color" = "#10b981",       # emerald-500
-    "moderate_color" = "#f59e0b",   # amber-500
-    "poor_color" = "#ef4444",       # red-500
-    "verypoor_color" = "#991b1b"    # red-800
+    "excellent_color" = "#047857", # emerald-700
+    "good_color" = "#047857",      # emerald-700
+    "moderate_color" = "#b45309",  # amber-700
+    "poor_color" = "#b91c1c",      # red-700
+    "verypoor_color" = "#991b1b"   # red-800
   )
 )
 

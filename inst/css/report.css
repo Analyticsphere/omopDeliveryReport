@@ -98,7 +98,7 @@ h1, h2, h3, h4, h5, h6,
 .sidebar-nav-item {
   display: block;
   padding: 14px 24px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.92);
   text-decoration: none;
   font-size: 0.95em;
   font-weight: 500;
@@ -449,19 +449,19 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .dqd-score.good {
-  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 .dqd-score.fair {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
 }
 
 .dqd-score.poor {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .dqd-score.neutral {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 .dqd-inline {
@@ -498,15 +498,15 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .pass-score.good {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 .pass-score.moderate {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
 }
 
 .pass-score.poor {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .pass-score.verypoor {
@@ -514,7 +514,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .pass-score.neutral {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 /* PASS Section Styling */
@@ -562,16 +562,16 @@ h1, h2, h3, h4, h5, h6,
   font-variant-numeric: tabular-nums;
 }
 
-.pass-overall-score.excellent { color: #059669; }
-.pass-overall-score.good { color: #10b981; }
-.pass-overall-score.moderate { color: #f59e0b; }
-.pass-overall-score.poor { color: #ef4444; }
+.pass-overall-score.excellent { color: #047857; }
+.pass-overall-score.good { color: #047857; }
+.pass-overall-score.moderate { color: #b45309; }
+.pass-overall-score.poor { color: #b91c1c; }
 .pass-overall-score.verypoor { color: #991b1b; }
-.pass-overall-score.neutral { color: #6b7280; }
+.pass-overall-score.neutral { color: #4b5563; }
 
 .pass-overall-ci {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 500;
 }
 
@@ -664,22 +664,22 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .pass-score-cell.excellent {
-  color: #059669;
+  color: #065f46;
   background: #d1fae5;
 }
 
 .pass-score-cell.good {
-  color: #10b981;
+  color: #047857;
   background: #d1fae5;
 }
 
 .pass-score-cell.moderate {
-  color: #d97706;
+  color: #92400e;
   background: #fef3c7;
 }
 
 .pass-score-cell.poor {
-  color: #ef4444;
+  color: #991b1b;
   background: #fee2e2;
 }
 
@@ -689,7 +689,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .pass-score-cell.neutral {
-  color: #6b7280;
+  color: #374151;
   background: #f3f4f6;
 }
 
@@ -748,9 +748,10 @@ select:hover {
 }
 
 select:focus {
-  outline: none;
+  outline: 2px solid #2A72A5;
+  outline-offset: 2px;
   border-color: #2A72A5;
-  box-shadow: 0 0 0 3px rgba(42, 114, 165, 0.1);
+  box-shadow: 0 0 0 3px rgba(42, 114, 165, 0.4);
 }
 
 /* Export Button */
@@ -1276,12 +1277,12 @@ tr.row-warning:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #64748b;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #475569;
 }
   
 /* ============================================================================
@@ -1378,7 +1379,7 @@ tr.row-warning:hover {
 }
 
 .legend-item.inactive .legend-label {
-  color: #94a3b8 !important;
+  color: #475569 !important;
 }
 
 .legend-item.inactive .legend-line {
@@ -1447,7 +1448,7 @@ tr.row-warning:hover {
 
 .overview-disclaimer {
   font-size: 0.9em;
-  color: #94a3b8;
+  color: #475569;
   margin-bottom: 8px;
   text-align: left;
 }
@@ -1498,7 +1499,7 @@ tr.row-warning:hover {
 .tech-summary-footer {
   text-align: center;
   margin-top: 30px;
-  color: #94a3b8;
+  color: #475569;
   font-size: 0.9em;
 }
 
