@@ -790,6 +790,30 @@ function buildTableDrilldownContent(tableData) {
       `;
     }
 
+    // Secondary Concept Backfill (table-level only)
+    if (tableData.secondary_backfills && tableData.secondary_backfills.length > 0) {
+      html += `
+        <div class="info-box" style="margin-bottom: 20px;">
+          <h5 style="margin-top: 0; margin-bottom: 15px;">Secondary Concept Backfill</h5>
+          <p style="margin-bottom: 15px;">Secondary concept columns where unmapped values (concept_id = 0) were backfilled from their source_concept_id in <strong>${tableData.name}</strong>:</p>
+          <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 10px; align-items: center; margin-bottom: 10px;">
+            <div style="font-weight: 600;">Column</div>
+            <div style="font-weight: 600; text-align: right;">Count</div>
+      `;
+
+      tableData.secondary_backfills.forEach(function(backfill) {
+        html += `
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb;">${backfill.column_name}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${formatNumber(backfill.count)}</div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+    }
+
     // Sankey Diagram
     html += `
         <h5 style="margin-top: 30px; margin-bottom: 16px;">Table Transition Flow</h5>
