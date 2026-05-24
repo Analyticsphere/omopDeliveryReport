@@ -162,13 +162,13 @@ get_full_css_styles <- function() {
   paste(font_face_css, css_content, sep = "\n")
 }
 
-#' Build @font-face declarations for inlined Connect brand fonts
+#' Build @@font-face declarations for inlined Connect brand fonts
 #'
 #' Reads the WOFF2 files from inst/fonts/, base64-encodes them, and emits
-#' @font-face rules. Montserrat (display) and Noto Sans (body) are variable
-#' fonts; one file each covers all required weights.
+#' CSS @@font-face rules. Montserrat (display) and Noto Sans (body) are
+#' variable fonts; one file each covers all required weights.
 #'
-#' @return Character string of CSS @font-face declarations
+#' @return Character string of CSS @@font-face declarations
 get_font_face_css <- function() {
   montserrat_uri <- get_asset_data_uri("fonts/montserrat-latin-var.woff2", "font/woff2")
   noto_sans_uri  <- get_asset_data_uri("fonts/notosans-latin-var.woff2",  "font/woff2")
@@ -214,17 +214,14 @@ get_asset_data_uri <- function(relative_path, mime_type) {
 
 #' Convenience wrapper to load a Connect brand logo as a data URI
 #'
-#' @param name Logo identifier: "white" (for dark backgrounds), "color" (for
-#'   light backgrounds), "favicon", or "blue-bg"
+#' @param name Logo identifier: "white" (for dark backgrounds) or "favicon"
 #' @return Character string containing a complete data: URI
 #' @export
-get_logo_data_uri <- function(name = c("color", "white", "favicon", "blue-bg")) {
+get_logo_data_uri <- function(name = c("white", "favicon")) {
   name <- match.arg(name)
   filename <- switch(name,
-    "color"   = "connect-logo-color.png",
     "white"   = "connect-logo-white.png",
-    "favicon" = "connect-favicon.png",
-    "blue-bg" = "connect-logo-blue-bg.png"
+    "favicon" = "connect-favicon.png"
   )
   get_asset_data_uri(paste0("img/", filename), "image/png")
 }

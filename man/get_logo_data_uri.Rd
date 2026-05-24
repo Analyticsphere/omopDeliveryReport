@@ -4,11 +4,10 @@
 \alias{get_logo_data_uri}
 \title{Convenience wrapper to load a Connect brand logo as a data URI}
 \usage{
-get_logo_data_uri(name = c("color", "white", "favicon", "blue-bg"))
+get_logo_data_uri(name = c("white", "favicon"))
 }
 \arguments{
-\item{name}{Logo identifier: "white" (for dark backgrounds), "color" (for
-light backgrounds), "favicon", or "blue-bg"}
+\item{name}{Logo identifier: "white" (for dark backgrounds) or "favicon"}
 }
 \value{
 Character string containing a complete data: URI

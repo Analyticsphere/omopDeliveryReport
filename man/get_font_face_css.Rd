@@ -11,4 +11,6 @@ Character string of CSS @font-face declarations
 }
 \description{
 Reads the WOFF2 files from inst/fonts/, base64-encodes them, and emits
+CSS @font-face rules. Montserrat (display) and Noto Sans (body) are
+variable fonts; one file each covers all required weights.
 }
