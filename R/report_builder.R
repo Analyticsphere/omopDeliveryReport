@@ -42,9 +42,15 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   # Serialize to JSON for JavaScript
   report_data_json <- build_report_data_json(report_data)
 
+  # Pre-encode Connect brand logos as base64 data URIs so the rendered report
+  # stays a single self-contained HTML file.
+  connect_logo_white_uri <- get_logo_data_uri("white")
+  favicon_data_uri       <- get_logo_data_uri("favicon")
+
   # Build sections
   sidebar_html <- render_template("sections/sidebar", list(
-    site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site"
+    site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    connect_logo_white_uri = connect_logo_white_uri
   ))
 
   header_html <- render_template("sections/header", list(
@@ -227,6 +233,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   # Assemble complete HTML using main template
   html <- render_template("main", list(
     site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    favicon_data_uri = favicon_data_uri,
     css_styles = get_full_css_styles(),
     sidebar_html = sidebar_html,
     header_html = header_html,

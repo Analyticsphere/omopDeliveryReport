@@ -10,5 +10,6 @@ get_full_css_styles()
 Character string containing the full CSS code
 }
 \description{
-Reads CSS from external file for syntax highlighting and external editing.
+Reads CSS from external file and prepends embedded @font-face declarations
+(Connect brand fonts) as base64 data URIs so the report stays self-contained.
 }
