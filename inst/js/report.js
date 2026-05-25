@@ -675,32 +675,40 @@ function buildTableDrilldownContent(tableData) {
     `;
   }
 
-  // Data Timeline Section
-  html += `
-    <div class="subsection">
-      <h4 style="margin-bottom: 4px;">Data Timeline</h4>
-      <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
+  // Data Timeline Section — only rendered for tables that have timeline data
+  // (skipped for person, cdm_source, concept_synonym, and other tables
+  // without per-year row counts).
+  const hasTimeSeriesData = timeSeriesData.some(function(row) {
+    return row.table_name === tableData.name;
+  });
 
-      <div style="margin-top: 16px;">
-        <div class="toggle-buttons drilldown-time-series-controls">
-          <button class="toggle-button active" id="drilldown-time-series-recent" data-action="switch-drilldown-time-series-view" data-view="recent">Last 15 Years</button>
-          <button class="toggle-button" id="drilldown-time-series-custom" data-action="switch-drilldown-time-series-view" data-view="custom">Custom</button>
-        </div>
+  if (hasTimeSeriesData) {
+    html += `
+      <div class="subsection">
+        <h4 style="margin-bottom: 4px;">Data Timeline</h4>
+        <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
 
-        <div id="drilldown-time-series-custom-controls" class="drilldown-time-series-custom-controls" style="display: none;">
-          <label class="drilldown-time-series-label">From:</label>
-          <input type="number" id="drilldown-time-series-start-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
-          <label class="drilldown-time-series-label">To:</label>
-          <input type="number" id="drilldown-time-series-end-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
-          <button data-action="apply-drilldown-year-range" class="drilldown-time-series-button">Apply</button>
-        </div>
+        <div style="margin-top: 16px;">
+          <div class="toggle-buttons drilldown-time-series-controls">
+            <button class="toggle-button active" id="drilldown-time-series-recent" data-action="switch-drilldown-time-series-view" data-view="recent">Last 15 Years</button>
+            <button class="toggle-button" id="drilldown-time-series-custom" data-action="switch-drilldown-time-series-view" data-view="custom">Custom</button>
+          </div>
 
-        <div id="table-drilldown-time-series-chart-container" class="drilldown-time-series-chart">
-          <!-- Chart will be populated by JavaScript -->
+          <div id="drilldown-time-series-custom-controls" class="drilldown-time-series-custom-controls" style="display: none;">
+            <label class="drilldown-time-series-label">From:</label>
+            <input type="number" id="drilldown-time-series-start-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
+            <label class="drilldown-time-series-label">To:</label>
+            <input type="number" id="drilldown-time-series-end-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
+            <button data-action="apply-drilldown-year-range" class="drilldown-time-series-button">Apply</button>
+          </div>
+
+          <div id="table-drilldown-time-series-chart-container" class="drilldown-time-series-chart">
+            <!-- Chart will be populated by JavaScript -->
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+  }
 
   // Use pre-computed harmonization data from R
   var rowsIn = tableData.transitions_in || 0;
