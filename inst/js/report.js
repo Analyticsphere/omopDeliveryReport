@@ -1797,6 +1797,59 @@ let drilldownCustomEndYear = 2025;
 
 // Use table colors from configuration (set when REPORT_DATA loads)
 const TIME_SERIES_COLORS = REPORT_DATA.table_colors || {};
+// Shapes assigned per table to aid colorblind users; tables not listed get a circle.
+const TIME_SERIES_SHAPES = REPORT_DATA.table_shapes || {};
+
+function getTableShape(table) {
+  return TIME_SERIES_SHAPES[table] || "circle";
+}
+
+// Build the SVG markup for a single time-series data point.
+// `shape` is "circle" | "triangle" | "square". Tooltip handlers are attached
+// here so all shapes behave identically on hover.
+function buildTimeSeriesPoint(x, y, shape, color, tooltipText, radius) {
+  radius = radius || 4;
+  const safeTooltip = tooltipText.replace(/'/g, "\\'");
+  const commonAttrs = 'fill="' + color + '" stroke="white" stroke-width="1.5" ' +
+    'style="cursor: pointer;" class="time-series-point" ' +
+    'onmouseenter="showTimeSeriesTooltip(event, \'' + safeTooltip + '\')" ' +
+    'onmouseleave="hideTimeSeriesTooltip()"';
+  const titleEl = '<title>' + tooltipText + '</title>';
+
+  if (shape === "triangle") {
+    // Equilateral triangle pointing up, centered on (x, y)
+    const side = radius * 2.4;
+    const h = side * Math.sqrt(3) / 2;
+    const top = [x, y - h * 2 / 3];
+    const bl = [x - side / 2, y + h / 3];
+    const br = [x + side / 2, y + h / 3];
+    const points = top.join(",") + " " + bl.join(",") + " " + br.join(",");
+    return '<polygon points="' + points + '" ' + commonAttrs + '>' + titleEl + '</polygon>';
+  }
+  if (shape === "square") {
+    const size = radius * 2;
+    return '<rect x="' + (x - radius) + '" y="' + (y - radius) + '" width="' + size + '" height="' + size + '" ' + commonAttrs + '>' + titleEl + '</rect>';
+  }
+  return '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" ' + commonAttrs + '>' + titleEl + '</circle>';
+}
+
+// Build a small inline SVG icon (line + shape) for the time-series legend.
+function buildLegendIcon(color, shape) {
+  const w = 30, h = 14, cx = w / 2, cy = h / 2;
+  let svg = '<svg class="legend-icon" width="' + w + '" height="' + h + '" style="display: block;">';
+  svg += '<line x1="0" y1="' + cy + '" x2="' + w + '" y2="' + cy + '" stroke="' + color + '" stroke-width="2.5"/>';
+  if (shape === "triangle") {
+    const r = 4;
+    const points = cx + "," + (cy - r) + " " + (cx - r) + "," + (cy + r) + " " + (cx + r) + "," + (cy + r);
+    svg += '<polygon points="' + points + '" fill="' + color + '" stroke="white" stroke-width="1"/>';
+  } else if (shape === "square") {
+    svg += '<rect x="' + (cx - 4) + '" y="' + (cy - 4) + '" width="8" height="8" fill="' + color + '" stroke="white" stroke-width="1"/>';
+  } else {
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="' + color + '" stroke="white" stroke-width="1"/>';
+  }
+  svg += '</svg>';
+  return svg;
+}
 
 function switchTimeSeriesView(view) {
   console.log("Switching data timeline view to:", view);
@@ -2060,13 +2113,12 @@ function drawTimeSeriesChart() {
     html += '</path>';
 
     // Draw points
+    const shape = getTableShape(table);
     data.forEach(function(d) {
       const x = xScale(d.year);
       const y = yScale(d.count);
       const tooltipText = table + ' (' + d.year + '): ' + formatNumber(d.count);
-      html += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + color + '" stroke="white" stroke-width="1.5" style="cursor: pointer;" class="time-series-point" data-tooltip="' + tooltipText + '" onmouseenter="showTimeSeriesTooltip(event, \'' + tooltipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideTimeSeriesTooltip()">';
-      html += '<title>' + table + ' (' + d.year + '): ' + formatNumber(d.count) + '</title>';
-      html += '</circle>';
+      html += buildTimeSeriesPoint(x, y, shape, color, tooltipText, 4);
     });
   });
 
@@ -2082,12 +2134,13 @@ function updateTimeSeriesLegend(allTables) {
   let html = "";
   allTables.forEach(function(table) {
     const color = TIME_SERIES_COLORS[table] || "#64748b";
+    const shape = getTableShape(table);
     const isVisible = visibleTables.has(table);
     const inactiveClass = isVisible ? "" : " inactive";
 
     html += '<div class="legend-item' + inactiveClass + '" data-action="toggle-table-visibility" data-table="' + table + '">';
     html += '  <div style="display: flex; align-items: center; gap: 8px;">';
-    html += '    <div class="legend-line" style="width: 30px; height: 3px; background-color: ' + color + ';"></div>';
+    html += '    ' + buildLegendIcon(color, shape);
     html += '    <span class="legend-label" style="font-size: 0.9em; color: #475569; font-weight: 500;">' + table + '</span>';
     html += '  </div>';
     html += '</div>';
@@ -2280,13 +2333,12 @@ function drawTableDrilldownTimeSeries() {
   html += '<path d="' + pathData + '" fill="none" stroke="' + color + '" stroke-width="3" />';
 
   // Draw points
+  const shape = getTableShape(currentDrilldownTable);
   tableData.forEach(function(d) {
     const x = xScale(d.year);
     const y = yScale(d.count);
     const tooltipText = currentDrilldownTable + ' (' + d.year + '): ' + formatNumber(d.count);
-    html += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="' + color + '" stroke="white" stroke-width="2" style="cursor: pointer;" class="time-series-point" onmouseenter="showTimeSeriesTooltip(event, \'' + tooltipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideTimeSeriesTooltip()">';
-    html += '<title>' + currentDrilldownTable + ' (' + d.year + '): ' + formatNumber(d.count) + '</title>';
-    html += '</circle>';
+    html += buildTimeSeriesPoint(x, y, shape, color, tooltipText, 5);
   });
 
   html += '</svg>';

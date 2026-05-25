@@ -1382,10 +1382,6 @@ tr.row-warning:hover {
   color: #475569 !important;
 }
 
-.legend-item.inactive .legend-line {
-  background-color: #cbd5e1 !important;
-}
-
 /* ============================================================================
    LAPTOP-FOCUSED RESPONSIVE MEDIA QUERIES
    These breakpoints optimize for laptop (1024px) to large desktop (2560px+)

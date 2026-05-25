@@ -168,6 +168,16 @@ get_table_colors <- function() {
   unlist(.COLORS$tables)
 }
 
+#' Get table shape mapping
+#'
+#' Shapes are used alongside colors in time-series charts so colorblind
+#' users can still distinguish lines. Tables not listed default to "circle".
+#'
+#' @return Named character vector of shape names ("circle", "triangle", "square")
+get_table_shapes <- function() {
+  unlist(.COLORS$table_shapes)
+}
+
 #' Get canonical order for type concept groups
 #'
 #' @return Character vector of group names in display order

@@ -84,6 +84,15 @@
     "specimen" = "#1c1b1d",
     "note" = "#b5b6f5"
   ),
+  # Shapes for time-series data points, used alongside colors to support
+  # colorblind users. Tables not listed default to "circle".
+  table_shapes = list(
+    "visit_occurrence" = "triangle",
+    "drug_exposure" = "triangle",
+    "observation" = "triangle",
+    "procedure_occurrence" = "square",
+    "note" = "square"
+  ),
   dqd_scores = list(
     "good_threshold" = 95,    # >= 95% is "good"
     "fair_threshold" = 85,    # >= 85% is "fair", below is "poor"

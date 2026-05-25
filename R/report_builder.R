@@ -282,6 +282,7 @@ build_report_data_json <- function(report_data) {
   # Add configuration data (colors, ordering)
   report_data$type_colors <- as.list(get_type_concept_colors())
   report_data$table_colors <- as.list(get_table_colors())
+  report_data$table_shapes <- as.list(get_table_shapes())
   report_data$type_group_order <- get_type_concept_group_order()
   report_data$table_order <- get_table_order()
   report_data$tables_without_mismatch_alert <- get_tables_without_mismatch_alert()
