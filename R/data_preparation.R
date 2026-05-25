@@ -789,6 +789,7 @@ prepare_vocab_harmonization_data <- function(metrics) {
 
   # Overall source vocabularies (top 10)
   overall_source_vocab <- metrics$source_vocabularies |>
+    dplyr::filter(vocabulary != "None") |>
     dplyr::group_by(vocabulary) |>
     dplyr::summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |>
     dplyr::arrange(desc(count)) |>
@@ -807,6 +808,7 @@ prepare_vocab_harmonization_data <- function(metrics) {
 
   # Overall target vocabularies (top 10)
   overall_target_vocab <- metrics$target_vocabularies |>
+    dplyr::filter(vocabulary != "None") |>
     dplyr::group_by(vocabulary) |>
     dplyr::summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |>
     dplyr::arrange(desc(count)) |>
