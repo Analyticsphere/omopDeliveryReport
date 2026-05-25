@@ -378,6 +378,12 @@ h1, h2, h3, h4, h5, h6,
   background: #f9fafb;
 }
 
+.metric-card.warning .metric-value,
+.metric-card.success .metric-value,
+.metric-card.neutral .metric-value {
+  color: #1f2937;
+}
+
 .metric-sublabel {
   /* Fluid: scales from ~13px to ~16px (increased from 12-14px) */
   font-size: clamp(0.8125rem, 0.55vw + 0.4rem, 1rem);
