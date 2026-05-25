@@ -212,7 +212,7 @@ function hideTableDrilldown() {
   // Show sidebar
   const sidebar = document.querySelector(".sidebar");
   if (sidebar) {
-    sidebar.style.display = "block";
+    sidebar.style.display = "";
   }
 
   // Show all other sections
@@ -990,7 +990,7 @@ function buildVocabHarmonizationContent(transitions) {
   // Build Table Transition Flow section
   html += "<h5 style=\"margin-top: 30px;\">Table Transition Flow</h5>";
   html += "<div class=\"info-box\" style=\"margin-bottom: 20px;\">";
-  html += "<p style=\"margin-bottom: 10px; color: #6b7280; font-size: 0.95em;\">Clinical data rows that went through vocabulary harmonization (excludes vocabulary reference and metadata tables)</p>";
+  html += "<p style=\"margin-bottom: 10px; color: #6b7280; font-size: 0.95em;\">Clinical data rows that went through vocabulary harmonization</p>";
   html += "<p><strong>Total Rows Processed:</strong> " + formatNumber(totalRows) + "</p>";
   html += "<p><strong>Rows Staying in Same Table:</strong> " + formatNumber(sameTableCount) + " (" + sameTablePercent + "%)</p>";
   html += "<p style=\"margin-bottom: 0;\"><strong>Rows Moving Between Tables:</strong> " + formatNumber(crossTableCount) + " (" + crossTablePercent + "%)</p>";
