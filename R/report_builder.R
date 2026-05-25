@@ -107,7 +107,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   dqd_grid_html <- if (!has_dqd_data) {
     render_template("sections/data-unavailable", list(
       section_id = "dqd-grid",
-      section_title = "Data Quality Dashboard Results",
+      section_title = "Data Quality Dashboard (DQD) Results",
       data_type = "DQD"
     ))
   } else {

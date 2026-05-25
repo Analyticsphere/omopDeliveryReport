@@ -26,7 +26,7 @@ The rendered HTML is a single self-contained file with a left-side navigation. S
 - **Overview** – Top-line counts plus the overall DQD and PASS scores, and a dataset-wide type concept breakdown
 - **Connect Filtering** – Connect-specific participant filtering summary (missing IDs, exclusions, consent/HIPAA/study-status breakdowns)
 - **DQD Results** – DataQualityDashboard category × context grid (Verification / Validation) and a scrollable list of every failed check, sorted by % violated rows
-- **PASS Assessment** – Profile of Analytic Suitability composite score with per-metric contributions
+- **PASS Results** – Profile of Analytic Suitability composite score with per-metric contributions
 - **Data Timeline** – Record volume by year, per clinical table
 - **Table Breakdown** – Per-table delivery summary grouped by domain (clinical, vocabulary, derived, etc.) with row counts at each pipeline stage
 - **Vocabulary** – Source-to-target vocabulary harmonization summary
