@@ -292,7 +292,7 @@ function buildTableDrilldownContent(tableData) {
 
   // Count validation warning - skip for derived data, vocabulary, metadata, and other tables
   if (tableData.counts_valid === false && shouldShowMismatchAlert) {
-    qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final_rows) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
+    qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
   }
 
   // Default dates warning (>1% for most tables, >10% for PERSON) - skip for vocabulary tables
