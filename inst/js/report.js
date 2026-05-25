@@ -1812,49 +1812,101 @@ function getTableShape(table) {
   return TIME_SERIES_SHAPES[table] || "circle";
 }
 
+// Compute the SVG inner markup (a circle/rect/polygon) for a given shape,
+// centered at (cx, cy) and sized to visual radius `r`. Extra attributes
+// (fill, stroke, handlers, etc.) are appended via `attrs`. `inner` is
+// inserted inside the element (used for <title> tooltips).
+//
+// Supported shapes: circle, square, triangle, triangle-down, diamond,
+// pentagon, hexagon, star, plus, cross. Each table gets a unique shape
+// so the Data Timeline is readable by colorblind users and by anyone
+// looking at a black-and-white printout.
+function buildShapeMarkup(shape, cx, cy, r, attrs, inner) {
+  function regularPolygon(numSides, startAngleDeg, scale) {
+    // Vertices evenly spaced on a circle of radius r*scale, starting
+    // at startAngleDeg (0 = right; -90 = top).
+    const pts = [];
+    for (let i = 0; i < numSides; i++) {
+      const a = (startAngleDeg + i * (360 / numSides)) * Math.PI / 180;
+      pts.push((cx + r * scale * Math.cos(a)) + "," + (cy + r * scale * Math.sin(a)));
+    }
+    return pts.join(" ");
+  }
+
+  if (shape === "circle") {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" ' + attrs + '>' + inner + '</circle>';
+  }
+  if (shape === "square") {
+    const s = r * 2;
+    return '<rect x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + s + '" height="' + s + '" ' + attrs + '>' + inner + '</rect>';
+  }
+  if (shape === "triangle") {
+    return '<polygon points="' + regularPolygon(3, -90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "triangle-down") {
+    return '<polygon points="' + regularPolygon(3, 90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "diamond") {
+    return '<polygon points="' + regularPolygon(4, -90, 1.3) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "pentagon") {
+    return '<polygon points="' + regularPolygon(5, -90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "hexagon") {
+    return '<polygon points="' + regularPolygon(6, -90, 1.15) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "star") {
+    // 5-pointed star: alternating outer/inner vertices, point up.
+    const outer = r * 1.45, inner_r = r * 0.6;
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const a = (-90 + i * 36) * Math.PI / 180;
+      const rad = (i % 2 === 0) ? outer : inner_r;
+      pts.push((cx + rad * Math.cos(a)) + "," + (cy + rad * Math.sin(a)));
+    }
+    return '<polygon points="' + pts.join(" ") + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "plus" || shape === "cross") {
+    // 12-vertex polygon forming a + shape; rotate 45° for ×.
+    const t = r * 0.45, l = r * 1.25;
+    const base = [
+      [-t, -l], [t, -l], [t, -t], [l, -t],
+      [l, t], [t, t], [t, l], [-t, l],
+      [-t, t], [-l, t], [-l, -t], [-t, -t]
+    ];
+    const rot = (shape === "cross") ? Math.PI / 4 : 0;
+    const cos = Math.cos(rot), sin = Math.sin(rot);
+    const pts = base.map(function(p) {
+      return (cx + p[0] * cos - p[1] * sin) + "," + (cy + p[0] * sin + p[1] * cos);
+    }).join(" ");
+    return '<polygon points="' + pts + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+
+  // Unknown shape — fall back to circle so the point still renders.
+  return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" ' + attrs + '>' + inner + '</circle>';
+}
+
 // Build the SVG markup for a single time-series data point.
-// `shape` is "circle" | "triangle" | "square". Tooltip handlers are attached
-// here so all shapes behave identically on hover.
+// Tooltip handlers are attached here so all shapes behave identically
+// on hover.
 function buildTimeSeriesPoint(x, y, shape, color, tooltipText, radius) {
   radius = radius || 4;
   const safeTooltip = tooltipText.replace(/'/g, "\\'");
-  const commonAttrs = 'fill="' + color + '" stroke="white" stroke-width="1.5" ' +
+  const attrs = 'fill="' + color + '" stroke="white" stroke-width="1.5" ' +
     'style="cursor: pointer;" class="time-series-point" ' +
     'onmouseenter="showTimeSeriesTooltip(event, \'' + safeTooltip + '\')" ' +
     'onmouseleave="hideTimeSeriesTooltip()"';
   const titleEl = '<title>' + tooltipText + '</title>';
-
-  if (shape === "triangle") {
-    // Equilateral triangle pointing up, centered on (x, y)
-    const side = radius * 2.4;
-    const h = side * Math.sqrt(3) / 2;
-    const top = [x, y - h * 2 / 3];
-    const bl = [x - side / 2, y + h / 3];
-    const br = [x + side / 2, y + h / 3];
-    const points = top.join(",") + " " + bl.join(",") + " " + br.join(",");
-    return '<polygon points="' + points + '" ' + commonAttrs + '>' + titleEl + '</polygon>';
-  }
-  if (shape === "square") {
-    const size = radius * 2;
-    return '<rect x="' + (x - radius) + '" y="' + (y - radius) + '" width="' + size + '" height="' + size + '" ' + commonAttrs + '>' + titleEl + '</rect>';
-  }
-  return '<circle cx="' + x + '" cy="' + y + '" r="' + radius + '" ' + commonAttrs + '>' + titleEl + '</circle>';
+  return buildShapeMarkup(shape, x, y, radius, attrs, titleEl);
 }
 
 // Build a small inline SVG icon (line + shape) for the time-series legend.
 function buildLegendIcon(color, shape) {
   const w = 30, h = 14, cx = w / 2, cy = h / 2;
+  const attrs = 'fill="' + color + '" stroke="white" stroke-width="1"';
   let svg = '<svg class="legend-icon" width="' + w + '" height="' + h + '" style="display: block;">';
   svg += '<line x1="0" y1="' + cy + '" x2="' + w + '" y2="' + cy + '" stroke="' + color + '" stroke-width="2.5"/>';
-  if (shape === "triangle") {
-    const r = 4;
-    const points = cx + "," + (cy - r) + " " + (cx - r) + "," + (cy + r) + " " + (cx + r) + "," + (cy + r);
-    svg += '<polygon points="' + points + '" fill="' + color + '" stroke="white" stroke-width="1"/>';
-  } else if (shape === "square") {
-    svg += '<rect x="' + (cx - 4) + '" y="' + (cy - 4) + '" width="8" height="8" fill="' + color + '" stroke="white" stroke-width="1"/>';
-  } else {
-    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="' + color + '" stroke="white" stroke-width="1"/>';
-  }
+  svg += buildShapeMarkup(shape, cx, cy, 4, attrs, "");
   svg += '</svg>';
   return svg;
 }

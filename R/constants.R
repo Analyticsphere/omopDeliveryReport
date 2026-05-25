@@ -79,19 +79,27 @@
     "drug_exposure" = "#ff8d02",
     "measurement" = "#3b82f6",
     "visit_occurrence" = "#fa2b2b",
+    "visit_detail" = "#14b8a6",
     "observation" = "#804ef5",
     "procedure_occurrence" = "#84cc16",
     "specimen" = "#1c1b1d",
     "note" = "#b5b6f5"
   ),
-  # Shapes for time-series data points, used alongside colors to support
-  # colorblind users. Tables not listed default to "circle".
+  # Unique shape per time-series table so each line in the Data Timeline
+  # chart is distinguishable by shape as well as color. Pairings put the
+  # most-distinct shapes on the most color-similar tables (e.g., warm
+  # reds/oranges get different shape families).
   table_shapes = list(
-    "visit_occurrence" = "triangle",
+    "condition_occurrence" = "circle",
     "drug_exposure" = "triangle",
-    "observation" = "triangle",
-    "procedure_occurrence" = "square",
-    "note" = "square"
+    "visit_occurrence" = "diamond",
+    "device_exposure" = "triangle-down",
+    "measurement" = "square",
+    "observation" = "star",
+    "note" = "hexagon",
+    "procedure_occurrence" = "plus",
+    "specimen" = "cross",
+    "visit_detail" = "pentagon"
   ),
   dqd_scores = list(
     "good_threshold" = 95,    # >= 95% is "good"
