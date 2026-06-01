@@ -83,6 +83,17 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     dplyr::pull(column_name)
   invalid_columns <- if (length(invalid_columns) == 0) list() else as.list(invalid_columns)
 
+  # Columns matching ^column\d+$ are flagged as a likely CSV-formatting issue
+  malformed_columns_metric <- table_metrics$malformed_columns
+  if (is.null(malformed_columns_metric)) {
+    malformed_columns_metric <- list(columns = character(0), count = 0L, has_alert = FALSE)
+  }
+  malformed_columns_list <- if (length(malformed_columns_metric$columns) == 0) {
+    list()
+  } else {
+    as.list(malformed_columns_metric$columns)
+  }
+
   missing_columns <- metrics$missing_columns |>
     dplyr::filter(table_name == !!table_name) |>
     dplyr::pull(column_name)
@@ -174,6 +185,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     quality_issues = quality_issues,
     type_concepts = type_concepts,
     invalid_columns = invalid_columns,
+    malformed_columns = malformed_columns_list,
+    has_malformed_columns = malformed_columns_metric$has_alert,
     missing_columns = missing_columns,
     source_vocabularies = source_vocab,
     target_vocabularies = target_vocab,
@@ -961,6 +974,10 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
 
   if (table_metrics$ref_integrity$rows > 0 && table_metrics$final_rows > 0) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Referential integrity violations">🧑‍🧒</span>')
+  }
+
+  if (isTRUE(table_metrics$malformed_columns$has_alert)) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Malformed column names (likely incoming file formatting issue)">🔢</span>')
   }
 
   all_warnings <- if (length(warning_icons) > 0) {

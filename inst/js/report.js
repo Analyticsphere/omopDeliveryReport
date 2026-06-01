@@ -340,6 +340,16 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`🧑‍🧒 <strong>` + formatNumber(tableData.referential_integrity_violations) + `</strong> ` + violationWord + ` that do not exist in the person table`);
   }
 
+  // Malformed column names warning — column1, column59, etc. indicate a likely
+  // upstream file-formatting issue (e.g. unescaped quote splitting a row).
+  var malformedColumns = tableData.malformed_columns || [];
+  if (tableData.has_malformed_columns && malformedColumns.length > 0) {
+    var malformedCount = malformedColumns.length;
+    var malformedColWord = malformedCount === 1 ? "column was removed with a generic name" : "columns were removed with generic names";
+    var malformedPreview = malformedColumns.slice(0, 5).join(", ") + (malformedCount > 5 ? ", ..." : "");
+    qualityWarnings.push(`🔢 <strong>` + malformedCount + `</strong> ` + malformedColWord + ` (` + malformedPreview + `), indicating a likely formatting issue in the incoming file (e.g., unescaped quote)`);
+  }
+
   var postProcessingTasks = tableData.post_processing_tasks || [];
   var postProcessingNet = tableData.post_processing || 0;
 

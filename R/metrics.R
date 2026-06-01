@@ -661,6 +661,41 @@ calculate_ref_integrity_metric <- function(table_name, metrics) {
   )
 }
 
+#' Detect malformed column names for a table
+#'
+#' Flags removed non-OMOP columns whose names match the pattern "column<digits>"
+#' (e.g. "column1", "column59", "column881"). These default names typically
+#' indicate an upstream file-formatting issue (e.g., unescaped quotes causing
+#' a parser to split a row into anonymous extra columns).
+#'
+#' @param table_name Character table name
+#' @param metrics List from parse_delivery_metrics()
+#' @return List with columns (character vector), count, and has_alert
+#' @export
+calculate_malformed_columns_metric <- function(table_name, metrics) {
+  empty <- list(columns = character(0), count = 0L, has_alert = FALSE)
+
+  if (is.null(metrics$invalid_columns) || nrow(metrics$invalid_columns) == 0) {
+    return(empty)
+  }
+
+  table_cols <- metrics$invalid_columns |>
+    dplyr::filter(table_name == !!table_name) |>
+    dplyr::pull(column_name)
+
+  if (length(table_cols) == 0) {
+    return(empty)
+  }
+
+  malformed <- table_cols[stringr::str_detect(table_cols, "(?i)^column\\d+$")]
+
+  list(
+    columns = malformed,
+    count = length(malformed),
+    has_alert = length(malformed) > 0
+  )
+}
+
 #' Calculate count metrics for a table
 #'
 #' @param table_name Character table name
@@ -815,6 +850,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
   missing_person <- calculate_missing_person_metric(table_name, metrics)
   invalid_rows_metric <- calculate_invalid_rows_metric(table_name, metrics)
   ref_integrity <- calculate_ref_integrity_metric(table_name, metrics)
+  malformed_columns <- calculate_malformed_columns_metric(table_name, metrics)
 
   # Calculate harmonization first (needed for count metrics)
   harmonization <- calculate_harmonization_metric(table_name, metrics)
@@ -839,6 +875,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     (counts$delivered_connect_ids_not_found > 0 && counts$final > 0) ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
+    malformed_columns$has_alert ||
     (counts$has_mismatch_alert && should_show_mismatch)
   )
 
@@ -875,6 +912,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     missing_person = missing_person,
     invalid_rows_metric = invalid_rows_metric,
     ref_integrity = ref_integrity,
+    malformed_columns = malformed_columns,
 
     # Harmonization
     harmonization = harmonization,
