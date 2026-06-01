@@ -340,6 +340,9 @@ function buildTableDrilldownContent(tableData) {
     qualityWarnings.push(`🧑‍🧒 <strong>` + formatNumber(tableData.referential_integrity_violations) + `</strong> ` + violationWord + ` that do not exist in the person table`);
   }
 
+  var postProcessingTasks = tableData.post_processing_tasks || [];
+  var postProcessingNet = tableData.post_processing || 0;
+
   // Display warnings if any exist
   if (qualityWarnings.length > 0) {
     html += `
@@ -757,6 +760,56 @@ function buildTableDrilldownContent(tableData) {
     `;
   }
 
+
+  // Post-Processing Section - per-task breakdown of rows added/removed
+  if (postProcessingTasks.length > 0) {
+    var ppRowsAdded = tableData.post_processing_rows_added || 0;
+    var ppRowsRemoved = tableData.post_processing_rows_removed || 0;
+
+    html += `
+      <div class="subsection">
+        <h4>Post-Processing</h4>
+        <div class="info-box">
+          <p style="margin-top: 0; margin-bottom: 15px;">Post-processing tasks applied to <strong>${tableData.name}</strong> and their effect on row counts:</p>
+          <div style="display: grid; grid-template-columns: 3fr 1fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 10px;">
+            <div style="font-weight: 600;">Task</div>
+            <div style="font-weight: 600; text-align: right;">Rows Added</div>
+            <div style="font-weight: 600; text-align: right;">Rows Removed</div>
+            <div style="font-weight: 600; text-align: right;">Net Impact</div>
+    `;
+
+    postProcessingTasks.forEach(function(task) {
+      var taskAdded = task.rows_added || 0;
+      var taskRemoved = task.rows_removed || 0;
+      var taskNet = task.net_impact || 0;
+
+      var addedFormatted = taskAdded > 0 ? '<span style="color: #047857;">+' + formatNumber(taskAdded) + '</span>' : formatNumber(taskAdded);
+      var removedFormatted = taskRemoved > 0 ? '<span style="color: #b91c1c;">-' + formatNumber(taskRemoved) + '</span>' : formatNumber(taskRemoved);
+
+      var netClass, netSign;
+      if (taskNet > 0) { netClass = "harmonization-positive"; netSign = "+"; }
+      else if (taskNet < 0) { netClass = "harmonization-negative"; netSign = ""; }
+      else { netClass = "harmonization-neutral"; netSign = ""; }
+      var netFormatted = '<span class="' + netClass + '">' + netSign + formatNumber(taskNet) + '</span>';
+
+      html += `
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; font-family: monospace;">${task.task_name}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${addedFormatted}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${removedFormatted}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${netFormatted}</div>
+      `;
+    });
+
+    var totalNetClass = postProcessingNet > 0 ? "harmonization-positive" : (postProcessingNet < 0 ? "harmonization-negative" : "harmonization-neutral");
+    var totalNetSign = postProcessingNet > 0 ? "+" : "";
+
+    html += `
+          </div>
+          <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + totalNetClass + `">` + totalNetSign + formatNumber(postProcessingNet) + ` rows</span> (${formatNumber(ppRowsAdded)} added, ${formatNumber(ppRowsRemoved)} removed)</p>
+        </div>
+      </div>
+    `;
+  }
 
   // Transitions and Harmonization
   if (tableData.transitions && tableData.transitions.length > 0) {

@@ -124,6 +124,23 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   counts_valid <- table_metrics$counts_valid
   expected_final <- table_metrics$expected_final
 
+  # Post-processing tasks and net impact
+  post_processing_metric <- table_metrics$post_processing
+  if (is.null(post_processing_metric)) {
+    post_processing_metric <- list(
+      value = 0,
+      rows_added = 0,
+      rows_removed = 0,
+      is_affected = FALSE,
+      tasks = data.frame(
+        task_name = character(),
+        rows_added = numeric(),
+        rows_removed = numeric(),
+        net_impact = numeric()
+      )
+    )
+  }
+
   # Return comprehensive table data
   list(
     name = table_name,
@@ -165,6 +182,11 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     secondary_backfills = secondary_backfills,
     dispositions = dispositions,
     same_table_mappings = same_table_mappings,
+    post_processing = post_processing_metric$value,
+    post_processing_rows_added = post_processing_metric$rows_added,
+    post_processing_rows_removed = post_processing_metric$rows_removed,
+    post_processing_is_affected = post_processing_metric$is_affected,
+    post_processing_tasks = post_processing_metric$tasks,
     dqd_score = dqd_score,
     pass_score = pass_score,
     pass_metrics = pass_metrics,
@@ -961,6 +983,8 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     participant_filter_class = table_metrics$participant_filter_class,
     harmonization_display = table_metrics$harmonization$display$text,
     harmonization_class = table_metrics$harmonization$display$class,
+    post_processing_display = table_metrics$post_processing$display$text,
+    post_processing_class = table_metrics$post_processing$display$class,
     final_rows_formatted = format_number(table_metrics$final_rows),
     row_per_patient = sprintf("%.2f", row_per_patient)
   )
