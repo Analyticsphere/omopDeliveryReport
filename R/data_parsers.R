@@ -184,16 +184,18 @@
   ),
 
   post_processing_rows_added = list(
-    pattern = "^Post-processing task .+: rows added in ",
-    regex = "^Post-processing task (.+): rows added in (\\w+)$",
-    fields = c("task_name", "table_name"),
+    pattern = "^Post-processing task .+: rows added$",
+    regex = "^Post-processing task (.+): rows added$",
+    fields = c("task_name"),
+    string_field = "table_name",
     value_field = "rows_added"
   ),
 
   post_processing_rows_removed = list(
-    pattern = "^Post-processing task .+: rows removed from ",
-    regex = "^Post-processing task (.+): rows removed from (\\w+)$",
-    fields = c("task_name", "table_name"),
+    pattern = "^Post-processing task .+: rows removed$",
+    regex = "^Post-processing task (.+): rows removed$",
+    fields = c("task_name"),
+    string_field = "table_name",
     value_field = "rows_removed"
   )
 )

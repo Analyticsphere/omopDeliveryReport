@@ -773,9 +773,6 @@ function buildTableDrilldownContent(tableData) {
 
   // Post-Processing Section - per-task breakdown of rows added/removed
   if (postProcessingTasks.length > 0) {
-    var ppRowsAdded = tableData.post_processing_rows_added || 0;
-    var ppRowsRemoved = tableData.post_processing_rows_removed || 0;
-
     html += `
       <div class="subsection">
         <h4>Post-Processing</h4>
@@ -815,7 +812,7 @@ function buildTableDrilldownContent(tableData) {
 
     html += `
           </div>
-          <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + totalNetClass + `">` + totalNetSign + formatNumber(postProcessingNet) + ` rows</span> (${formatNumber(ppRowsAdded)} added, ${formatNumber(ppRowsRemoved)} removed)</p>
+          <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + totalNetClass + `">` + totalNetSign + formatNumber(postProcessingNet) + ` rows</span></p>
         </div>
       </div>
     `;
