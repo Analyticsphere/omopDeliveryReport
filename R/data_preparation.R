@@ -83,6 +83,17 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     dplyr::pull(column_name)
   invalid_columns <- if (length(invalid_columns) == 0) list() else as.list(invalid_columns)
 
+  # Columns matching ^column\d+$ are flagged as a likely CSV-formatting issue
+  malformed_columns_metric <- table_metrics$malformed_columns
+  if (is.null(malformed_columns_metric)) {
+    malformed_columns_metric <- list(columns = character(0), count = 0L, has_alert = FALSE)
+  }
+  malformed_columns_list <- if (length(malformed_columns_metric$columns) == 0) {
+    list()
+  } else {
+    as.list(malformed_columns_metric$columns)
+  }
+
   missing_columns <- metrics$missing_columns |>
     dplyr::filter(table_name == !!table_name) |>
     dplyr::pull(column_name)
@@ -124,6 +135,23 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
   counts_valid <- table_metrics$counts_valid
   expected_final <- table_metrics$expected_final
 
+  # Post-processing tasks and net impact
+  post_processing_metric <- table_metrics$post_processing
+  if (is.null(post_processing_metric)) {
+    post_processing_metric <- list(
+      value = 0,
+      rows_added = 0,
+      rows_removed = 0,
+      is_affected = FALSE,
+      tasks = data.frame(
+        task_name = character(),
+        rows_added = numeric(),
+        rows_removed = numeric(),
+        net_impact = numeric()
+      )
+    )
+  }
+
   # Return comprehensive table data
   list(
     name = table_name,
@@ -157,6 +185,8 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     quality_issues = quality_issues,
     type_concepts = type_concepts,
     invalid_columns = invalid_columns,
+    malformed_columns = malformed_columns_list,
+    has_malformed_columns = malformed_columns_metric$has_alert,
     missing_columns = missing_columns,
     source_vocabularies = source_vocab,
     target_vocabularies = target_vocab,
@@ -165,6 +195,11 @@ prepare_table_data <- function(table_name, metrics, dqd_score, pass_score = NA_r
     secondary_backfills = secondary_backfills,
     dispositions = dispositions,
     same_table_mappings = same_table_mappings,
+    post_processing = post_processing_metric$value,
+    post_processing_rows_added = post_processing_metric$rows_added,
+    post_processing_rows_removed = post_processing_metric$rows_removed,
+    post_processing_is_affected = post_processing_metric$is_affected,
+    post_processing_tasks = post_processing_metric$tasks,
     dqd_score = dqd_score,
     pass_score = pass_score,
     pass_metrics = pass_metrics,
@@ -684,6 +719,47 @@ prepare_dqd_grid_rows <- function(grid) {
   Filter(Negate(is.null), rows_data)
 }
 
+#' Prepare DQD failure rows data for template
+#'
+#' Filters DQD results to failed checks (failed > 0), sorts by
+#' pctViolatedRows descending then checkDescription ascending, and
+#' formats each row for template rendering.
+#'
+#' @param dqd_data Data frame with DQD results (or NULL)
+#' @return List of row data for rendering
+#' @export
+prepare_dqd_failure_rows <- function(dqd_data) {
+  if (is.null(dqd_data) || nrow(dqd_data) == 0) {
+    return(list())
+  }
+
+  failures <- dqd_data |>
+    dplyr::filter(!is.na(failed), failed > 0) |>
+    dplyr::mutate(
+      pctViolatedRows = suppressWarnings(as.numeric(pctViolatedRows)),
+      checkDescription = ifelse(is.na(checkDescription), "", checkDescription)
+    ) |>
+    dplyr::arrange(dplyr::desc(pctViolatedRows), checkDescription)
+
+  if (nrow(failures) == 0) {
+    return(list())
+  }
+
+  lapply(seq_len(nrow(failures)), function(i) {
+    pct <- failures$pctViolatedRows[i]
+    pct_display <- if (is.na(pct)) {
+      "N/A"
+    } else {
+      sprintf("%.2f%%", pct * 100)
+    }
+
+    list(
+      description = html_escape(failures$checkDescription[i]),
+      pct_violated = pct_display
+    )
+  })
+}
+
 #' Prepare data for time series section template
 #'
 #' Calculates year ranges and formats time series data for template rendering.
@@ -748,6 +824,7 @@ prepare_vocab_harmonization_data <- function(metrics) {
 
   # Overall source vocabularies (top 10)
   overall_source_vocab <- metrics$source_vocabularies |>
+    dplyr::filter(vocabulary != "None") |>
     dplyr::group_by(vocabulary) |>
     dplyr::summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |>
     dplyr::arrange(desc(count)) |>
@@ -766,6 +843,7 @@ prepare_vocab_harmonization_data <- function(metrics) {
 
   # Overall target vocabularies (top 10)
   overall_target_vocab <- metrics$target_vocabularies |>
+    dplyr::filter(vocabulary != "None") |>
     dplyr::group_by(vocabulary) |>
     dplyr::summarise(count = sum(count, na.rm = TRUE), .groups = "drop") |>
     dplyr::arrange(desc(count)) |>
@@ -824,13 +902,6 @@ prepare_delivery_report_data <- function(metrics, table_groups, group_dqd_scores
       '<p class="dqd-score-text"><strong>Data Quality Score:</strong> <span class="text-muted">Not available</span></p>'
     }
 
-    # Prepare type concept subheader
-    type_concept_subheader <- if (group_name == "All Tables") {
-      "All Tables"
-    } else {
-      sprintf("%s Tables", group_name)
-    }
-
     # Prepare table rows
     table_rows_data <- lapply(group_tables, function(tbl) {
       prepare_delivery_table_row(tbl, metrics, num_participants)
@@ -841,7 +912,6 @@ prepare_delivery_report_data <- function(metrics, table_groups, group_dqd_scores
       group_id = group_id,
       display_style = display_style,
       dqd_note = dqd_note,
-      type_concept_subheader = type_concept_subheader,
       table_rows_data = table_rows_data
     )
   })
@@ -906,6 +976,10 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     warning_icons <- c(warning_icons, '<span class="warning-icon" title="Referential integrity violations">🧑‍🧒</span>')
   }
 
+  if (isTRUE(table_metrics$malformed_columns$has_alert)) {
+    warning_icons <- c(warning_icons, '<span class="warning-icon" title="Malformed column names (likely incoming file formatting issue)">🔢</span>')
+  }
+
   all_warnings <- if (length(warning_icons) > 0) {
     paste0(" ", paste(warning_icons, collapse = " "))
   } else {
@@ -926,6 +1000,8 @@ prepare_delivery_table_row <- function(table_name, metrics, num_participants) {
     participant_filter_class = table_metrics$participant_filter_class,
     harmonization_display = table_metrics$harmonization$display$text,
     harmonization_class = table_metrics$harmonization$display$class,
+    post_processing_display = table_metrics$post_processing$display$text,
+    post_processing_class = table_metrics$post_processing$display$class,
     final_rows_formatted = format_number(table_metrics$final_rows),
     row_per_patient = sprintf("%.2f", row_per_patient)
   )

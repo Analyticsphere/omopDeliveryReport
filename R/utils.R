@@ -141,6 +141,18 @@ write_file <- function(content, path, max_retries = 3) {
   }
 }
 
+#' Escape HTML special characters
+#'
+#' @param x Character vector to escape
+#' @return Character vector with &, <, > replaced by their HTML entities
+html_escape <- function(x) {
+  if (is.null(x)) return("")
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;",  x, fixed = TRUE)
+  x <- gsub(">", "&gt;",  x, fixed = TRUE)
+  x
+}
+
 #' Get type concept color mapping
 #'
 #' @return Named character vector of hex colors
@@ -154,6 +166,16 @@ get_type_concept_colors <- function() {
 #' @return Named character vector of hex colors
 get_table_colors <- function() {
   unlist(.COLORS$tables)
+}
+
+#' Get table shape mapping
+#'
+#' Shapes are used alongside colors in time-series charts so colorblind
+#' users can still distinguish lines. Tables not listed default to "circle".
+#'
+#' @return Named character vector of shape names ("circle", "triangle", "square")
+get_table_shapes <- function() {
+  unlist(.COLORS$table_shapes)
 }
 
 #' Get canonical order for type concept groups

@@ -1,7 +1,7 @@
 <div class="section" id="dqd-grid">
     <div class="section-header">
         <span class="section-icon"></span>
-        <h2>Data Quality Dashboard Results</h2>
+        <h2>Data Quality Dashboard (DQD) Results</h2>
     </div>
 
     <div class="table-container">
@@ -21,6 +21,21 @@
             </thead>
             <tbody>
                 {{grid_rows}}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="dqd-failures-title">Failed Checks ({{failure_count}})</h3>
+    <div class="dqd-failures-container">
+        <table class="dqd-failures-table">
+            <thead>
+                <tr>
+                    <th>Check Description</th>
+                    <th class="dqd-failure-pct-col">% Violated Rows</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{failure_rows}}
             </tbody>
         </table>
     </div>

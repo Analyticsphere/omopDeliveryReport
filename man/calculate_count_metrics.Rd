@@ -4,7 +4,12 @@
 \alias{calculate_count_metrics}
 \title{Calculate count metrics for a table}
 \usage{
-calculate_count_metrics(table_name, metrics, harmonization = 0)
+calculate_count_metrics(
+  table_name,
+  metrics,
+  harmonization = 0,
+  post_processing = 0
+)
 }
 \arguments{
 \item{table_name}{Character table name}

@@ -69,9 +69,6 @@ function switchTableGroup(groupName) {
 
   currentGroup = groupName;
 
-  // Update type concepts for this group
-  updateGroupTypeConcepts(groupName);
-
   console.log("Current group set to:", currentGroup);
   console.log("=== switchTableGroup complete ===");
 }
@@ -215,7 +212,7 @@ function hideTableDrilldown() {
   // Show sidebar
   const sidebar = document.querySelector(".sidebar");
   if (sidebar) {
-    sidebar.style.display = "block";
+    sidebar.style.display = "";
   }
 
   // Show all other sections
@@ -295,7 +292,7 @@ function buildTableDrilldownContent(tableData) {
 
   // Count validation warning - skip for derived data, vocabulary, metadata, and other tables
   if (tableData.counts_valid === false && shouldShowMismatchAlert) {
-    qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final_rows) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
+    qualityWarnings.push(`🧮 <strong>Row count mismatch:</strong> Expected final rows: ` + formatNumber(tableData.expected_final) + `, Actual: ` + formatNumber(tableData.final_rows) + `. Please review the pipeline output.`);
   }
 
   // Default dates warning (>1% for most tables, >10% for PERSON) - skip for vocabulary tables
@@ -342,6 +339,19 @@ function buildTableDrilldownContent(tableData) {
     var violationWord = tableData.referential_integrity_violations === 1 ? "row has a person_id" : "rows have person_ids";
     qualityWarnings.push(`🧑‍🧒 <strong>` + formatNumber(tableData.referential_integrity_violations) + `</strong> ` + violationWord + ` that do not exist in the person table`);
   }
+
+  // Malformed column names warning — column1, column59, etc. indicate a likely
+  // upstream file-formatting issue (e.g. unescaped quote splitting a row).
+  var malformedColumns = tableData.malformed_columns || [];
+  if (tableData.has_malformed_columns && malformedColumns.length > 0) {
+    var malformedCount = malformedColumns.length;
+    var malformedColWord = malformedCount === 1 ? "column was removed with a generic name" : "columns were removed with generic names";
+    var malformedPreview = malformedColumns.slice(0, 5).join(", ") + (malformedCount > 5 ? ", ..." : "");
+    qualityWarnings.push(`🔢 <strong>` + malformedCount + `</strong> ` + malformedColWord + ` (` + malformedPreview + `), indicating a likely formatting issue in the incoming file (e.g., unescaped quote)`);
+  }
+
+  var postProcessingTasks = tableData.post_processing_tasks || [];
+  var postProcessingNet = tableData.post_processing || 0;
 
   // Display warnings if any exist
   if (qualityWarnings.length > 0) {
@@ -641,8 +651,8 @@ function buildTableDrilldownContent(tableData) {
 
       // Apply indentation and special styling for temporal sub-metrics
       var rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
-      var namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
-      var nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
+      var namePrefix = isTemporalSub ? '<span style="color: #475569; margin-right: 6px;">↳</span>' : '';
+      var nameStyle = isTemporalSub ? 'color: #475569; font-size: 0.95em;' : '';
 
       html += `
             <tr class="` + rowClass + `">
@@ -670,7 +680,7 @@ function buildTableDrilldownContent(tableData) {
     html += `
       <div class="subsection">
         <h4 style="margin-bottom: 4px;">Type Concept Breakdown</h4>
-        <div style="font-size: 0.9em; color: #94a3b8; margin-bottom: 8px; text-align: left;">${tableData.name}</div>
+        <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: left;">${tableData.name}</div>
         <div class="chart-container" style="margin-top: 16px;">
           ${buildTypeConceptChart(tableData.type_concepts)}
         </div>
@@ -678,32 +688,40 @@ function buildTableDrilldownContent(tableData) {
     `;
   }
 
-  // Data Timeline Section
-  html += `
-    <div class="subsection">
-      <h4 style="margin-bottom: 4px;">Data Timeline</h4>
-      <div style="font-size: 0.9em; color: #94a3b8; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
+  // Data Timeline Section — only rendered for tables that have timeline data
+  // (skipped for person, cdm_source, concept_synonym, and other tables
+  // without per-year row counts).
+  const hasTimeSeriesData = timeSeriesData.some(function(row) {
+    return row.table_name === tableData.name;
+  });
 
-      <div style="margin-top: 16px;">
-        <div class="toggle-buttons drilldown-time-series-controls">
-          <button class="toggle-button active" id="drilldown-time-series-recent" data-action="switch-drilldown-time-series-view" data-view="recent">Last 15 Years</button>
-          <button class="toggle-button" id="drilldown-time-series-custom" data-action="switch-drilldown-time-series-view" data-view="custom">Custom</button>
-        </div>
+  if (hasTimeSeriesData) {
+    html += `
+      <div class="subsection">
+        <h4 style="margin-bottom: 4px;">Data Timeline</h4>
+        <div style="font-size: 0.9em; color: #475569; margin-bottom: 8px; text-align: center;">${tableData.name}</div>
 
-        <div id="drilldown-time-series-custom-controls" class="drilldown-time-series-custom-controls" style="display: none;">
-          <label class="drilldown-time-series-label">From:</label>
-          <input type="number" id="drilldown-time-series-start-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
-          <label class="drilldown-time-series-label">To:</label>
-          <input type="number" id="drilldown-time-series-end-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
-          <button data-action="apply-drilldown-year-range" class="drilldown-time-series-button">Apply</button>
-        </div>
+        <div style="margin-top: 16px;">
+          <div class="toggle-buttons drilldown-time-series-controls">
+            <button class="toggle-button active" id="drilldown-time-series-recent" data-action="switch-drilldown-time-series-view" data-view="recent">Last 15 Years</button>
+            <button class="toggle-button" id="drilldown-time-series-custom" data-action="switch-drilldown-time-series-view" data-view="custom">Custom</button>
+          </div>
 
-        <div id="table-drilldown-time-series-chart-container" class="drilldown-time-series-chart">
-          <!-- Chart will be populated by JavaScript -->
+          <div id="drilldown-time-series-custom-controls" class="drilldown-time-series-custom-controls" style="display: none;">
+            <label class="drilldown-time-series-label">From:</label>
+            <input type="number" id="drilldown-time-series-start-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
+            <label class="drilldown-time-series-label">To:</label>
+            <input type="number" id="drilldown-time-series-end-year" min="1900" max="2100" placeholder="YYYY" class="drilldown-time-series-input">
+            <button data-action="apply-drilldown-year-range" class="drilldown-time-series-button">Apply</button>
+          </div>
+
+          <div id="table-drilldown-time-series-chart-container" class="drilldown-time-series-chart">
+            <!-- Chart will be populated by JavaScript -->
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+  }
 
   // Use pre-computed harmonization data from R
   var rowsIn = tableData.transitions_in || 0;
@@ -718,13 +736,13 @@ function buildTableDrilldownContent(tableData) {
   // Only show harmonization flow if there was actual harmonization activity
   if (hasHarmonizationFlow) {
     // Format rows out (red with minus sign if > 0)
-    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #ef4444;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
+    var rowsOutFormatted = rowsMovedOut > 0 ? '<span style="color: #b91c1c;">-' + formatNumber(rowsMovedOut) + '</span>' : formatNumber(rowsMovedOut);
 
     // Format rows in (green with plus sign if > 0)
-    var rowsInFormatted = rowsIn > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
+    var rowsInFormatted = rowsIn > 0 ? '<span style="color: #047857;">+' + formatNumber(rowsIn) + '</span>' : formatNumber(rowsIn);
 
     // Format rows added from mappings (green with plus sign if > 0)
-    var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #10b981;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
+    var rowsAddedFormatted = rowsAddedFromMappings > 0 ? '<span style="color: #047857;">+' + formatNumber(rowsAddedFromMappings) + '</span>' : formatNumber(rowsAddedFromMappings);
 
     // Generated rows are additional rows created during mapping and sent elsewhere
     var rowsCopiedFormatted = rowsCopiedOut > 0 ? '<span style="color: #6b7280;">' + formatNumber(rowsCopiedOut) + '</span>' : formatNumber(rowsCopiedOut);
@@ -752,6 +770,53 @@ function buildTableDrilldownContent(tableData) {
     `;
   }
 
+
+  // Post-Processing Section - per-task breakdown of rows added/removed
+  if (postProcessingTasks.length > 0) {
+    html += `
+      <div class="subsection">
+        <h4>Post-Processing</h4>
+        <div class="info-box">
+          <p style="margin-top: 0; margin-bottom: 15px;">Post-processing tasks applied to <strong>${tableData.name}</strong> and their effect on row counts:</p>
+          <div style="display: grid; grid-template-columns: 3fr 1fr 1fr 1fr; gap: 10px; align-items: center; margin-bottom: 10px;">
+            <div style="font-weight: 600;">Task</div>
+            <div style="font-weight: 600; text-align: right;">Rows Added</div>
+            <div style="font-weight: 600; text-align: right;">Rows Removed</div>
+            <div style="font-weight: 600; text-align: right;">Net Impact</div>
+    `;
+
+    postProcessingTasks.forEach(function(task) {
+      var taskAdded = task.rows_added || 0;
+      var taskRemoved = task.rows_removed || 0;
+      var taskNet = task.net_impact || 0;
+
+      var addedFormatted = taskAdded > 0 ? '<span style="color: #047857;">+' + formatNumber(taskAdded) + '</span>' : formatNumber(taskAdded);
+      var removedFormatted = taskRemoved > 0 ? '<span style="color: #b91c1c;">-' + formatNumber(taskRemoved) + '</span>' : formatNumber(taskRemoved);
+
+      var netClass, netSign;
+      if (taskNet > 0) { netClass = "harmonization-positive"; netSign = "+"; }
+      else if (taskNet < 0) { netClass = "harmonization-negative"; netSign = ""; }
+      else { netClass = "harmonization-neutral"; netSign = ""; }
+      var netFormatted = '<span class="' + netClass + '">' + netSign + formatNumber(taskNet) + '</span>';
+
+      html += `
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; font-family: monospace;">${task.task_name}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${addedFormatted}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${removedFormatted}</div>
+            <div style="padding: 8px 0; border-top: 1px solid #e5e7eb; text-align: right;">${netFormatted}</div>
+      `;
+    });
+
+    var totalNetClass = postProcessingNet > 0 ? "harmonization-positive" : (postProcessingNet < 0 ? "harmonization-negative" : "harmonization-neutral");
+    var totalNetSign = postProcessingNet > 0 ? "+" : "";
+
+    html += `
+          </div>
+          <p style="margin-top: 15px; margin-bottom: 0;"><strong>Net Impact:</strong> <span class="` + totalNetClass + `">` + totalNetSign + formatNumber(postProcessingNet) + ` rows</span></p>
+        </div>
+      </div>
+    `;
+  }
 
   // Transitions and Harmonization
   if (tableData.transitions && tableData.transitions.length > 0) {
@@ -922,44 +987,6 @@ function buildTableDrilldownContent(tableData) {
 }
 
 // ============================================================================
-// GROUP TYPE CONCEPT UPDATES
-// ============================================================================
-
-function updateGroupTypeConcepts(groupName) {
-  console.log("==== updateGroupTypeConcepts ====");
-  console.log("Group name:", groupName);
-
-  const groupData = getGroupData(groupName);
-  console.log("Group data:", groupData);
-  console.log("Has type_concepts:", groupData && groupData.type_concepts);
-  console.log("Type concepts length:", groupData && groupData.type_concepts && groupData.type_concepts.length);
-
-  if (!groupData || !groupData.type_concepts || groupData.type_concepts.length === 0) {
-    const groupId = groupName.toLowerCase().replace(/ /g, "-");
-    console.log("No type concepts, looking for container:", "group-type-concepts-" + groupId);
-    const container = document.getElementById("group-type-concepts-" + groupId);
-    console.log("Container found:", container !== null);
-    if (container) {
-      container.innerHTML = "<p>No type concept data available for this group</p>";
-    }
-    return;
-  }
-
-  const groupId = groupName.toLowerCase().replace(/ /g, "-");
-  console.log("Looking for container:", "group-type-concepts-" + groupId);
-  const container = document.getElementById("group-type-concepts-" + groupId);
-  console.log("Container found:", container !== null);
-
-  if (container) {
-    const html = buildTypeConceptChart(groupData.type_concepts);
-    container.innerHTML = html;
-    console.log("Type concepts updated successfully");
-  } else {
-    console.warn("Container not found for group ID:", groupId);
-  }
-}
-
-// ============================================================================
 // VOCABULARY HARMONIZATION
 // ============================================================================
 
@@ -1031,7 +1058,7 @@ function buildVocabHarmonizationContent(transitions) {
   // Build Table Transition Flow section
   html += "<h5 style=\"margin-top: 30px;\">Table Transition Flow</h5>";
   html += "<div class=\"info-box\" style=\"margin-bottom: 20px;\">";
-  html += "<p style=\"margin-bottom: 10px; color: #6b7280; font-size: 0.95em;\">Clinical data rows that went through vocabulary harmonization (excludes vocabulary reference and metadata tables)</p>";
+  html += "<p style=\"margin-bottom: 10px; color: #6b7280; font-size: 0.95em;\">Clinical data rows that went through vocabulary harmonization</p>";
   html += "<p><strong>Total Rows Processed:</strong> " + formatNumber(totalRows) + "</p>";
   html += "<p><strong>Rows Staying in Same Table:</strong> " + formatNumber(sameTableCount) + " (" + sameTablePercent + "%)</p>";
   html += "<p style=\"margin-bottom: 0;\"><strong>Rows Moving Between Tables:</strong> " + formatNumber(crossTableCount) + " (" + crossTablePercent + "%)</p>";
@@ -1208,84 +1235,6 @@ function buildSankeyDiagram(transitions) {
 // CHART BUILDERS
 // ============================================================================
 
-function buildTypeConceptChartSimple(typeConceptsData) {
-  if (!typeConceptsData || typeConceptsData.length === 0) {
-    return "<p>No type concept data available</p>";
-  }
-
-  // Group by type_group and aggregate
-  var grouped = {};
-  typeConceptsData.forEach(function(tc) {
-    var group = tc.type_group;
-    if (!grouped[group]) {
-      grouped[group] = { group: group, count: 0, concepts: [] };
-    }
-    grouped[group].count += tc.count;
-    grouped[group].concepts.push(tc);
-  });
-
-  // Define canonical order
-  var typeGroupOrder = REPORT_DATA.type_group_order || [
-    "EHR", "Claims", "Disease registry", "Patient reported", "Other", "Unlabeled"
-  ];
-
-  // Ensure all groups from canonical order are present (with 0 counts if missing)
-  typeGroupOrder.forEach(function(groupName) {
-    if (!grouped[groupName]) {
-      grouped[groupName] = { group: groupName, count: 0, concepts: [] };
-    }
-  });
-
-  // Convert to array and sort by canonical order (not by count)
-  var groupArray = [];
-  for (var key in grouped) {
-    if (grouped.hasOwnProperty(key)) {
-      groupArray.push(grouped[key]);
-    }
-  }
-
-  // Sort by canonical order
-  var sortedGroups = groupArray.sort(function(a, b) {
-    var indexA = typeGroupOrder.indexOf(a.group);
-    var indexB = typeGroupOrder.indexOf(b.group);
-    if (indexA === -1) indexA = 999; // Put unknown groups at end
-    if (indexB === -1) indexB = 999;
-    return indexA - indexB;
-  });
-
-  // Calculate total for percentages
-  var total = 0;
-  sortedGroups.forEach(function(g) { total += g.count; });
-
-  var html = "";
-
-  html += '<div style="display: flex; gap: 48px; margin: 20px 0; align-items: flex-start; justify-content: center;">';
-
-  html += '<div style="flex-shrink: 0; padding-top: 40px;">';
-  html += buildPieChart(sortedGroups, total);
-  html += '</div>';
-
-  html += '<div style="display: flex; flex-direction: column; gap: 12px; flex-shrink: 0;">';
-  html += '<h5 style="margin: 0 0 8px 0; font-size: 0.85em; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Summary</h5>';
-  sortedGroups.forEach(function(group) {
-    var color = REPORT_DATA.type_colors[group.group] || "#7AA6DC";
-    var percentage = ((group.count / total) * 100).toFixed(1);
-
-    html += '<div style="display: flex; align-items: center; gap: 10px;">';
-    html += '  <div style="width: 20px; height: 20px; background-color: ' + color + '; border: 1px solid #e5e7eb;"></div>';
-    html += '  <div style="min-width: 200px;">';
-    html += '    <div style="font-weight: 500; color: #0f172a;">' + group.group + '</div>';
-    html += '    <div style="font-size: 0.9em; color: #64748b;">' + formatNumber(group.count) + ' (' + percentage + '%)</div>';
-    html += '  </div>';
-    html += '</div>';
-  });
-  html += '</div>';
-
-  html += '</div>';
-
-  return html;
-}
-
 function buildTypeConceptChart(typeConceptsData) {
   if (!typeConceptsData || typeConceptsData.length === 0) {
     return "<p>No type concept data available</p>";
@@ -1459,11 +1408,11 @@ function getPASSClass(score) {
 }
 
 function getPASSColor(score) {
-  if (score === null || score === undefined || isNaN(score)) return "#94a3b8";
-  if (score >= 0.90) return "#059669";  // excellent - emerald-600
-  if (score >= 0.80) return "#10b981";  // good - emerald-500
-  if (score >= 0.60) return "#f59e0b";  // moderate - amber-500
-  if (score >= 0.40) return "#ef4444";  // poor - red-500
+  if (score === null || score === undefined || isNaN(score)) return "#475569";
+  if (score >= 0.90) return "#047857";  // excellent - emerald-700
+  if (score >= 0.80) return "#047857";  // good - emerald-700
+  if (score >= 0.60) return "#b45309";  // moderate - amber-700
+  if (score >= 0.40) return "#b91c1c";  // poor - red-700
   return "#991b1b";  // verypoor - red-800
 }
 
@@ -1481,7 +1430,7 @@ function buildPASSScoreVisualization(score, lowerBound, upperBound, width, heigh
   height = height || 32;
 
   if (score === null || score === undefined || isNaN(score)) {
-    return '<span style="color: #94a3b8;">N/A</span>';
+    return '<span style="color: #475569;">N/A</span>';
   }
 
   var padding = 12;
@@ -1535,10 +1484,10 @@ function buildPASSScoreVisualization(score, lowerBound, upperBound, width, heigh
 
   // Scale labels (0, 1)
   svg += '<text x="' + scaleStart + '" y="' + (height - 2) + '" ';
-  svg += 'font-size="9" fill="#94a3b8" text-anchor="start">0</text>';
+  svg += 'font-size="9" fill="#475569" text-anchor="start">0</text>';
 
   svg += '<text x="' + scaleEnd + '" y="' + (height - 2) + '" ';
-  svg += 'font-size="9" fill="#94a3b8" text-anchor="end">1</text>';
+  svg += 'font-size="9" fill="#475569" text-anchor="end">1</text>';
 
   svg += '</svg>';
 
@@ -1601,7 +1550,7 @@ function initializePASSComponents() {
     // Build CI text if available
     let ciText = '';
     if (lowerBound !== null && upperBound !== null) {
-      ciText = '<div style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
+      ciText = '<div style="font-size: 11px; color: #475569; margin-top: 2px; font-weight: normal;">95% CI: ' + lowerBound.toFixed(2) + ' - ' + upperBound.toFixed(2) + '</div>';
     }
 
     // Check if this is a temporal sub-metric
@@ -1627,7 +1576,7 @@ function initializePASSComponents() {
 
     // Apply indentation and special styling for temporal sub-metrics
     const rowClass = isTemporalSub ? 'pass-sub-metric-row' : '';
-    const namePrefix = isTemporalSub ? '<span style="color: #94a3b8; margin-right: 6px;">↳</span>' : '';
+    const namePrefix = isTemporalSub ? '<span style="color: #475569; margin-right: 6px;">↳</span>' : '';
     const nameStyle = isTemporalSub ? 'color: #64748b; font-size: 0.95em;' : '';
 
     html += '<tr class="' + rowClass + '">';
@@ -1916,6 +1865,111 @@ let drilldownCustomEndYear = 2025;
 
 // Use table colors from configuration (set when REPORT_DATA loads)
 const TIME_SERIES_COLORS = REPORT_DATA.table_colors || {};
+// Shapes assigned per table to aid colorblind users; tables not listed get a circle.
+const TIME_SERIES_SHAPES = REPORT_DATA.table_shapes || {};
+
+function getTableShape(table) {
+  return TIME_SERIES_SHAPES[table] || "circle";
+}
+
+// Compute the SVG inner markup (a circle/rect/polygon) for a given shape,
+// centered at (cx, cy) and sized to visual radius `r`. Extra attributes
+// (fill, stroke, handlers, etc.) are appended via `attrs`. `inner` is
+// inserted inside the element (used for <title> tooltips).
+//
+// Supported shapes: circle, square, triangle, triangle-down, diamond,
+// pentagon, hexagon, star, plus, cross. Each table gets a unique shape
+// so the Data Timeline is readable by colorblind users and by anyone
+// looking at a black-and-white printout.
+function buildShapeMarkup(shape, cx, cy, r, attrs, inner) {
+  function regularPolygon(numSides, startAngleDeg, scale) {
+    // Vertices evenly spaced on a circle of radius r*scale, starting
+    // at startAngleDeg (0 = right; -90 = top).
+    const pts = [];
+    for (let i = 0; i < numSides; i++) {
+      const a = (startAngleDeg + i * (360 / numSides)) * Math.PI / 180;
+      pts.push((cx + r * scale * Math.cos(a)) + "," + (cy + r * scale * Math.sin(a)));
+    }
+    return pts.join(" ");
+  }
+
+  if (shape === "circle") {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" ' + attrs + '>' + inner + '</circle>';
+  }
+  if (shape === "square") {
+    const s = r * 2;
+    return '<rect x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + s + '" height="' + s + '" ' + attrs + '>' + inner + '</rect>';
+  }
+  if (shape === "triangle") {
+    return '<polygon points="' + regularPolygon(3, -90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "triangle-down") {
+    return '<polygon points="' + regularPolygon(3, 90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "diamond") {
+    return '<polygon points="' + regularPolygon(4, -90, 1.3) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "pentagon") {
+    return '<polygon points="' + regularPolygon(5, -90, 1.2) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "hexagon") {
+    return '<polygon points="' + regularPolygon(6, -90, 1.15) + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "star") {
+    // 5-pointed star: alternating outer/inner vertices, point up.
+    const outer = r * 1.45, inner_r = r * 0.6;
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const a = (-90 + i * 36) * Math.PI / 180;
+      const rad = (i % 2 === 0) ? outer : inner_r;
+      pts.push((cx + rad * Math.cos(a)) + "," + (cy + rad * Math.sin(a)));
+    }
+    return '<polygon points="' + pts.join(" ") + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+  if (shape === "plus" || shape === "cross") {
+    // 12-vertex polygon forming a + shape; rotate 45° for ×.
+    const t = r * 0.45, l = r * 1.25;
+    const base = [
+      [-t, -l], [t, -l], [t, -t], [l, -t],
+      [l, t], [t, t], [t, l], [-t, l],
+      [-t, t], [-l, t], [-l, -t], [-t, -t]
+    ];
+    const rot = (shape === "cross") ? Math.PI / 4 : 0;
+    const cos = Math.cos(rot), sin = Math.sin(rot);
+    const pts = base.map(function(p) {
+      return (cx + p[0] * cos - p[1] * sin) + "," + (cy + p[0] * sin + p[1] * cos);
+    }).join(" ");
+    return '<polygon points="' + pts + '" ' + attrs + '>' + inner + '</polygon>';
+  }
+
+  // Unknown shape — fall back to circle so the point still renders.
+  return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" ' + attrs + '>' + inner + '</circle>';
+}
+
+// Build the SVG markup for a single time-series data point.
+// Tooltip handlers are attached here so all shapes behave identically
+// on hover.
+function buildTimeSeriesPoint(x, y, shape, color, tooltipText, radius) {
+  radius = radius || 4;
+  const safeTooltip = tooltipText.replace(/'/g, "\\'");
+  const attrs = 'fill="' + color + '" stroke="white" stroke-width="1.5" ' +
+    'style="cursor: pointer;" class="time-series-point" ' +
+    'onmouseenter="showTimeSeriesTooltip(event, \'' + safeTooltip + '\')" ' +
+    'onmouseleave="hideTimeSeriesTooltip()"';
+  const titleEl = '<title>' + tooltipText + '</title>';
+  return buildShapeMarkup(shape, x, y, radius, attrs, titleEl);
+}
+
+// Build a small inline SVG icon (line + shape) for the time-series legend.
+function buildLegendIcon(color, shape) {
+  const w = 30, h = 14, cx = w / 2, cy = h / 2;
+  const attrs = 'fill="' + color + '" stroke="white" stroke-width="1"';
+  let svg = '<svg class="legend-icon" width="' + w + '" height="' + h + '" style="display: block;">';
+  svg += '<line x1="0" y1="' + cy + '" x2="' + w + '" y2="' + cy + '" stroke="' + color + '" stroke-width="2.5"/>';
+  svg += buildShapeMarkup(shape, cx, cy, 4, attrs, "");
+  svg += '</svg>';
+  return svg;
+}
 
 function switchTimeSeriesView(view) {
   console.log("Switching data timeline view to:", view);
@@ -2179,13 +2233,12 @@ function drawTimeSeriesChart() {
     html += '</path>';
 
     // Draw points
+    const shape = getTableShape(table);
     data.forEach(function(d) {
       const x = xScale(d.year);
       const y = yScale(d.count);
       const tooltipText = table + ' (' + d.year + '): ' + formatNumber(d.count);
-      html += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + color + '" stroke="white" stroke-width="1.5" style="cursor: pointer;" class="time-series-point" data-tooltip="' + tooltipText + '" onmouseenter="showTimeSeriesTooltip(event, \'' + tooltipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideTimeSeriesTooltip()">';
-      html += '<title>' + table + ' (' + d.year + '): ' + formatNumber(d.count) + '</title>';
-      html += '</circle>';
+      html += buildTimeSeriesPoint(x, y, shape, color, tooltipText, 4);
     });
   });
 
@@ -2201,12 +2254,13 @@ function updateTimeSeriesLegend(allTables) {
   let html = "";
   allTables.forEach(function(table) {
     const color = TIME_SERIES_COLORS[table] || "#64748b";
+    const shape = getTableShape(table);
     const isVisible = visibleTables.has(table);
     const inactiveClass = isVisible ? "" : " inactive";
 
     html += '<div class="legend-item' + inactiveClass + '" data-action="toggle-table-visibility" data-table="' + table + '">';
     html += '  <div style="display: flex; align-items: center; gap: 8px;">';
-    html += '    <div class="legend-line" style="width: 30px; height: 3px; background-color: ' + color + ';"></div>';
+    html += '    ' + buildLegendIcon(color, shape);
     html += '    <span class="legend-label" style="font-size: 0.9em; color: #475569; font-weight: 500;">' + table + '</span>';
     html += '  </div>';
     html += '</div>';
@@ -2378,7 +2432,7 @@ function drawTableDrilldownTimeSeries() {
     const y = margin.top + chartHeight;
 
     // Tick mark
-    html += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + 6) + '" stroke="#94a3b8" stroke-width="1" />';
+    html += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + 6) + '" stroke="#64748b" stroke-width="1" />';
 
     // Year label
     html += '<text x="' + x + '" y="' + (y + 20) + '" text-anchor="middle" font-size="11" fill="#64748b">' + year + '</text>';
@@ -2399,13 +2453,12 @@ function drawTableDrilldownTimeSeries() {
   html += '<path d="' + pathData + '" fill="none" stroke="' + color + '" stroke-width="3" />';
 
   // Draw points
+  const shape = getTableShape(currentDrilldownTable);
   tableData.forEach(function(d) {
     const x = xScale(d.year);
     const y = yScale(d.count);
     const tooltipText = currentDrilldownTable + ' (' + d.year + '): ' + formatNumber(d.count);
-    html += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="' + color + '" stroke="white" stroke-width="2" style="cursor: pointer;" class="time-series-point" onmouseenter="showTimeSeriesTooltip(event, \'' + tooltipText.replace(/'/g, "\\'") + '\')" onmouseleave="hideTimeSeriesTooltip()">';
-    html += '<title>' + currentDrilldownTable + ' (' + d.year + '): ' + formatNumber(d.count) + '</title>';
-    html += '</circle>';
+    html += buildTimeSeriesPoint(x, y, shape, color, tooltipText, 5);
   });
 
   html += '</svg>';

@@ -174,6 +174,29 @@
     regex = "^Delivered Connect ID values not found in Connect database: (\\w+)$",
     fields = c("table_name"),
     value_field = "count"
+  ),
+
+  post_processing_table_affected = list(
+    pattern = "^Post-processing task .+: table affected$",
+    regex = "^Post-processing task (.+): table affected$",
+    fields = c("task_name"),
+    string_field = "table_name"
+  ),
+
+  post_processing_rows_added = list(
+    pattern = "^Post-processing task .+: rows added$",
+    regex = "^Post-processing task (.+): rows added$",
+    fields = c("task_name"),
+    string_field = "table_name",
+    value_field = "rows_added"
+  ),
+
+  post_processing_rows_removed = list(
+    pattern = "^Post-processing task .+: rows removed$",
+    regex = "^Post-processing task (.+): rows removed$",
+    fields = c("task_name"),
+    string_field = "table_name",
+    value_field = "rows_removed"
   )
 )
 
@@ -301,7 +324,22 @@ parse_delivery_metrics <- function(delivery_data) {
     ) |>
     dplyr::select(table_name, mapping, source_multiplier, target_multiplier, total_rows, rows_added)
 
+  # Post-processing tasks (assemble from three parsed pieces into one tidy table)
+  metrics$post_processing <- assemble_post_processing(
+    metrics$post_processing_table_affected,
+    metrics$post_processing_rows_added,
+    metrics$post_processing_rows_removed
+  )
+
+  # Drop the intermediate parsers - downstream code uses metrics$post_processing
+  metrics$post_processing_table_affected <- NULL
+  metrics$post_processing_rows_added <- NULL
+  metrics$post_processing_rows_removed <- NULL
+
   # Metadata (special handling for date formatting)
+  extraction_date_raw <- delivery_data |> dplyr::filter(name == "Source system extraction date") |> dplyr::pull(value_as_string)
+  extraction_date_formatted <- format_date_safe(extraction_date_raw)
+
   delivery_date_raw <- delivery_data |> dplyr::filter(name == "Delivery date") |> dplyr::pull(value_as_string)
   delivery_date_formatted <- format_date_safe(delivery_date_raw)
 
@@ -310,6 +348,7 @@ parse_delivery_metrics <- function(delivery_data) {
 
   metrics$metadata <- list(
     site = delivery_data |> dplyr::filter(name == "Site") |> dplyr::pull(value_as_string),
+    extraction_date = extraction_date_formatted,
     delivery_date = delivery_date_formatted,
     processing_date = processing_date_formatted,
     delivered_cdm_version = delivery_data |> dplyr::filter(name == "Delivered CDM version") |> dplyr::pull(value_as_string),
@@ -380,11 +419,62 @@ parse_delivery_metrics <- function(delivery_data) {
   return(metrics)
 }
 
+#' Assemble post-processing tasks into a tidy data frame
+#'
+#' Joins the three pieces parsed from the delivery report (table affected,
+#' rows added, rows removed) into one row per (task_name, table_name) pair
+#' with rows_added, rows_removed, and net_impact (= added - removed).
+#'
+#' @param table_affected Data frame with task_name, table_name
+#' @param rows_added Data frame with task_name, table_name, rows_added
+#' @param rows_removed Data frame with task_name, table_name, rows_removed
+#' @return Data frame with task_name, table_name, rows_added, rows_removed, net_impact
+#' @export
+assemble_post_processing <- function(table_affected, rows_added, rows_removed) {
+  empty <- tibble::tibble(
+    task_name = character(),
+    table_name = character(),
+    rows_added = numeric(),
+    rows_removed = numeric(),
+    net_impact = numeric()
+  )
+
+  if (is.null(table_affected) || nrow(table_affected) == 0) {
+    return(empty)
+  }
+
+  base <- table_affected |>
+    dplyr::distinct(task_name, table_name)
+
+  if (!is.null(rows_added) && nrow(rows_added) > 0) {
+    base <- base |>
+      dplyr::left_join(rows_added, by = c("task_name", "table_name"))
+  } else {
+    base$rows_added <- NA_real_
+  }
+
+  if (!is.null(rows_removed) && nrow(rows_removed) > 0) {
+    base <- base |>
+      dplyr::left_join(rows_removed, by = c("task_name", "table_name"))
+  } else {
+    base$rows_removed <- NA_real_
+  }
+
+  base |>
+    dplyr::mutate(
+      rows_added = dplyr::coalesce(as.numeric(rows_added), 0),
+      rows_removed = dplyr::coalesce(as.numeric(rows_removed), 0),
+      net_impact = rows_added - rows_removed
+    ) |>
+    dplyr::arrange(table_name, task_name)
+}
+
 #' Helper: Format date safely
 #'
 #' @param date_raw Raw date string
 #' @return Formatted date string
 format_date_safe <- function(date_raw) {
+  if (length(date_raw) == 0 || is.null(date_raw)) return("Unknown")
   tryCatch({
     date_obj <- as.Date(date_raw, format = "%m/%d/%y")
     if (is.na(date_obj)) {
@@ -449,6 +539,7 @@ create_empty_metrics <- function() {
   list(
     metadata = list(
       site = "Unknown",
+      extraction_date = "Unknown",
       delivery_date = "Unknown",
       processing_date = "Unknown",
       delivered_cdm_version = "Unknown",
@@ -509,6 +600,13 @@ create_empty_metrics <- function() {
     connect_patient_counts = list(
       connect_not_in_delivery = NA_real_,
       delivery_not_in_connect = NA_real_
+    ),
+    post_processing = tibble::tibble(
+      task_name = character(),
+      table_name = character(),
+      rows_added = numeric(),
+      rows_removed = numeric(),
+      net_impact = numeric()
     )
   )
 }

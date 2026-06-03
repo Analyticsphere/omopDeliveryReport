@@ -32,32 +32,6 @@ test_that("format_number preserves negative signs", {
 })
 
 # ==============================================================================
-# format_percentage()
-# ==============================================================================
-
-test_that("format_percentage calculates and formats correctly", {
-  expect_equal(format_percentage(25, 100), "25.0")
-  expect_equal(format_percentage(1, 3), "33.3")
-  expect_equal(format_percentage(50, 100), "50.0")
-  expect_equal(format_percentage(0, 100), "0.0")
-})
-
-test_that("format_percentage handles decimal places", {
-  expect_equal(format_percentage(1, 3, decimal_places = 0), "33")
-  expect_equal(format_percentage(1, 3, decimal_places = 1), "33.3")
-  expect_equal(format_percentage(1, 3, decimal_places = 2), "33.33")
-})
-
-test_that("format_percentage handles edge cases", {
-  # Division by zero
-  expect_equal(format_percentage(10, 0), "0.0")
-
-  # NA values
-  expect_equal(format_percentage(NA, 100), "0.0")
-  expect_equal(format_percentage(10, NA), "0.0")
-})
-
-# ==============================================================================
 # get_dqd_score_class()
 # ==============================================================================
 
@@ -102,29 +76,6 @@ test_that("get_status_badge returns correct status for not delivered tables", {
   result <- get_status_badge(FALSE)
   expect_equal(result$text, "Not Delivered")
   expect_equal(result$class, "not-delivered")
-})
-
-# ==============================================================================
-# get_metric_class()
-# ==============================================================================
-
-test_that("get_metric_class works when zero is good", {
-  # Zero is good (default)
-  expect_equal(get_metric_class(0, zero_is_good = TRUE), "success")
-  expect_equal(get_metric_class(1, zero_is_good = TRUE), "warning")
-  expect_equal(get_metric_class(100, zero_is_good = TRUE), "warning")
-})
-
-test_that("get_metric_class works when zero is bad", {
-  # Zero is bad (more is better)
-  expect_equal(get_metric_class(0, zero_is_good = FALSE), "neutral")
-  expect_equal(get_metric_class(1, zero_is_good = FALSE), "success")
-  expect_equal(get_metric_class(100, zero_is_good = FALSE), "success")
-})
-
-test_that("get_metric_class handles NA", {
-  expect_equal(get_metric_class(NA, zero_is_good = TRUE), "neutral")
-  expect_equal(get_metric_class(NA, zero_is_good = FALSE), "neutral")
 })
 
 # ==============================================================================

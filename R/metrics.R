@@ -298,20 +298,6 @@ format_number <- function(value, big_mark = ",") {
   format(value, big.mark = big_mark, scientific = FALSE)
 }
 
-#' Calculate percentage and format for display
-#'
-#' Combines calculation and formatting in one step for convenience.
-#'
-#' @param numerator Numeric numerator
-#' @param denominator Numeric denominator
-#' @param decimal_places Integer number of decimal places (default: 1)
-#' @return Character formatted percentage (e.g., "25.5")
-#' @export
-format_percentage <- function(numerator, denominator, decimal_places = 1) {
-  pct <- calculate_percentage(numerator, denominator)
-  format(round(pct, decimal_places), nsmall = decimal_places)
-}
-
 #' Determine DQD score class for styling
 #'
 #' Maps DQD scores to CSS classes for color-coded display.
@@ -395,26 +381,6 @@ get_status_badge <- function(delivered) {
     list(text = "Delivered", class = "delivered")
   } else {
     list(text = "Not Delivered", class = "not-delivered")
-  }
-}
-
-#' Determine metric card class based on value and threshold
-#'
-#' Determines styling based on whether zero is considered good or bad.
-#'
-#' @param value Numeric value to evaluate
-#' @param zero_is_good Logical whether zero is good (TRUE) or bad (FALSE)
-#' @return Character CSS class ("success", "warning", or "neutral")
-#' @export
-get_metric_class <- function(value, zero_is_good = TRUE) {
-  if (is.na(value)) return("neutral")
-
-  if (zero_is_good) {
-    if (value == 0) return("success")
-    return("warning")
-  } else {
-    if (value > 0) return("success")
-    return("neutral")
   }
 }
 
@@ -588,6 +554,92 @@ calculate_invalid_rows_metric <- function(table_name, metrics) {
   )
 }
 
+#' Calculate post-processing metric for a table
+#'
+#' Aggregates rows added/removed across all post-processing tasks that
+#' targeted this table. Net impact = sum(rows_added) - sum(rows_removed).
+#'
+#' Tables not touched by any task return is_affected = FALSE and value = 0
+#' so the column renders as "--" (neutral) in the same way Harmonization
+#' renders for non-harmonized tables.
+#'
+#' @param table_name Character table name
+#' @param metrics List from parse_delivery_metrics()
+#' @return List with value, rows_added, rows_removed, is_affected, tasks, display
+#' @export
+calculate_post_processing_metric <- function(table_name, metrics) {
+  empty <- list(
+    value = 0,
+    rows_added = 0,
+    rows_removed = 0,
+    is_affected = FALSE,
+    tasks = data.frame(
+      task_name = character(),
+      rows_added = numeric(),
+      rows_removed = numeric(),
+      net_impact = numeric()
+    ),
+    display = list(text = "--", class = "harmonization-neutral")
+  )
+
+  if (is.null(metrics$post_processing) || nrow(metrics$post_processing) == 0) {
+    return(empty)
+  }
+
+  tasks <- metrics$post_processing |>
+    dplyr::filter(table_name == !!table_name) |>
+    dplyr::select(task_name, rows_added, rows_removed, net_impact)
+
+  if (nrow(tasks) == 0) {
+    return(empty)
+  }
+
+  rows_added <- sum(tasks$rows_added, na.rm = TRUE)
+  rows_removed <- sum(tasks$rows_removed, na.rm = TRUE)
+  value <- rows_added - rows_removed
+
+  list(
+    value = value,
+    rows_added = rows_added,
+    rows_removed = rows_removed,
+    is_affected = TRUE,
+    tasks = tasks,
+    display = format_post_processing_display(value, TRUE)
+  )
+}
+
+#' Format post-processing value for display with sign
+#'
+#' Mirrors format_harmonization_display: tables not affected render "--"
+#' neutral; positive net impact renders green with "+", negative renders red.
+#'
+#' @param value Integer net impact (added - removed)
+#' @param is_affected Logical whether any post-processing task targeted this table
+#' @return List with display text and CSS class
+#' @export
+format_post_processing_display <- function(value, is_affected) {
+  if (!is_affected) {
+    return(list(text = "--", class = "harmonization-neutral"))
+  }
+
+  if (value > 0) {
+    return(list(
+      text = paste0("+", format_number(value)),
+      class = "harmonization-positive"
+    ))
+  } else if (value < 0) {
+    return(list(
+      text = format_number(value),
+      class = "harmonization-negative"
+    ))
+  } else {
+    return(list(
+      text = "0",
+      class = "harmonization-neutral"
+    ))
+  }
+}
+
 #' Calculate referential integrity metric for a table
 #'
 #' @param table_name Character table name
@@ -609,6 +661,41 @@ calculate_ref_integrity_metric <- function(table_name, metrics) {
   )
 }
 
+#' Detect malformed column names for a table
+#'
+#' Flags removed non-OMOP columns whose names match the pattern "column<digits>"
+#' (e.g. "column1", "column59", "column881"). These default names typically
+#' indicate an upstream file-formatting issue (e.g., unescaped quotes causing
+#' a parser to split a row into anonymous extra columns).
+#'
+#' @param table_name Character table name
+#' @param metrics List from parse_delivery_metrics()
+#' @return List with columns (character vector), count, and has_alert
+#' @export
+calculate_malformed_columns_metric <- function(table_name, metrics) {
+  empty <- list(columns = character(0), count = 0L, has_alert = FALSE)
+
+  if (is.null(metrics$invalid_columns) || nrow(metrics$invalid_columns) == 0) {
+    return(empty)
+  }
+
+  table_cols <- metrics$invalid_columns |>
+    dplyr::filter(table_name == !!table_name) |>
+    dplyr::pull(column_name)
+
+  if (length(table_cols) == 0) {
+    return(empty)
+  }
+
+  malformed <- table_cols[stringr::str_detect(table_cols, "(?i)^column\\d+$")]
+
+  list(
+    columns = malformed,
+    count = length(malformed),
+    has_alert = length(malformed) > 0
+  )
+}
+
 #' Calculate count metrics for a table
 #'
 #' @param table_name Character table name
@@ -616,7 +703,7 @@ calculate_ref_integrity_metric <- function(table_name, metrics) {
 #' @param harmonization Integer harmonization impact
 #' @return List with count values and validation status
 #' @export
-calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
+calculate_count_metrics <- function(table_name, metrics, harmonization = 0, post_processing = 0) {
   valid_rows <- get_table_count(metrics$valid_row_counts, table_name)
   invalid_rows <- get_table_count(metrics$invalid_row_counts, table_name)
   final_rows <- get_table_count(metrics$final_row_counts, table_name)
@@ -630,9 +717,12 @@ calculate_count_metrics <- function(table_name, metrics, harmonization = 0) {
   quality_issues <- calculate_quality_issues(invalid_rows, missing_rows)
   rows_removed_before_harmonization <- quality_issues + participant_filter_rows
 
-  # Check if counts are valid (for harmonized tables)
-  # This compares expected vs actual final row counts
-  expected_final <- calculate_expected_final_rows(initial_rows, rows_removed_before_harmonization, harmonization)
+  # Expected final = initial - removed + harmonization impact + post-processing impact
+  expected_final <- calculate_expected_final_rows(
+    initial_rows,
+    rows_removed_before_harmonization,
+    harmonization
+  ) + post_processing
 
   # Validate: expected should match actual final row count
   is_valid <- (expected_final == final_rows)
@@ -760,12 +850,16 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
   missing_person <- calculate_missing_person_metric(table_name, metrics)
   invalid_rows_metric <- calculate_invalid_rows_metric(table_name, metrics)
   ref_integrity <- calculate_ref_integrity_metric(table_name, metrics)
+  malformed_columns <- calculate_malformed_columns_metric(table_name, metrics)
 
   # Calculate harmonization first (needed for count metrics)
   harmonization <- calculate_harmonization_metric(table_name, metrics)
 
-  # Calculate counts (uses harmonization value)
-  counts <- calculate_count_metrics(table_name, metrics, harmonization$value)
+  # Post-processing impact (rows added/removed by post-processing tasks)
+  post_processing <- calculate_post_processing_metric(table_name, metrics)
+
+  # Calculate counts (uses harmonization and post-processing values)
+  counts <- calculate_count_metrics(table_name, metrics, harmonization$value, post_processing$value)
 
   # Check if this table should show mismatch alert
   tables_without_alert <- get_tables_without_mismatch_alert()
@@ -781,6 +875,7 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     (counts$delivered_connect_ids_not_found > 0 && counts$final > 0) ||
     invalid_rows_metric$has_alert ||
     ref_integrity$has_alert ||
+    malformed_columns$has_alert ||
     (counts$has_mismatch_alert && should_show_mismatch)
   )
 
@@ -817,9 +912,13 @@ calculate_table_metrics <- function(table_name, metrics, dqd_score = NA) {
     missing_person = missing_person,
     invalid_rows_metric = invalid_rows_metric,
     ref_integrity = ref_integrity,
+    malformed_columns = malformed_columns,
 
     # Harmonization
     harmonization = harmonization,
+
+    # Post-processing
+    post_processing = post_processing,
 
     # DQD
     dqd_score = dqd_score,

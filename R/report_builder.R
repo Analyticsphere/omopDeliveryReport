@@ -42,13 +42,20 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   # Serialize to JSON for JavaScript
   report_data_json <- build_report_data_json(report_data)
 
+  # Pre-encode Connect brand logos as base64 data URIs so the rendered report
+  # stays a single self-contained HTML file.
+  connect_logo_white_uri <- get_logo_data_uri("white")
+  favicon_data_uri       <- get_logo_data_uri("favicon")
+
   # Build sections
   sidebar_html <- render_template("sections/sidebar", list(
-    site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site"
+    site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    connect_logo_white_uri = connect_logo_white_uri
   ))
 
   header_html <- render_template("sections/header", list(
     site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    extraction_date = if (has_delivery_data) metrics$metadata$extraction_date else "Unknown",
     delivery_date = if (has_delivery_data) metrics$metadata$delivery_date else "Unknown"
   ))
 
@@ -100,7 +107,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   dqd_grid_html <- if (!has_dqd_data) {
     render_template("sections/data-unavailable", list(
       section_id = "dqd-grid",
-      section_title = "Data Quality Dashboard Results",
+      section_title = "Data Quality Dashboard (DQD) Results",
       data_type = "DQD"
     ))
   } else {
@@ -110,7 +117,19 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
     } else {
       '<tr><td colspan="13">No DQD data available</td></tr>'
     }
-    render_template("sections/dqd-grid", list(grid_rows = grid_rows_html))
+
+    failure_rows_data <- prepare_dqd_failure_rows(dqd_data)
+    failure_rows_html <- if (length(failure_rows_data) > 0) {
+      render_component_list("components/dqd-failure-row", failure_rows_data)
+    } else {
+      '<tr><td colspan="2" class="dqd-failures-empty">No failed checks</td></tr>'
+    }
+
+    render_template("sections/dqd-grid", list(
+      grid_rows = grid_rows_html,
+      failure_rows = failure_rows_html,
+      failure_count = length(failure_rows_data)
+    ))
   }
 
   # PASS breakdown section - use template
@@ -169,7 +188,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
 
       # Render the group with its rows
       render_template("components/delivery-report-group", c(
-        group_data[c("group_name", "group_id", "display_style", "dqd_note", "type_concept_subheader")],
+        group_data[c("group_name", "group_id", "display_style", "dqd_note")],
         list(table_rows = table_rows_html)
       ))
     }), collapse = "\n")
@@ -226,6 +245,7 @@ build_complete_html_report <- function(metrics, dqd_data, dqd_scores, pass_score
   # Assemble complete HTML using main template
   html <- render_template("main", list(
     site_name = if (has_delivery_data) metrics$metadata$site else "Unknown Site",
+    favicon_data_uri = favicon_data_uri,
     css_styles = get_full_css_styles(),
     sidebar_html = sidebar_html,
     header_html = header_html,
@@ -262,6 +282,7 @@ build_report_data_json <- function(report_data) {
   # Add configuration data (colors, ordering)
   report_data$type_colors <- as.list(get_type_concept_colors())
   report_data$table_colors <- as.list(get_table_colors())
+  report_data$table_shapes <- as.list(get_table_shapes())
   report_data$type_group_order <- get_type_concept_group_order()
   report_data$table_order <- get_table_order()
   report_data$tables_without_mismatch_alert <- get_tables_without_mismatch_alert()
