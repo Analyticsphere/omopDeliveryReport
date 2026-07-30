@@ -296,27 +296,21 @@ parse_gcs_path <- function(gcs_path) {
   )
 }
 
-#' Authenticate to GCS using service account credentials
+#' Authenticate to GCS
 #'
-#' Authenticates using Cloud Run service account at /secrets/service-account.json
-#' or local default credentials.
+#' Non-interactive sessions use the attached service account via the GCP metadata
+#' server (Cloud Run); interactive sessions use your own Google login.
 #'
 #' @return Logical TRUE if authentication succeeded, FALSE otherwise
 gcs_authenticate <- function() {
   tryCatch({
-    # Check for Cloud Run service account JSON file
-    service_account_path <- "/secrets/service-account.json"
-
-    if (file.exists(service_account_path)) {
-      # Cloud Run environment - use explicit JSON file
-      googleCloudStorageR::gcs_auth(json_file = service_account_path)
-      logger::log_debug("Authenticated to GCS using service account JSON: {service_account_path}")
-    } else {
-      # Local development - use default credential discovery
+    if (interactive()) {
       googleCloudStorageR::gcs_auth()
-      logger::log_debug("Authenticated to GCS using default credentials")
+      logger::log_debug("Authenticated to GCS using your Google login")
+    } else {
+      googleCloudStorageR::gcs_auth(token = gargle::credentials_gce())
+      logger::log_debug("Authenticated to GCS using the attached service account (metadata server)")
     }
-
     return(TRUE)
   }, error = function(e) {
     logger::log_warn("GCS authentication failed: {e$message}")
